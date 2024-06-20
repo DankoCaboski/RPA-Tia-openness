@@ -1,9 +1,9 @@
 import customtkinter
 
-from components.CustomCheckbox import CustomCheckbox
-from components.CustomButton import CustomButton
+from view.components.CustomCheckbox import CustomCheckbox
+from view.components.CustomButton import CustomButton
 
-from functions.ButtonHandler import ButtonHandler
+from view.functions.ButtonHandler import ButtonHandler
 
 
 class App(customtkinter.CTk):
@@ -15,8 +15,7 @@ class App(customtkinter.CTk):
 
         self.title("my app")
         self.geometry("400x180")
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure((0, 1), weight=1)
+        self.iconbitmap("view/assets/favico.ico")
 
         inst_custom_checkbox_1 = CustomCheckbox(self, "Checkbox 1")  # Create an instance of CustomCheckbox
         checkbox_1 = inst_custom_checkbox_1()  # Call the instance to create the checkbox
