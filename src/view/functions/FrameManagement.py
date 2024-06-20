@@ -5,10 +5,17 @@ from view.pages.HomePage import HomePage
 class FrameManagement:
     def __init__(self, root):
         self.root = root
-        self.frame: customtkinter.CTkFrame = None
-        self.frame_manegement()
+        self.current_frame = None
+        self.show_home_page()
         
-    def frame_manegement(self):
-        if (self.frame == None):
-            self.frame = HomePage(self.root).frame 
-            self.frame.pack(anchor="center", fill="both", expand=True)
+    def show_home_page(self):
+        if self.current_frame is not None:
+            self.current_frame.destroy()
+        self.current_frame = HomePage(self).frame
+        self.current_frame.grid(row=0, column=0)
+
+    def show_create_project_page(self):
+        if self.current_frame is not None:
+            self.current_frame.destroy()
+        self.current_frame = CreateProject(self).frame
+        self.current_frame.grid(row=0, column=0)
