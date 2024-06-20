@@ -7,3 +7,6 @@ class ButtonHandler:
         
     def home_page(self):
         self.frame_management.show_home_page()
+        
+    def open_project(self):
+        self.frame_management.show_open_project_page()

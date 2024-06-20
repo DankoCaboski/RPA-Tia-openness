@@ -11,8 +11,6 @@ class App(customtkinter.CTk):
         self.geometry("900x1780")
         self.minsize(600,580)
         self.iconbitmap("view/assets/favico.ico")
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
             
         
 
