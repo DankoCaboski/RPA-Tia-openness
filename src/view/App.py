@@ -1,8 +1,12 @@
 import customtkinter
-from components.Button import CustomButton
+from components.CustomButton import CustomButton
+from src.view.functions.ButtonHandler import ButtonHandler
 
 
 class App(customtkinter.CTk):
+    
+    callback_handler = ButtonHandler()
+    
     def __init__(self):
         super().__init__()
 
@@ -16,12 +20,10 @@ class App(customtkinter.CTk):
         self.checkbox_2 = customtkinter.CTkCheckBox(self, text="checkbox 2")
         self.checkbox_2.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="w")
 
-        custom_button = CustomButton(self, "Meu botão", command=self.button_callback)  # Create an instance of CustomButton
+        custom_button = CustomButton(self, "Meu botão", command=self.callback_handler.button_callback)  # Create an instance of CustomButton
         button = custom_button()  # Call the instance to create the button
         button.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="w")  # Add the button to the grid
 
-    def button_callback(self):
-        print("button pressed")
 
 app = App()
 app.mainloop()
