@@ -11,8 +11,6 @@ class App(customtkinter.CTk):
         self.geometry("900x1780")
         self.minsize(600,580)
         self.iconbitmap("view/assets/favico.ico")
-            
-        
 
 app = App()
 frame = FrameManagement(app)
