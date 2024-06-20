@@ -8,4 +8,4 @@ class ButtonHandler:
         create_project = CreateProject(parent)
         if create_project:
             print("Tela de criar projeto aberta")
-            return create_project()
+            return create_project

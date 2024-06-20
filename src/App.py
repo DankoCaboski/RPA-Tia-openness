@@ -1,6 +1,6 @@
 import customtkinter
 
-from view.pages.FrameManagement import FrameManagement
+from view.functions.FrameManagement import FrameManagement
 
 class App(customtkinter.CTk):
     
@@ -11,8 +11,11 @@ class App(customtkinter.CTk):
         self.geometry("900x1780")
         self.minsize(600,580)
         self.iconbitmap("view/assets/favico.ico")
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+            
         
-        frame = FrameManagement(self)
 
 app = App()
+frame = FrameManagement(app)
 app.mainloop()
