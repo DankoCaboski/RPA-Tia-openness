@@ -6,6 +6,6 @@ class CustomButton:
         self.texto = texto
         self.command = command
 
-    def __call__(self):
+    def get_button(self) -> customtkinter.CTkButton:
         button = customtkinter.CTkButton(self.frame, text=self.texto, command=self.command)
         return button

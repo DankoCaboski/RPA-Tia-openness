@@ -16,8 +16,8 @@ class CreateProject:
         label.grid(row=0, column=0, padx=10)
         
         comp_home_page = CustomButton(self.frame, "Criar homepage", command=self.call_home_page)
-        button_home_page = comp_home_page()
-        button_home_page.grid(row=1, column=0)
+        comp_home_page = comp_home_page.get_button()
+        comp_home_page.grid(row=1, column=0)
         
     def call_home_page(self):
         self.button_handler.home_page()
