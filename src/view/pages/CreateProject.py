@@ -25,4 +25,7 @@ class CreateProject:
         
     def call_home_page(self):
         self.button_handler.home_page()
+        
+    def open_tia_ui(self):
+        self.button_handler.open_tia_ui()
     

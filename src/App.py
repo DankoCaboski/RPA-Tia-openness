@@ -1,6 +1,7 @@
 import customtkinter
 
 from view.functions.FrameManagement import FrameManagement
+from openness.controllers.OpennessController import OpennessController
 
 class App(customtkinter.CTk):
     
@@ -14,4 +15,5 @@ class App(customtkinter.CTk):
 
 app = App()
 frame = FrameManagement(app)
+openness = OpennessController()
 app.mainloop()

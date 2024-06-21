@@ -1,7 +1,7 @@
 import clr
-import HardwareFeatures
-import CompilerService
-import TiaService
+from openness.services.TiaService import TiaService
+from openness.services.HardwareFeatures import HardwareFeatures
+from openness.services.CompilerService import CompilerService
 
 class OpennessService:
     def __init__(self):
