@@ -1,4 +1,5 @@
 import clr
+
 from openness.services.TiaService import TiaService
 from openness.services.HardwareFeatures import HardwareFeatures
 from openness.services.CompilerService import CompilerService
@@ -8,6 +9,7 @@ class OpennessService:
         self.tia = None
         self.hwf = None
         self.comp = None
+        print("OpennessService initialized")
     
     def set_dll(self, tia_Version):
         try:

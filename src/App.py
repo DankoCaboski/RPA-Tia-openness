@@ -2,6 +2,7 @@ import customtkinter
 
 from view.functions.FrameManagement import FrameManagement
 from openness.controllers.OpennessController import OpennessController
+from openness.repositories.DbManagement import DbManagement
 
 class App(customtkinter.CTk):
     
@@ -15,5 +16,7 @@ class App(customtkinter.CTk):
 
 app = App()
 frame = FrameManagement(app)
+database = DbManagement()
+database.validate_db()
 openness = OpennessController()
 app.mainloop()

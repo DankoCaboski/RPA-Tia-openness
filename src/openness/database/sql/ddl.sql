@@ -18,6 +18,13 @@ CREATE TABLE
         description VARCHAR(500)
     );
 
+CREATE TABLE
+    IHM_List (
+        mlfb VARCHAR(50) PRIMARY KEY,
+        type VARCHAR(50),
+        description VARCHAR(500)
+    );
+
 CREATE TABLE VersoesHardware (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     mlfb VARCHAR(50) NOT NULL,
@@ -28,19 +35,12 @@ CREATE TABLE VersoesHardware (
 
 
 SELECT * FROM IHM_List;
-SELECT * FROM VersoesHardware WHERE  mlfb = '6ES7'; 214-1AG31-0XB0';
+SELECT * FROM VersoesHardware WHERE  mlfb = '6ES7 214-1AG31-0XB0';
 
-DELETE FROM VersoesHardware  WHERE mlfb = '6ES7 214-1BE30-0XB0\';and versao = '14.0.0.0';
-WHERE ROWID = (
-    SELECT ROWID FROM VersoesHardware
-    WHERE mlfb = '6AV2 124-0QC02-0AX1'and versao '14.0.0.0'
-
+DELETE FROM VersoesHardware WHERE mlfb = '6ES7 214-1BE30-0XB0\' and versao = '14.0.0.0' AND id = (
+    SELECT id FROM VersoesHardware
+    WHERE mlfb = '6AV2 124-0QC02-0AX1' and versao = '14.0.0.0'
 );
-
-
-Drop TABLE IHM_List;
-Drop TABLE HMI_List;
-DROP TABLE VersoesHardware;
 
 
 
