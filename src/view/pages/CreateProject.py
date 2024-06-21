@@ -19,6 +19,10 @@ class CreateProject:
         comp_home_page = comp_home_page.get_button()
         comp_home_page.grid(row=1, column=0)
         
+        comp_criar = CustomButton(self.frame, "Abrir tia", command=self.open_tia_ui)
+        comp_criar = comp_criar.get_button()
+        comp_criar.grid(row=1, column=0)
+        
     def call_home_page(self):
         self.button_handler.home_page()
     

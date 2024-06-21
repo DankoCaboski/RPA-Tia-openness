@@ -9,10 +9,9 @@ class OpennessService:
         self.hwf = None
         self.comp = None
     
-    def set_dll(self, project_dll):
+    def set_dll(self, tia_Version):
         try:
-            if tuple is None:
-                pass
+            if project_dll is None:
                 print(f"Não foi possível obter o caminho da DLL para a versão {tia_Version}.")
                 return False
             
