@@ -8,7 +8,7 @@ class OpenProject:
     
     def __init__(self,frame_management):
         self.frame = customtkinter.CTkFrame(frame_management.root)
-        self.button_handler = ButtonHandler(frame_management)
+        self.button_handler = frame_management.button_handler
         self.create_project_page()
         
     def create_project_page(self):

@@ -8,7 +8,7 @@ class CreateProject:
     
     def __init__(self,frame_management):
         self.frame = customtkinter.CTkFrame(frame_management.root)
-        self.button_handler = ButtonHandler(frame_management)
+        self.button_handler = frame_management.button_handler
         self.create_project_page()
         
     def create_project_page(self):
@@ -21,7 +21,7 @@ class CreateProject:
         
         comp_criar = CustomButton(self.frame, "Abrir tia", command=self.open_tia_ui)
         comp_criar = comp_criar.get_button()
-        comp_criar.grid(row=1, column=0)
+        comp_criar.grid(row=2, column=0)
         
     def call_home_page(self):
         self.button_handler.home_page()
