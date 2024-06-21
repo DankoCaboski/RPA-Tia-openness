@@ -1,4 +1,7 @@
 import clr
+import HardwareFeatures
+import CompilerService
+import TiaService
 
 class OpennessService:
     def __init__(self):
@@ -18,11 +21,11 @@ class OpennessService:
             global tia, hwf, comp
 
             import Siemens.Engineering as tia # type: ignore
-            self.tia = tia
+            self.tia = TiaService(tia)
             import Siemens.Engineering.HW.Features as hwf # type: ignore
-            self.hwf = hwf
+            self.hwf = HardwareFeatures(hwf)
             import Siemens.Engineering.Compiler as comp # type: ignore
-            self.comp = comp
+            self.comp = CompilerService(comp)
 
         except Exception as e:
             print("Error adding DLL reference: ", e)
