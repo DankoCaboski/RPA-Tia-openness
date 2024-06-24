@@ -4,12 +4,14 @@ import os
 
 class DbManagement:
     def __init__(self):
-        self.connection = None
-        self.cursor = None
+        self.connection: sqlite3.Connection = None
+        self.cursor: sqlite3.Cursor = None
     
         file_dir = os.path.dirname(os.path.abspath(__file__))
         openness_dir = os.path.dirname(file_dir)
+        
         self.database_dir = os.path.join(openness_dir, 'database')
+        self.db_path = os.path.join(self.database_dir, 'Openness.db')
     
     def saveDll(self, Tia_Version, dll_Path):
         try:
@@ -29,7 +31,6 @@ class DbManagement:
             
             
     def getDllPath(self, Tia_Version):
-        
         try:
             self.cursor.execute('SELECT path FROM Dll_Path WHERE Tia_Version = ?', (Tia_Version,))
             result = self.cursor.fetchone()
@@ -46,22 +47,24 @@ class DbManagement:
             return False
         
     def create_db(self):
-        db_path = os.path.join(self.database_dir, 'Openness.db')
+        print("Creating database")
+        
         dll_path = os.path.join(self.database_dir, 'sql', 'ddl.sql')
         
-        if not os.path.exists(db_path):
+        self.connection = sqlite3.connect(self.db_path)
+        self.cursor = self.connection.cursor()
+        
+        # Carrega o script SQL e executa
+        with open(dll_path, 'r') as arquivo_sql:
+            script = arquivo_sql.read()
+            self.cursor.executescript(script)
+        self.connection.commit()
+        
+        self.insert_cpu()
+        self.insert_ihm()
+        self.insert_dll()
             
-            # Carrega o script SQL e executa
-            with open(dll_path, 'r') as arquivo_sql:
-                script = arquivo_sql.read()
-                self.cursor.executescript(script)
-            self.conexao.commit()
-            
-            self.insert_cpu(self.conexao)
-            self.insert_ihm(self.conexao)
-            self.insert_dll(self.conexao)
-            
-    def insert_cpu(self, conexao):
+    def insert_cpu(self):
         plc_List_path = os.path.join(self.database_dir, "mlfb", "PLC_List.csv")
         print("Gravando dados na tabela CPU_List")
         with open(plc_List_path, 'r') as arquivo:
@@ -69,9 +72,9 @@ class DbManagement:
             for linha in leitor_csv:
                 mlfb, type, descricao = linha
                 self.cursor.execute("INSERT INTO CPU_List (mlfb, type, description) VALUES (?, ?, ?)", (mlfb, type, descricao))
-        self.conexao.commit()
+        self.connection.commit()
 
-    def insert_dll(self, conexao):
+    def insert_dll(self):
         print("Gravando dados na tabela Dll_Path")
         
         for versao in range(15, 19):
@@ -81,9 +84,9 @@ class DbManagement:
             else:
                 path = f"C:\\Program Files\\Siemens\\Automation\\Portal V{versao}\\PublicAPI\\V{versao}\\Siemens.Engineering.dll"
                 self.cursor.execute("INSERT INTO Dll_Path (Tia_Version, Path) VALUES (?, ?)", (versao, path))
-        self.conexao.commit()
+        self.connection.commit()
     
-    def insert_ihm(self, conexao):
+    def insert_ihm(self):
         hmi_List_path = os.path.join(self.database_dir, "mlfb", "IHM_List.csv")
         print("Gravando dados na tabela IHM_List")
         with open(hmi_List_path, 'r') as arquivo:
@@ -91,18 +94,17 @@ class DbManagement:
             for linha in leitor_csv:
                 mlfb, type, descricao = linha
                 self.cursor.execute("INSERT INTO IHM_List (mlfb, type, description) VALUES (?, ?, ?)", (mlfb, type, descricao))
-        self.conexao.commit()
+        self.connection.commit()
 
     def validate_db(self):
         print("Validating database")
-        db_path = os.path.join(self.database_dir, 'Openness.db')
         
-        if not os.path.exists(db_path):
+        if not os.path.exists(self.db_path):
             self.create_db()
             
         else:
             if self.connection is None or self.cursor is None:
-                self.connection = sqlite3.connect(db_path)
+                self.connection = sqlite3.connect(self.db_path)
                 self.cursor = self.connection.cursor()
             self.cursor.execute("SELECT COUNT(*) FROM CPU_List")
             result = self.cursor.fetchone()
@@ -142,4 +144,12 @@ class DbManagement:
         """
         # Passa o mesmo tipo de hardware para ambas as partes da união
         self.cursor.execute(query, (hw_type, hw_type, hw_type))
+        return self.cursor.fetchall()
+    
+    def get_tia_versions(self):
+        if self.connection is None or self.cursor is None:
+            self.connection = sqlite3.connect(self.db_path)
+            self.cursor = self.connection.cursor()
+            
+        self.cursor.execute('SELECT Tia_Version FROM Dll_Path')
         return self.cursor.fetchall()

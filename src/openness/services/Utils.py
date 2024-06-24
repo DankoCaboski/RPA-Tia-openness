@@ -1,4 +1,5 @@
 from System.IO import DirectoryInfo, FileInfo # type: ignore
+from openness.repositories.DbManagement import DbManagement
 from tkinter import filedialog
 
 class Utils:
@@ -21,3 +22,14 @@ class Utils:
     
     def open_file_dialog(self):
         return filedialog.askopenfilename()
+    
+    def get_tia_versions(self):
+        versions = DbManagement().get_tia_versions()
+        mylist = []
+        
+        for version in versions:
+            if str(version[0]) == "151":
+                mylist.append("15.1")
+            else:
+                mylist.append(str(version[0]))
+        return mylist
