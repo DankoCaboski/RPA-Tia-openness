@@ -15,8 +15,7 @@ class App(customtkinter.CTk):
         self.iconbitmap("view/assets/favico.ico")
 
 app = App()
-frame = FrameManagement(app)
 database = DbManagement()
 database.validate_db()
-openness = OpennessController()
+frame = FrameManagement(app, database)
 app.mainloop()

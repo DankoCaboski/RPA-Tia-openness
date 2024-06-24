@@ -5,10 +5,13 @@ from view.pages.HomePage import HomePage
 from view.functions.ButtonHandler import ButtonHandler
 
 class FrameManagement:
-    def __init__(self, root):
+    def __init__(self, root, database):
         self.root = root
         self.current_frame = None
-        self.button_handler = ButtonHandler(self)
+        
+        self.database = database
+        
+        self.button_handler = ButtonHandler(self, database)
         self.show_home_page()
         
     def show_home_page(self):

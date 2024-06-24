@@ -5,7 +5,8 @@ from openness.services.HwFeaturesService import HwFeaturesService
 from openness.services.CompilerService import CompilerService
 
 class OpennessService:
-    def __init__(self):
+    def __init__(self, database):
+        self.database = database
         self.tia = None
         self.hwf = None
         self.comp = None
@@ -13,6 +14,7 @@ class OpennessService:
     
     def set_dll(self, tia_Version):
         try:
+            project_dll = self.database.getDllPath(tia_Version)
             if project_dll is None:
                 print(f"Não foi possível obter o caminho da DLL para a versão {tia_Version}.")
                 return False

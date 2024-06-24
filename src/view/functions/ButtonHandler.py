@@ -1,8 +1,8 @@
 from openness.controllers.OpennessController import OpennessController
 class ButtonHandler:
-    def __init__(self, frame_management):
+    def __init__(self, frame_management, database):
         self.frame_management = frame_management
-        self.openness = OpennessController()
+        self.openness = OpennessController(database)
 
     def create_project(self):
         self.frame_management.show_create_project_page()
