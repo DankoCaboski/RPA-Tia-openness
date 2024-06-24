@@ -33,7 +33,6 @@ class DbManagement:
         try:
             self.cursor.execute('SELECT path FROM Dll_Path WHERE Tia_Version = ?', (Tia_Version,))
             result = self.cursor.fetchone()
-            self.cursor.close()
             return result
         except sqlite3.Error as e:
             print("An error occurred while executing the SQL query:", e)
@@ -51,8 +50,6 @@ class DbManagement:
         dll_path = os.path.join(self.database_dir, 'sql', 'ddl.sql')
         
         if not os.path.exists(db_path):
-            self.conexao = sqlite3.connect(db_path)
-            self.cursor = self.conexao.cursor()
             
             # Carrega o script SQL e executa
             with open(dll_path, 'r') as arquivo_sql:
@@ -63,7 +60,6 @@ class DbManagement:
             self.insert_cpu(self.conexao)
             self.insert_ihm(self.conexao)
             self.insert_dll(self.conexao)
-            self.conexao.close()
             
     def insert_cpu(self, conexao):
         plc_List_path = os.path.join(self.database_dir, "mlfb", "PLC_List.csv")
@@ -105,11 +101,13 @@ class DbManagement:
             self.create_db()
             
         else:
+            if self.connection is None or self.cursor is None:
+                self.connection = sqlite3.connect(db_path)
+                self.cursor = self.connection.cursor()
             self.cursor.execute("SELECT COUNT(*) FROM CPU_List")
             result = self.cursor.fetchone()
             if result[0] == 0:
                 self.create_db()
-            self.conexao.close()
         
     def getMlfbByHwType(self, hw_type): 
         self.cursor.execute('SELECT mlfb FROM CPU_List WHERE type = ?', (hw_type,))

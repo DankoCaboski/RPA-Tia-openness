@@ -1,7 +1,7 @@
 import clr
 
 from openness.services.TiaService import TiaService
-from openness.services.HwFeaturesService import HardwareFeatures
+from openness.services.HwFeaturesService import HwFeaturesService
 from openness.services.CompilerService import CompilerService
 
 class OpennessService:
