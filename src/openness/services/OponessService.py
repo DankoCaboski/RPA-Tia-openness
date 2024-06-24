@@ -9,9 +9,9 @@ from openness.repositories.DbManagement import DbManagement
 class OpennessService:
     def __init__(self, database):
         self.database: DbManagement = database
-        self.tia = None
-        self.hwf = None
-        self.comp = None
+        self.tia: TiaService = None
+        self.hwf: HwFeaturesService = None
+        self.comp: CompilerService = None
         print("OpennessService initialized")
     
     def set_dll(self, tia_Version):
@@ -38,3 +38,10 @@ class OpennessService:
         except Exception as e:
             result = "Error adding DLL reference: " + str(e)
             return result
+    
+    def create_project(self, proj_name, proj_path, tia_version):
+        try:
+            self.tia.create_project(proj_name, proj_path, tia_version)
+            return "Projeto criado com sucesso!"
+        except Exception as e:
+            return "Falha ao criar projeto: " + str(e)

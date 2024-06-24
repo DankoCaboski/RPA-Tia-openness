@@ -9,10 +9,9 @@ class App(customtkinter.CTk):
         super().__init__()
 
         self.title("RPA Tia Portal")
-        self.geometry("900x680")
+        self.geometry("720x540")
         self.minsize(600,580)
         self.iconbitmap("view/assets/favico.ico")
-        # self.grid_columnconfigure(0, weight=1)
 
 app = App()
 database = DbManagement()

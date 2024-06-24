@@ -28,7 +28,7 @@ class HomePage:
         self.status_label.grid(row=3, column=0, padx=(0, 10), pady=10)
 
     def call_create_project(self):
-        self.button_handler.create_project()
+        self.button_handler.show_create_project_page()
         
     def call_open_project(self):
-        self.button_handler.open_project()
+        self.button_handler.show_open_project_page()
