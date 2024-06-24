@@ -1,5 +1,3 @@
-from typing import Any
-
 class CompilerService:
-    def __init__(self, comp : Any):
+    def __init__(self, comp):
         self.comp = comp

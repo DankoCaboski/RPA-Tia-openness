@@ -1,7 +1,5 @@
-from typing import Any
-
 class TiaService:
-    def __init__(self, tia : Any):
+    def __init__(self, tia):
         self.tia = tia
         
     def open_tia_ui(self):
