@@ -1,6 +1,7 @@
 import customtkinter
 
 from view.components.CustomButton import CustomButton
+from view.components.HwFrame import HwFrame
 
 from view.functions.ButtonHandler import ButtonHandler
 
@@ -16,6 +17,8 @@ class CreateProject:
         self.frame.grid_columnconfigure(3, weight=1)
         
         self.button_handler: ButtonHandler = frame_management.button_handler
+        
+        self.hw_frame: HwFrame = HwFrame(self.frame)
         
         self.row_counter = 0
         
@@ -52,6 +55,9 @@ class CreateProject:
         global tia_version
         tia_version = customtkinter.CTkComboBox(self.frame, values=versions)
         tia_version.grid(row=self.row_counter, column=2, sticky="w", padx=(10, 0), pady=10)
+        self.row_counter += 1
+        
+        self.hw_frame.frame.grid(row=self.row_counter, column=0, columnspan=4, pady=10)
         self.row_counter += 1
         
         btn_criar = CustomButton(self.frame, "Criar projeto", command=self.call_create_proj)
