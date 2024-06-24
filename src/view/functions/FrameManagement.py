@@ -19,16 +19,16 @@ class FrameManagement:
         if self.current_frame is not None:
             self.current_frame.destroy()
         self.current_frame = HomePage(self).frame
-        self.current_frame.grid(row=0, column=0)
+        self.current_frame.pack(fill=tk.BOTH, expand=True)
 
     def show_create_project_page(self):
         if self.current_frame is not None:
             self.current_frame.destroy()
         self.current_frame = CreateProject(self).frame
-        self.current_frame.grid(row=0, column=0)
+        self.current_frame.pack(fill=tk.BOTH, expand=True)
         
     def show_open_project_page(self):
         if self.current_frame is not None:
             self.current_frame.destroy()
         self.current_frame = OpenProject(self).frame
-        self.current_frame.grid(row=0, column=0)
+        self.current_frame.pack(fill=tk.BOTH, expand=True)
