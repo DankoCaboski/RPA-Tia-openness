@@ -1,4 +1,5 @@
 from System.IO import DirectoryInfo, FileInfo # type: ignore
+from System.Collections.Generic import List # type: ignore
 from openness.repositories.DbManagement import DbManagement
 from tkinter import filedialog
 
@@ -33,3 +34,9 @@ class Utils:
             else:
                 mylist.append(str(version[0]))
         return mylist
+    
+    def get_attibutes(self, attribute_names, item):
+        cs_attribute_names = List[str]()
+        for i in attribute_names:
+            cs_attribute_names.Add(i)
+        return item.GetAttributes(cs_attribute_names)
