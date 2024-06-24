@@ -7,7 +7,8 @@ class OpennessController:
         self.curent_tia_version = None
         
         
-    def set_dll(self, dll):
+    def set_dll(self, dll: str):
+        dll = ''.join(filter(str.isdigit, dll))
         result = self.openness_service.set_dll(dll)
         return result
 
@@ -15,4 +16,11 @@ class OpennessController:
         self.openness_service.tia.open_tia_ui()
         
     def create_project(self, proj_name, proj_path, tia_version):
-        self.openness_service.create_project(proj_name, proj_path, tia_version)
+        self.openness_service.tia.create_project(proj_name, proj_path, tia_version)
+        
+    def open_project(self, project_path):
+        if self.curent_tia_version is None:
+            extension = project_path.split(".")[-1]
+            print(extension)
+            self.set_dll(extension)
+        self.openness_service.tia.open_project(project_path)

@@ -38,12 +38,3 @@ class OpennessService:
         except Exception as e:
             result = "Error adding DLL reference: " + str(e)
             return result
-    
-    def create_project(self, proj_name, proj_path, tia_version):
-        try:
-            if self.tia is None:
-                self.set_dll(tia_version)
-            self.tia.create_project(proj_name, proj_path, tia_version)
-            return "Projeto criado com sucesso!"
-        except Exception as e:
-            return "Falha ao criar projeto: " + str(e)

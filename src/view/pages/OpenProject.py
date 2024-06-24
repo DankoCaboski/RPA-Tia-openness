@@ -2,6 +2,8 @@ import customtkinter
 
 from view.components.CustomButton import CustomButton
 
+from openness.services.Utils import Utils
+
 from view.functions.ButtonHandler import ButtonHandler
 
 class OpenProject:
@@ -14,13 +16,13 @@ class OpenProject:
         
     def create_project_page(self):
         label = customtkinter.CTkLabel(self.frame, text="Open Project")
-        label.grid(row=0, column=0, pady=10)
+        label.grid(row=0, column=0)
         
         comp_home_page = CustomButton(self.frame, "Homepage", command=self.call_home_page)
         comp_home_page = comp_home_page.get_button()
         comp_home_page.grid(row=1, column=0, pady=10)
         
-        open_tia = CustomButton(self.frame, "Abrir tia", command=self.open_tia_ui)
+        open_tia = CustomButton(self.frame, "Abrir projeto", command=self.open_project)
         open_tia = open_tia.get_button()
         open_tia.grid(row=2, column=0, pady=10)
         
@@ -32,4 +34,8 @@ class OpenProject:
         
     def open_tia_ui(self):
         self.button_handler.open_tia_ui()
+        
+    def open_project(self):
+        project_path = Utils().open_file_dialog()
+        self.button_handler.open_project(project_path)
     
