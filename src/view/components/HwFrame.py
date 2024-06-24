@@ -2,7 +2,13 @@ import customtkinter
 
 class HwFrame:
     def __init__(self, frame):
-        self.frame = customtkinter.CTkFrame(frame)
+        self.frame = customtkinter.CTkScrollableFrame(frame)    
+           
+        self.frame.grid_columnconfigure(0, weight=1)
+        self.frame.grid_columnconfigure(1, weight=0)
+        self.frame.grid_columnconfigure(2, weight=0)
+        self.frame.grid_columnconfigure(3, weight=1) 
+        
         self.row_counter = 1
         self.add_hw()
     

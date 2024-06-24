@@ -11,6 +11,7 @@ class CreateProject:
     
     def __init__(self, frame_management):
         self.frame = customtkinter.CTkFrame(frame_management.root)
+        
         self.frame.grid_columnconfigure(0, weight=1)
         self.frame.grid_columnconfigure(1, weight=0)
         self.frame.grid_columnconfigure(2, weight=0)
@@ -20,7 +21,11 @@ class CreateProject:
         
         self.hw_frame: HwFrame = HwFrame(self.frame)
         
-        self.row_counter = 0
+        self.hw_frame_index = 5  # Definindo o índice inicial da linha para self.hw_frame.frame
+        
+        self.frame.grid_rowconfigure(self.hw_frame_index, weight=1)  # Configurando a linha
+        
+        self.row_counter = 0  # Contador de linhas para posicionar elementos na grade
         
         self.get_versions()
         
@@ -57,7 +62,8 @@ class CreateProject:
         tia_version.grid(row=self.row_counter, column=2, sticky="w", padx=(10, 0), pady=10)
         self.row_counter += 1
         
-        self.hw_frame.frame.grid(row=self.row_counter, column=0, columnspan=4, pady=10)
+        # Renderizando self.hw_frame.frame na linha configurada
+        self.hw_frame.frame.grid(row=self.hw_frame_index, column=0, columnspan=4, padx=10, pady=10, sticky='nsew')
         self.row_counter += 1
         
         btn_criar = CustomButton(self.frame, "Criar projeto", command=self.call_create_proj)
@@ -66,7 +72,7 @@ class CreateProject:
         self.row_counter += 1
         
         self.status_label = customtkinter.CTkLabel(self.frame, text="Status: Idle")
-        self.status_label.grid(row=self.row_counter, column=0, columnspan=4)
+        self.status_label.grid(row=self.row_counter, column=0, columnspan=4, sticky="nsew")
         
     def call_home_page(self):
         self.button_handler.show_home_page()
@@ -84,5 +90,4 @@ class CreateProject:
         
     def call_set_tia(self):
         self.status = self.button_handler.set_tia_version(tia_version.get())
-        self.status_label.configure(text="Status: " + str(self.status)) 
-
+        self.status_label.configure(text="Status: " + str(self.status))
