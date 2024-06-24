@@ -32,7 +32,7 @@ class OpennessService:
             import Siemens.Engineering.Compiler as comp # type: ignore
             self.comp = CompilerService(comp)
         
-            result = "DLL reference added"
+            result = "Versãod o tia configurada com sucesso!"
             return result
 
         except Exception as e:

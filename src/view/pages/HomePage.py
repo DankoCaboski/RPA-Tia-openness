@@ -8,7 +8,7 @@ class HomePage:
     
     def __init__(self, frame_management):
         self.frame = customtkinter.CTkFrame(frame_management.root)
-        self.button_handler = frame_management.button_handler
+        self.button_handler: ButtonHandler = frame_management.button_handler
         self.home_page()
         
     def home_page(self):            
