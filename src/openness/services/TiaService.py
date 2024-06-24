@@ -47,3 +47,34 @@ class TiaService:
     
     def get_device_by_name(self, device_name):
         return next((d for d in self.myproject.Devices if d.Name == device_name), None)
+
+    def addHardware(self, deviceType, deviceName, deviceMlfb, FirmVersion, plc_count):
+        try:
+            if deviceType == "PLC":
+                print('Creating CPU: ', deviceName)
+                config_Plc = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
+                deviceCPU = self.myproject.Devices.CreateWithItem(config_Plc, deviceName, deviceName)
+                return deviceCPU
+                
+            elif deviceType == "IHM":
+                print("Creating IHM: ", deviceName)
+                config_Hmi = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
+                deviceIHM = self.myproject.Devices.CreateWithItem(config_Hmi, deviceName, None)
+                return deviceIHM
+
+            elif deviceType == "IO Node":
+                print('Creating IO Node: ', deviceName)
+                confing_IOnode = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
+                plcRef = plc_count - 1
+                Devices = self.myproject.Devices[plcRef]
+                count = Devices.DeviceItems.Count
+                DeviceItemAssociation = Devices.GetAttribute("Items")
+                if DeviceItemAssociation[0].CanPlugNew(confing_IOnode, deviceName, count):
+                    IONode = DeviceItemAssociation[0].PlugNew(confing_IOnode, deviceName, count)
+                    return IONode
+                
+        except Exception as e:
+            RPA_status = 'Unknown hardware type: ', deviceType
+            print(RPA_status)
+            RPA_status = 'Error creating hardware: ', e
+            print(RPA_status)
