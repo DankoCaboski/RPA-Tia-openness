@@ -18,8 +18,8 @@ class OpennessService:
         try:
             project_dll = self.database.getDllPath(tia_Version)
             if project_dll is None:
-                print(f"Não foi possível obter o caminho da DLL para a versão {tia_Version}.")
-                return False
+                result = f"Não foi possível obter o caminho da DLL para a versão {tia_Version}."
+                return result
             
             clr.AddReference(project_dll[0])
             
@@ -32,8 +32,9 @@ class OpennessService:
             import Siemens.Engineering.Compiler as comp # type: ignore
             self.comp = CompilerService(comp)
         
-            print("DLL reference added")
+            result = "DLL reference added"
+            return result
 
         except Exception as e:
-            print("Error adding DLL reference: ", e)
-            return False
+            result = "Error adding DLL reference: " + str(e)
+            return result

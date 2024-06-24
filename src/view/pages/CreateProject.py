@@ -31,6 +31,9 @@ class CreateProject:
         comp_criar = comp_criar.get_button()
         comp_criar.grid(row=3, column=0)
         
+        self.status_label = customtkinter.CTkLabel(self.frame, text="Status: Idle")
+        self.status_label.grid(row=4, column=0, padx=10)
+        
         
     def call_home_page(self):
         self.button_handler.home_page()
@@ -40,5 +43,7 @@ class CreateProject:
         
         
     def set_tia_version(self):
-        self.button_handler.set_tia_version(tia_version.get())
+        self.status = self.button_handler.set_tia_version(tia_version.get())
+        self.status_label.configure(text="Status: " + str(self.status))
+        
     

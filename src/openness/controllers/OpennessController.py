@@ -8,7 +8,8 @@ class OpennessController:
         
         
     def set_dll(self, dll):
-        self.openness_service.set_dll(dll)
+        result = self.openness_service.set_dll(dll)
+        return result
 
     def open_tia_ui(self):
         self.openness_service.tia.open_tia_ui()

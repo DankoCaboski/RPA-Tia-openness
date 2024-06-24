@@ -5,7 +5,8 @@ class ButtonHandler:
         self.openness = OpennessController(database)
         
     def set_tia_version(self, tia_version):
-        self.openness.set_dll(tia_version)
+        result = self.openness.set_dll(tia_version)
+        return result
 
     def create_project(self):
         self.frame_management.show_create_project_page()

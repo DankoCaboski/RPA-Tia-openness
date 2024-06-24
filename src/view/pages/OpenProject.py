@@ -19,6 +19,9 @@ class OpenProject:
         comp_home_page = comp_home_page.get_button()
         comp_home_page.grid(row=1, column=0)
         
+        self.status_label = customtkinter.CTkLabel(self.frame, text="Status: Idle")
+        self.status_label.grid(row=2, column=0, padx=10)
+        
     def call_home_page(self):
         self.button_handler.home_page()
     
