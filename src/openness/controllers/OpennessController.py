@@ -10,7 +10,5 @@ class OpennessController:
     def set_dll(self, dll):
         self.openness_service.set_dll(dll)
 
-    def open_tia_ui(self, tiaVersion):
-        if tiaVersion != self.curent_tia_version:
-            self.set_dll(tiaVersion)
-            self.openness_service.tia.open_tia_ui(tiaVersion)
+    def open_tia_ui(self):
+        self.openness_service.tia.open_tia_ui()
