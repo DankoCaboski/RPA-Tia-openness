@@ -8,7 +8,6 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("RPA Tia Portal")
         self.geometry("720x540")
         self.minsize(600,580)
         self.iconbitmap("view/assets/favico.ico")
