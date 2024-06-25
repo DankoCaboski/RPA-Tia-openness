@@ -77,6 +77,8 @@ class CreateProject:
         self.button_handler.show_home_page()
         
     def call_create_proj(self):
+        hardware_values = self.hw_frame.get_hardware_values()
+        print("Hardware: ", hardware_values)
         self.button_handler.create_project(proj_name.get(), proj_path, tia_version.get())
         
     def set_proj_path(self):

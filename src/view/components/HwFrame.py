@@ -16,6 +16,8 @@ class HwFrame:
         self.firm_versions = {}
         self.mlfb_List = [[], [], []]
         
+        self.hardware_values = []
+        
         self.row_counter = 1
         self.get_mlfb_by_hw_type()
         self.add_hw()
@@ -24,13 +26,16 @@ class HwFrame:
         btn_add_hw = customtkinter.CTkButton(self.frame, text="Adicionar Hardware", command=self.add_hw_combobox)
         btn_add_hw.grid(row=0, column=1, columnspan=2, padx=10, pady=10)
         
-    def add_hw_combobox(self):        
+    def add_hw_combobox(self):                
         input = {
             "combobox": tk.StringVar(),
             "mlfb": tk.StringVar(),
             "firm_version": tk.StringVar(),
             "entry": tk.StringVar()
             }
+        
+        self.hardware_values.append(input)
+        
         
         type_hw = customtkinter.CTkComboBox(self.frame, variable=input["combobox"], values=self.opcoes_Hardware)
         type_hw.grid(row=self.row_counter, column=0, padx=10, pady=10)
@@ -87,3 +92,16 @@ class HwFrame:
                     self.firm_versions[mlfb] = [version]
         
         print("Firmware versions dictionary:", self.firm_versions)
+    
+    def get_hardware_values(self):
+        result = []
+        for hw_value in self.hardware_values:
+            hw_dict = {
+                'type': hw_value['combobox'].get(),
+                'mlfb': hw_value['mlfb'].get(),
+                'firmware': hw_value['firm_version'].get(),
+                'name': hw_value['entry'].get()
+            }
+            result.append(hw_dict)
+        print("Hardware:", result)
+        return result
