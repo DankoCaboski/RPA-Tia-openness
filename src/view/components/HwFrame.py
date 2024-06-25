@@ -1,6 +1,5 @@
 import customtkinter
 import tkinter as tk
-from tkinter import ttk
 from openness.services.Utils import Utils
 
 class HwFrame:
