@@ -1,18 +1,30 @@
+from openness.controllers.OpennessController import OpennessController
 class ButtonHandler:
-    def __init__(self, frame_management):
+    def __init__(self, frame_management, database):
         self.frame_management = frame_management
+        self.openness: OpennessController = OpennessController(database)
+        
+    def set_tia_version(self, tia_version):
+        result = self.openness.set_dll(tia_version)
+        return result
 
-    def create_project(self):
+    def show_create_project_page(self):
         self.frame_management.show_create_project_page()
         
-    def home_page(self):
+    def create_project(self, proj_name, proj_path, tia_version: str, hardwware: list):
+        self.openness.create_project(proj_name, proj_path, tia_version, hardwware)
+        
+    def open_project(self, project_path):
+        self.openness.open_project(project_path)
+        
+    def show_home_page(self):
         self.frame_management.show_home_page()
         
-    def open_project(self):
+    def show_open_project_page(self):
         self.frame_management.show_open_project_page()
         
     def open_tia_ui(self):
-        self.frame_management.open_tia_ui()
+        self.openness.open_tia_ui()
         
     def open_tia_without_ui(self):
         raise NotImplementedError("Not implemented yet")
