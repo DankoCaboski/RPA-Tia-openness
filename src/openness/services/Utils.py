@@ -48,3 +48,15 @@ class Utils:
     
     def get_firmware_by_mlfb(self, hw_type: str):
         return DbManagement().getMlfbByVersion(hw_type)
+    
+    def get_service(self, tipo, parent):
+        try:
+            network_interface_type = tipo
+            getServiceMethod = parent.GetType().GetMethod("GetService").MakeGenericMethod(network_interface_type)
+            return getServiceMethod.Invoke(parent, None)
+        except Exception as e:
+            RPA_status = 'Error getting service: ', e
+            print(RPA_status)
+            
+    def getCompositionPosition(self, deviceComposition):
+        return deviceComposition.DeviceItems

@@ -1,11 +1,14 @@
 from openness.services.Utils import Utils
+from openness.services.HwFeaturesService import HwFeaturesService
 
 class TiaService:
-    def __init__(self, tia):
+    def __init__(self, tia, hwf):
         self.tia = tia
+        self.hwf: HwFeaturesService = HwFeaturesService(hwf)
         self.tia_instance = None
         self.myproject = None
         self.my_devices = []
+        self.my_subnet = None
         
     def open_tia_ui(self):
         # Create an instance of Tia Portal
@@ -94,3 +97,128 @@ class TiaService:
             print(RPA_status)
             RPA_status = 'Error creating hardware: ', e
             print(RPA_status)
+            
+    def wire_profinet(self):
+        ProfinetInterfaces = self.GetAllProfinetInterfaces()
+        print("Nº de interfaces PROFINET: ", str(len(ProfinetInterfaces)))
+        
+        if len(ProfinetInterfaces) > 1:
+            self.SetSubnetName("mySubnet")
+            for port in ProfinetInterfaces:
+                node = port.Nodes[0]
+                self.ConnectToSubnet(node)
+            
+            RPA_status = "Rede PROFINET configurada com sucesso!"
+            print(RPA_status)
+            
+        else:
+            RPA_status = "Número de interfaces PROFINET menor que 2"
+            print(RPA_status)
+
+            
+    def SetSubnetName(self, subnet_name):
+        RPA_status = 'Setting subnet name'
+        print(RPA_status)
+        if subnet_name == '':
+            subnet_name = 'mySubnet'
+        self.my_subnet = self.myproject.Subnets.Create("System:Subnet.Ethernet", subnet_name)
+
+    def ConnectToSubnet(self, node):
+        try:
+            node.ConnectToSubnet(self.my_subnet)
+        except Exception as e:
+            RPA_status = 'Error connecting to subnet: ', e
+            print(RPA_status)
+            
+    def GetAllProfinetInterfaces(self):
+        try:
+            network_ports = []
+            for device in self.my_devices:      
+                if (not self.is_gsd(device)):
+                    hardware_type = self.getHardwareType(device)
+                    
+                    if (hardware_type == "CPU"):
+                        self.get_types(device)
+                        network_interface_cpu = self.hwf.get_network_interface_CPU(device)
+                        network_ports.append(network_interface_cpu)
+                        
+                    elif (hardware_type == "IHM"):
+                        network_interface_ihm = self.hwf.get_network_interface_IHM(device)
+                        network_ports.append(network_interface_ihm)
+                        
+                else:
+                    RPA_status = 'Device' + str(device.GetAttribute("Name")) + ' is GSD: '
+                    print(RPA_status)
+                    
+            return network_ports
+        
+        except Exception as e:
+            RPA_status = 'Error getting PROFINET interfaces: ', e
+            print(RPA_status)
+            
+    def getHardwareType(self, device):
+        try:
+            device_item_impl = Utils().getCompositionPosition(device)
+            if (self.is_cpu(device_item_impl)):
+                return "CPU"
+            elif (self.is_hmi(device_item_impl)):
+                return "IHM"
+            elif (self.is_IO(device_item_impl)):
+                return "IO Node"
+            
+        except Exception as e:
+            RPA_status = 'Error getting hardware type: ', e
+            print(RPA_status)
+    
+    def is_gsd(self, device):
+        try:
+            if device.GetAttribute("IsGsd") == True:
+                return True
+            return False
+        
+        except Exception as e:
+            RPA_status = 'Error checking GSD: ', e
+            print(RPA_status)
+            
+    def is_cpu(self, device):
+        try:
+            device_item = device[1]
+            if str(device_item.GetAttribute("Classification")) == "CPU":
+                return True
+            return False
+        
+        except Exception as e:
+            RPA_status = 'Error checking CPU: ', e
+            print(RPA_status)
+
+    def is_hmi(self, device):
+        try:
+            device_item = device[0]
+            type_identifier = str(device_item.GetAttribute("TypeIdentifier"))
+            
+            if (type_identifier.__contains__("OrderNumber:6AV")):
+                return True
+            return False
+        
+        except Exception as e:
+            RPA_status = 'Error checking IHM: ', e
+            print(RPA_status)
+            
+    def is_IO(self, device):
+        try:
+            device_item = device[0]
+            type_identifier = str(device_item.GetAttribute("TypeIdentifier"))
+            
+            if (type_identifier.__contains__("OrderNumber:6ES7")):
+                print("###################################################IO###################################################") 
+                return True
+            return False
+        
+        except Exception as e:
+            RPA_status = 'Error checking IO: ', e
+            print(RPA_status)
+            
+    def get_types(self, cpu):
+        plc_software = self.hwf.get_software(cpu)
+        type_group = plc_software.TypeGroup
+        return type_group.Types

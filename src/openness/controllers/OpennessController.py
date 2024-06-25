@@ -20,7 +20,9 @@ class OpennessController:
             self.openness_service.set_dll(tia_version)
         self.openness_service.tia.create_project(proj_name, proj_path)
         self.openness_service.tia.addHardware(hardwware)
-        
+        self.openness_service.tia.wire_profinet()
+
+
     def open_project(self, project_path):
         if self.curent_tia_version is None:
             extension = project_path.split(".")[-1]

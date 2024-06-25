@@ -26,10 +26,10 @@ class OpennessService:
             
             global tia, hwf, comp
 
-            import Siemens.Engineering as tia # type: ignore
-            self.tia = TiaService(tia)
             import Siemens.Engineering.HW.Features as hwf # type: ignore
             self.hwf = HwFeaturesService(hwf)
+            import Siemens.Engineering as tia # type: ignore
+            self.tia = TiaService(tia, hwf)
             import Siemens.Engineering.Compiler as comp # type: ignore
             self.comp = CompilerService(comp)
         
