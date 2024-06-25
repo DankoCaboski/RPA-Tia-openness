@@ -1,6 +1,8 @@
 import customtkinter
 
 from view.components.CustomButton import CustomButton
+from view.functions.HomeIcon import HomeIcon
+
 
 from openness.services.Utils import Utils
 
@@ -18,11 +20,13 @@ class OpenProject:
         label = customtkinter.CTkLabel(self.frame, text="Open Project")
         label.grid(row=0, column=0)
         
-        comp_home_page = CustomButton(self.frame, "Homepage", command=self.call_home_page)
+        home_icon = HomeIcon().load_image()
+        
+        comp_home_page = CustomButton(self.frame, None, home_icon, command=self.call_home_page)
         comp_home_page = comp_home_page.get_button()
         comp_home_page.grid(row=1, column=0, pady=10)
         
-        open_tia = CustomButton(self.frame, "Abrir projeto", command=self.open_project)
+        open_tia = CustomButton(self.frame, "Abrir projeto", None, command=self.open_project)
         open_tia = open_tia.get_button()
         open_tia.grid(row=2, column=0, pady=10)
         

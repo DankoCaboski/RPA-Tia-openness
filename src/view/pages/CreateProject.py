@@ -4,9 +4,9 @@ from view.components.CustomButton import CustomButton
 from view.components.HwFrame import HwFrame
 
 from view.functions.ButtonHandler import ButtonHandler
+from view.functions.HomeIcon import HomeIcon
 
 from openness.services.Utils import Utils
-
 class CreateProject:
     
     def __init__(self, frame_management):
@@ -36,12 +36,14 @@ class CreateProject:
         label.grid(row=self.row_counter, column=0, columnspan=4)
         self.row_counter += 1
         
-        comp_home_page = CustomButton(self.frame, "Homepage", command=self.call_home_page)
+        home_icon = HomeIcon().load_image()
+        
+        comp_home_page = CustomButton(self.frame, None, home_icon, command=self.call_home_page)
         comp_home_page = comp_home_page.get_button()
         comp_home_page.grid(row=self.row_counter, column=0, columnspan=4, pady=10)
         self.row_counter += 1
         
-        button_proj_path = CustomButton(self.frame, "Project Path",  command=self.set_proj_path)
+        button_proj_path = CustomButton(self.frame, "Project Path", None, command=self.set_proj_path)
         button_proj_path = button_proj_path.get_button()
         button_proj_path.grid(row=self.row_counter, column=0, columnspan=4, pady=10)
         self.row_counter += 1
@@ -65,7 +67,7 @@ class CreateProject:
         self.hw_frame.frame.grid(row=self.hw_frame_index, column=0, columnspan=4, padx=25, pady=25, sticky='nsew')
         self.row_counter += 1
         
-        btn_criar = CustomButton(self.frame, "Criar projeto", command=self.call_create_proj)
+        btn_criar = CustomButton(self.frame, "Criar projeto", None, command=self.call_create_proj)
         btn_criar = btn_criar.get_button()
         btn_criar.grid(row=self.row_counter, column=0, columnspan=4, padx=(0, 10), pady=10)
         self.row_counter += 1
