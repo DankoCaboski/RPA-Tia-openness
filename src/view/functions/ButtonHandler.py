@@ -11,8 +11,8 @@ class ButtonHandler:
     def show_create_project_page(self):
         self.frame_management.show_create_project_page()
         
-    def create_project(self, proj_name, proj_path, tia_version):
-        self.openness.create_project(proj_name, proj_path, tia_version)
+    def create_project(self, proj_name, proj_path, tia_version: str, hardwware: list):
+        self.openness.create_project(proj_name, proj_path, tia_version, hardwware)
         
     def open_project(self, project_path):
         self.openness.open_project(project_path)

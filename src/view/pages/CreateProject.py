@@ -79,7 +79,7 @@ class CreateProject:
     def call_create_proj(self):
         hardware_values = self.hw_frame.get_hardware_values()
         print("Hardware: ", hardware_values)
-        self.button_handler.create_project(proj_name.get(), proj_path, tia_version.get())
+        self.button_handler.create_project(proj_name.get(), proj_path, tia_version.get(), hardware_values)
         
     def set_proj_path(self):
         global proj_path
