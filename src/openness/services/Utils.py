@@ -45,3 +45,6 @@ class Utils:
 
     def get_mlfb_by_hw_type(self, hw_type: str):
         return DbManagement().get_mlfb_by_hw_type(hw_type)
+    
+    def get_firmware_by_mlfb(self, hw_type: str):
+        return DbManagement().getMlfbByVersion(hw_type)
