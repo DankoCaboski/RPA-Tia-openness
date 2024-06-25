@@ -27,7 +27,7 @@ class CreateProject:
         
         self.row_counter = 0  # Contador de linhas para posicionar elementos na grade
         
-        self.get_versions()
+        self.get_tia_versions()
         
         self.create_project_page()
         
@@ -83,10 +83,10 @@ class CreateProject:
         global proj_path
         proj_path = Utils().open_directory_dialog()
         
-    def get_versions(self):
+    def get_tia_versions(self):
         global versions
         versions = Utils().get_tia_versions()
         
     def call_set_tia(self):
         self.status = self.button_handler.set_tia_version(tia_version.get())
-        self.status_label.configure(text="Status: " + str(self.status))
+        self.status_label.configure(text="Status: " + str(self.status))            

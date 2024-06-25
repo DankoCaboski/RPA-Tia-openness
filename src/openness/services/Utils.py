@@ -1,3 +1,5 @@
+import clr
+
 from System.IO import DirectoryInfo, FileInfo # type: ignore
 from System.Collections.Generic import List # type: ignore
 from openness.repositories.DbManagement import DbManagement
@@ -40,3 +42,6 @@ class Utils:
         for i in attribute_names:
             cs_attribute_names.Add(i)
         return item.GetAttributes(cs_attribute_names)
+
+    def get_mlfb_by_hw_type(self, hw_type: str):
+        return DbManagement().get_mlfb_by_hw_type(hw_type)

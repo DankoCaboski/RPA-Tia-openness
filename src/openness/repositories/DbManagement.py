@@ -63,6 +63,7 @@ class DbManagement:
         self.insert_cpu()
         self.insert_ihm()
         self.insert_dll()
+        self.insert_firmware()
             
     def insert_cpu(self):
         plc_List_path = os.path.join(self.database_dir, "mlfb", "PLC_List.csv")
@@ -85,6 +86,22 @@ class DbManagement:
                 path = f"C:\\Program Files\\Siemens\\Automation\\Portal V{versao}\\PublicAPI\\V{versao}\\Siemens.Engineering.dll"
                 self.cursor.execute("INSERT INTO Dll_Path (Tia_Version, Path) VALUES (?, ?)", (versao, path))
         self.connection.commit()
+    
+    def insert_firmware(self):
+        print("Gravando dados de Firmware")
+        
+        insert_path = os.path.join(self.database_dir, 'sql', 'Inserts.sql')
+        
+        if self.connection is None or self.cursor is None:
+            self.connection = sqlite3.connect(self.db_path)
+            self.cursor = self.connection.cursor()
+        
+        # Carrega o script SQL e executa
+        with open(insert_path, 'r') as arquivo_sql:
+            script = arquivo_sql.read()
+            self.cursor.executescript(script)
+        self.connection.commit()
+            
     
     def insert_ihm(self):
         hmi_List_path = os.path.join(self.database_dir, "mlfb", "IHM_List.csv")
@@ -111,20 +128,24 @@ class DbManagement:
             if result[0] == 0:
                 self.create_db()
         
-    def getMlfbByHwType(self, hw_type): 
-        self.cursor.execute('SELECT mlfb FROM CPU_List WHERE type = ?', (hw_type,))
+    def get_mlfb_by_hw_type(self, hw_type): 
+        if self.connection is None or self.cursor is None:
+            self.connection = sqlite3.connect(self.db_path)
+            self.cursor = self.connection.cursor()
+            
+        if hw_type == "PLC":
+            self.cursor.execute('SELECT mlfb FROM CPU_List WHERE type = ?', (hw_type,))
+        elif hw_type == "IHM":
+            self.cursor.execute('SELECT mlfb FROM IHM_List WHERE type = ?', (hw_type,))
+        elif hw_type == "IO Node":
+            self.cursor.execute('SELECT mlfb FROM IO_List WHERE type = ?', (hw_type,))
         return self.cursor.fetchall()
-    
-    def getMlfbIHMByHwType(self, hw_type):
-        self.cursor.execute('SELECT mlfb FROM IHM_List WHERE type = ?', (hw_type,))
-        return self.cursor.fetchall()
-    
-    def getMlfbIOByHwType(self, hw_type):
-        self.cursor.execute('SELECT mlfb FROM IO_List WHERE type = ?', (hw_type,))
-        return self.cursor.fetchall()
-    
     
     def getMlfbByVersion(self, hw_type):
+        if self.connection is None or self.cursor is None:
+            self.connection = sqlite3.connect(self.db_path)
+            self.cursor = self.connection.cursor()
+            
         # Realiza a união das tabelas IHM_List e CPU_List com a tabela VersoesHardware para obter as versões correspondentes
         query = """
         SELECT VersoesHardware.mlfb, VersoesHardware.versao
