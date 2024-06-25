@@ -1,10 +1,12 @@
 from openness.services.Utils import Utils
 from openness.services.HwFeaturesService import HwFeaturesService
+from openness.services.CompilerService import CompilerService
 
 class TiaService:
-    def __init__(self, tia, hwf):
+    def __init__(self, tia, hwf, comp):
         self.tia = tia
         self.hwf: HwFeaturesService = HwFeaturesService(hwf)
+        self.comp: CompilerService = CompilerService(comp)
         self.tia_instance = None
         self.myproject = None
         self.my_devices = []
