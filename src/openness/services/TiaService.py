@@ -10,6 +10,17 @@ class TiaService:
         self.my_devices = []
         self.my_subnet = None
         
+    def save_project(self):
+        try:
+            self.myproject.Save()
+            RPA_status = 'Projeto salvo com sucesso!'
+            print(RPA_status)
+            return RPA_status
+        except Exception as e:
+            RPA_status = 'Falha ao salvar projeto: ', e
+            print(RPA_status)
+            return RPA_status
+        
     def open_tia_ui(self):
         # Create an instance of Tia Portal
         self.tia_instance = self.tia.TiaPortal(self.tia.TiaPortalMode.WithUserInterface)
@@ -60,7 +71,7 @@ class TiaService:
     def get_device_by_name(self, device_name):
         return next((d for d in self.myproject.Devices if d.Name == device_name), None)
 
-    def addHardware(self,  hardwware: list):
+    def add_hardware(self,  hardwware: list):
         try:
             for device in hardwware:
                 deviceType = device['type']

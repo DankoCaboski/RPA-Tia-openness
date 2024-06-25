@@ -19,8 +19,9 @@ class OpennessController:
         if self.curent_tia_version is None:
             self.openness_service.set_dll(tia_version)
         self.openness_service.tia.create_project(proj_name, proj_path)
-        self.openness_service.tia.addHardware(hardwware)
+        self.openness_service.tia.add_hardware(hardwware)
         self.openness_service.tia.wire_profinet()
+        self.openness_service.tia.save_project()
 
 
     def open_project(self, project_path):
