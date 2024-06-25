@@ -103,5 +103,4 @@ class HwFrame:
                 'name': hw_value['entry'].get()
             }
             result.append(hw_dict)
-        print("Hardware:", result)
         return result

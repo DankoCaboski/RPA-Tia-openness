@@ -24,12 +24,17 @@ class TiaService:
     
     def create_project(self, proj_name, proj_path, tia_version):
         try:
-            if self.tia is None:
-                self.set_dll(tia_version)
-            self.tia.create_project(proj_name, proj_path, tia_version)
-            return "Projeto criado com sucesso!"
+            if self.tia_instance is None:
+                self.open_tia_ui()
+                
+            self.tia_instance.Projects.Create(proj_name, proj_path, tia_version)
+            result = "Projeto criado com sucesso!"
+            print(result)
+            return result
         except Exception as e:
-            return "Falha ao criar projeto: " + str(e)
+            result = "Falha ao criar projeto: " + str(e)
+            print(result)
+            return result
         
     def get_all_devices(self):
         try:

@@ -19,6 +19,7 @@ class OpennessService:
             project_dll = self.database.getDllPath(tia_Version)
             if project_dll is None:
                 result = f"Não foi possível obter o caminho da DLL para a versão {tia_Version}."
+                print(result)
                 return result
             
             clr.AddReference(project_dll[0])
@@ -33,8 +34,10 @@ class OpennessService:
             self.comp = CompilerService(comp)
         
             result = "Versãod o tia configurada com sucesso!"
+            print(result)
             return result
 
         except Exception as e:
             result = "Error adding DLL reference: " + str(e)
+            print(result)
             return result
