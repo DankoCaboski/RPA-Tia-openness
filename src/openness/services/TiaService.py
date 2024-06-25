@@ -23,11 +23,12 @@ class TiaService:
         return self.tia_instance.Projects.OpenWithUpgrade(file_info)
     
     def create_project(self, proj_name, proj_path, tia_version):
+        proj_path = Utils().get_directory_info(proj_path)
         try:
             if self.tia_instance is None:
                 self.open_tia_ui()
                 
-            self.tia_instance.Projects.Create(proj_name, proj_path, tia_version)
+            self.tia_instance.Projects.Create(proj_path, proj_name)
             result = "Projeto criado com sucesso!"
             print(result)
             return result
