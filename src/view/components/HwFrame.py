@@ -11,12 +11,7 @@ class HwFrame:
         self.tabview.set("Hardware")
         
         self.hw_frame = customtkinter.CTkScrollableFrame(self.tabview.tab("Hardware"))
-        
-        self.hw_frame.grid_columnconfigure(0, weight=1)
-        self.hw_frame.grid_columnconfigure(1, weight=0)
-        self.hw_frame.grid_columnconfigure(2, weight=0)
-        self.hw_frame.grid_columnconfigure(3, weight=0)
-        self.hw_frame.grid_columnconfigure(4, weight=1)
+        self.sw_frame = customtkinter.CTkFrame(self.tabview.tab("Software"))
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
@@ -35,6 +30,12 @@ class HwFrame:
     
     def add_hw(self):
         self.hw_frame.pack(fill='both', expand=True)
+        self.hw_frame.configure(fg_color="transparent")
+        self.hw_frame.grid_columnconfigure(0, weight=1)
+        self.hw_frame.grid_columnconfigure(1, weight=0)
+        self.hw_frame.grid_columnconfigure(2, weight=0)
+        self.hw_frame.grid_columnconfigure(3, weight=0)
+        self.hw_frame.grid_columnconfigure(4, weight=1)
         
         global btn_add_hw
         btn_add_hw = customtkinter.CTkButton(self.hw_frame, text="Adicionar Hardware", command=self.add_hw_combobox)
@@ -110,23 +111,32 @@ class HwFrame:
         ################### Software tab ###################
         
     def configure_sw(self):
-        label_1 = customtkinter.CTkLabel(self.tabview.tab("Software"), text="Robôs que deseja adicionar: ")
-        label_1.grid(row=0, column=0, columnspan=2, padx=(8,0), pady=10)
+        self.sw_frame.pack(fill='both', expand=True)
+        self.sw_frame.configure(fg_color="transparent")
         
-        rb_entry = customtkinter.CTkEntry(self.tabview.tab("Software"))
-        rb_entry.grid(row=0, column=2, padx=(8,0), pady=10)
         
-        label_2 = customtkinter.CTkLabel(self.tabview.tab("Software"), text="Mesas giratórias que deseja adicionar: ")
-        label_2.grid(row=1, column=0, columnspan=2, padx=(8,0), pady=10)
+        self.sw_frame.grid_columnconfigure(0, weight=1)
+        self.sw_frame.grid_columnconfigure(1, weight=1)
+        self.sw_frame.grid_columnconfigure(2, weight=1)
+        self.sw_frame.grid_columnconfigure(3, weight=1)
         
-        mg_entry = customtkinter.CTkEntry(self.tabview.tab("Software"))
-        mg_entry.grid(row=1, column=2, padx=(8,0), pady=10)
+        label_1 = customtkinter.CTkLabel(self.sw_frame, text="Robôs que deseja adicionar: ")
+        label_1.grid(row=0, column=0, sticky="e", padx=(8,0), pady=10)
         
-        label_3 = customtkinter.CTkLabel(self.tabview.tab("Software"), text="Grampos que deseja adicionar: ")
-        label_3.grid(row=2, column=0, columnspan=2, padx=(8,0), pady=10)
+        rb_entry = customtkinter.CTkEntry(self.sw_frame)
+        rb_entry.grid(row=0, column=1, padx=(8,0), pady=10, sticky="w")
         
-        gp_entry = customtkinter.CTkEntry(self.tabview.tab("Software"))
-        gp_entry.grid(row=2, column=2, padx=(8,0), pady=10)
+        label_2 = customtkinter.CTkLabel(self.sw_frame, text="Mesas giratórias que deseja adicionar: ")
+        label_2.grid(row=1, column=0, sticky="e", padx=(8,0), pady=10)
+        
+        mg_entry = customtkinter.CTkEntry(self.sw_frame)
+        mg_entry.grid(row=1, column=1, padx=(8,0), pady=10, sticky="w")
+        
+        label_3 = customtkinter.CTkLabel(self.sw_frame, text="Grampos que deseja adicionar: ")
+        label_3.grid(row=2, column=0, sticky="e", padx=(8,0), pady=10)
+        
+        gp_entry = customtkinter.CTkEntry(self.sw_frame)
+        gp_entry.grid(row=2, column=1, padx=(8,0), pady=10, sticky="w")
         
     def get_mlfb_by_hw_type(self):
         for i, hw_type in enumerate(self.opcoes_Hardware):
