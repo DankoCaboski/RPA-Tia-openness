@@ -1,4 +1,5 @@
-import customtkinter
+from CustomTkinter import customtkinter
+
 
 from view.components.CustomButton import CustomButton
 
