@@ -21,29 +21,26 @@ class CreateProject:
         
         self.hw_frame: HwFrame = HwFrame(self.frame)
         
-        self.hw_frame_index = 5  # Definindo o índice inicial da linha para self.hw_frame.frame
+        self.hw_frame_index = 4  # Definindo o índice inicial da linha para self.hw_frame.frame
         
         self.frame.grid_rowconfigure(self.hw_frame_index, weight=1)  # Configurando a linha
         
-        self.row_counter = 0  # Contador de linhas para posicionar elementos na grade
+        self.row_counter = 0
         
         self.get_tia_versions()
         
         self.create_project_page()
         
     def create_project_page(self):
-        label = customtkinter.CTkLabel(self.frame, text="Create Project")
-        label.grid(row=self.row_counter, column=0, columnspan=4)
-        self.row_counter += 1
         
         home_icon = HomeIcon().load_image()
         
         comp_home_page = CustomButton(self.frame, None, home_icon, command=self.call_home_page)
         comp_home_page = comp_home_page.get_button()
-        comp_home_page.grid(row=self.row_counter, column=0, columnspan=4, pady=10)
+        comp_home_page.grid(row=self.row_counter, column=0, columnspan=4, sticky="w", padx=25, pady=25)
         self.row_counter += 1
         
-        button_proj_path = CustomButton(self.frame, "Project Path", None, command=self.set_proj_path)
+        button_proj_path = CustomButton(self.frame, "Caminho do projeto", None, command=self.set_proj_path)
         button_proj_path = button_proj_path.get_button()
         button_proj_path.grid(row=self.row_counter, column=0, columnspan=4, pady=10)
         self.row_counter += 1
