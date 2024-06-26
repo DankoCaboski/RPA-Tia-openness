@@ -61,7 +61,7 @@ class CreateProject:
         tia_version.grid(row=self.row_counter, column=2, sticky="w", padx=(10, 0), pady=10)
         self.row_counter += 1
         
-        self.hw_frame.frame.grid(row=self.hw_frame_index, column=0, columnspan=4, padx=25, pady=25, sticky='nsew')
+        self.hw_frame.tabview.grid(row=self.hw_frame_index, column=0, columnspan=4, padx=25, pady=25, sticky='nsew')
         self.row_counter += 1
         
         btn_criar = CustomButton(self.frame, "Criar projeto", None, command=self.call_create_proj)

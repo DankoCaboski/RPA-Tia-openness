@@ -4,13 +4,17 @@ from openness.services.Utils import Utils
 
 class HwFrame:
     def __init__(self, frame):
-        self.frame = customtkinter.CTkScrollableFrame(frame)
+        self.tabview  = customtkinter.CTkTabview(frame)
         
-        self.frame.grid_columnconfigure(0, weight=1)
-        self.frame.grid_columnconfigure(1, weight=0)
-        self.frame.grid_columnconfigure(2, weight=0)
-        self.frame.grid_columnconfigure(3, weight=0)
-        self.frame.grid_columnconfigure(4, weight=1)
+        self.tabview.add("Hardware")
+        self.tabview.add("Software")
+        self.tabview.set("Hardware")
+        
+        self.tabview.tab("Hardware").grid_columnconfigure(0, weight=1)
+        self.tabview.tab("Hardware").grid_columnconfigure(1, weight=0)
+        self.tabview.tab("Hardware").grid_columnconfigure(2, weight=0)
+        self.tabview.tab("Hardware").grid_columnconfigure(3, weight=0)
+        self.tabview.tab("Hardware").grid_columnconfigure(4, weight=1)
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
@@ -25,7 +29,7 @@ class HwFrame:
     
     def add_hw(self):
         global btn_add_hw
-        btn_add_hw = customtkinter.CTkButton(self.frame, text="Adicionar Hardware", command=self.add_hw_combobox)
+        btn_add_hw = customtkinter.CTkButton(self.tabview.tab("Hardware"), text="Adicionar Hardware", command=self.add_hw_combobox)
         btn_add_hw.grid(row=0, column=1, columnspan=2, pady=10)
         
     def add_hw_combobox(self):                
@@ -43,19 +47,19 @@ class HwFrame:
             event.widget.tk_focusNext().focus()
             return "break"
         
-        type_hw = customtkinter.CTkComboBox(self.frame, width=120, variable=input["combobox"], values=self.opcoes_Hardware)
+        type_hw = customtkinter.CTkComboBox(self.tabview.tab("Hardware"), width=120, variable=input["combobox"], values=self.opcoes_Hardware)
         type_hw.grid(row=self.row_counter, column=0, padx=(8,0), pady=10, sticky='e')
         
-        hw_mlfb = customtkinter.CTkComboBox(self.frame, variable=input["mlfb"])
+        hw_mlfb = customtkinter.CTkComboBox(self.tabview.tab("Hardware"), variable=input["mlfb"])
         hw_mlfb.grid(row=self.row_counter, column=1, padx=(8,0), pady=10)
         
-        hw_firmware = customtkinter.CTkComboBox(self.frame, width=120, variable=input["firm_version"])
+        hw_firmware = customtkinter.CTkComboBox(self.tabview.tab("Hardware"), width=120, variable=input["firm_version"])
         hw_firmware.grid(row=self.row_counter, column=2, padx=(8,0), pady=10)
         
-        hw_name = customtkinter.CTkEntry(self.frame, width=120, textvariable=input["entry"])
+        hw_name = customtkinter.CTkEntry(self.tabview.tab("Hardware"), width=120, textvariable=input["entry"])
         hw_name.grid(row=self.row_counter, column=3, padx=(8,0), pady=10)
         
-        special_entry = customtkinter.CTkEntry(self.frame, textvariable=input["Start_Adress"])
+        special_entry = customtkinter.CTkEntry(self.tabview.tab("Hardware"), textvariable=input["Start_Adress"])
         special_entry.grid(row=self.row_counter, column=4, padx=(8,0), pady=10)
         
         special_entry.bind('<Return>', focus_next_widget)
