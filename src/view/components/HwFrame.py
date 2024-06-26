@@ -4,7 +4,7 @@ from openness.services.Utils import Utils
 
 class HwFrame:
     def __init__(self, frame):
-        self.tabview  = customtkinter.CTkTabview(frame)
+        self.tabview  = customtkinter.CTkTabview(frame, anchor="nw")
         
         self.tabview.add("Hardware")
         self.tabview.add("Software")
