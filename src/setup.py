@@ -38,15 +38,13 @@ build_exe_options = {
     ]
 }
 
-
-
-# if sys.platform == "win32":
-#     base = "Win32GUI"
+if sys.platform == "win32":
+    base = "Win32GUI"
     
 target = Executable(
-    # base=base,
+    base=base,
     script="src/App.py",
-    # icon="./Assets/favico.ico",
+    icon="src/view/assets/favico.ico",
     target_name="RPA Tia Openness.exe"
     )
 
