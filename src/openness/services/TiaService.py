@@ -237,6 +237,32 @@ class TiaService:
         plc_software = self.hwf.get_software(cpu)
         type_group = plc_software.TypeGroup
         return type_group.Types
+    
+    def recursive_folder_search(self, groups, group_name):
+        try:
+            found = groups.Find(group_name)
+            if found:
+                return found
+            
+            for group in groups.GetEnumerator():
+                found = self.recursive_folder_search(group.Groups, group_name)
+                if found:
+                    return found
+        except Exception as e:
+            print('Error searching group:', e)
+
+
+    def create_group(self, device, group_name, parent_group):
+        try:
+            plc_software = self.hwf.get_software(device)
+            groups = plc_software.BlockGroup.Groups
+            if not parent_group:
+                return groups.Create(group_name)
+            else:
+                return self.recursive_folder_search(groups, parent_group).Groups.Create(group_name)
+                
+        except Exception as e:
+            print('Error creating group:', e)
 
     def import_data_type(self, cpu, data_type_path):
         try:
