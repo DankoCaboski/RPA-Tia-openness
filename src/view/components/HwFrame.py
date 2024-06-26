@@ -10,11 +10,13 @@ class HwFrame:
         self.tabview.add("Software")
         self.tabview.set("Hardware")
         
-        self.tabview.tab("Hardware").grid_columnconfigure(0, weight=1)
-        self.tabview.tab("Hardware").grid_columnconfigure(1, weight=0)
-        self.tabview.tab("Hardware").grid_columnconfigure(2, weight=0)
-        self.tabview.tab("Hardware").grid_columnconfigure(3, weight=0)
-        self.tabview.tab("Hardware").grid_columnconfigure(4, weight=1)
+        self.hw_frame = customtkinter.CTkScrollableFrame(self.tabview.tab("Hardware"))
+        
+        self.hw_frame.grid_columnconfigure(0, weight=1)
+        self.hw_frame.grid_columnconfigure(1, weight=0)
+        self.hw_frame.grid_columnconfigure(2, weight=0)
+        self.hw_frame.grid_columnconfigure(3, weight=0)
+        self.hw_frame.grid_columnconfigure(4, weight=1)
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
@@ -25,13 +27,19 @@ class HwFrame:
         
         self.row_counter = 1
         self.get_mlfb_by_hw_type()
+        
         self.add_hw()
+        self.configure_sw()
+        
+        ################### Hardware tab ###################
     
     def add_hw(self):
-        global btn_add_hw
-        btn_add_hw = customtkinter.CTkButton(self.tabview.tab("Hardware"), text="Adicionar Hardware", command=self.add_hw_combobox)
-        btn_add_hw.grid(row=0, column=1, columnspan=2, pady=10)
+        self.hw_frame.pack(fill='both', expand=True)
         
+        global btn_add_hw
+        btn_add_hw = customtkinter.CTkButton(self.hw_frame, text="Adicionar Hardware", command=self.add_hw_combobox)
+        btn_add_hw.grid(row=0, column=1, columnspan=2, pady=10)
+            
     def add_hw_combobox(self):                
         input = {
             "combobox": tk.StringVar(),
@@ -47,19 +55,19 @@ class HwFrame:
             event.widget.tk_focusNext().focus()
             return "break"
         
-        type_hw = customtkinter.CTkComboBox(self.tabview.tab("Hardware"), width=120, variable=input["combobox"], values=self.opcoes_Hardware)
+        type_hw = customtkinter.CTkComboBox(self.hw_frame, width=120, variable=input["combobox"], values=self.opcoes_Hardware)
         type_hw.grid(row=self.row_counter, column=0, padx=(8,0), pady=10, sticky='e')
         
-        hw_mlfb = customtkinter.CTkComboBox(self.tabview.tab("Hardware"), variable=input["mlfb"])
+        hw_mlfb = customtkinter.CTkComboBox(self.hw_frame, variable=input["mlfb"])
         hw_mlfb.grid(row=self.row_counter, column=1, padx=(8,0), pady=10)
         
-        hw_firmware = customtkinter.CTkComboBox(self.tabview.tab("Hardware"), width=120, variable=input["firm_version"])
+        hw_firmware = customtkinter.CTkComboBox(self.hw_frame, width=120, variable=input["firm_version"])
         hw_firmware.grid(row=self.row_counter, column=2, padx=(8,0), pady=10)
         
-        hw_name = customtkinter.CTkEntry(self.tabview.tab("Hardware"), width=120, textvariable=input["entry"])
+        hw_name = customtkinter.CTkEntry(self.hw_frame, width=120, textvariable=input["entry"])
         hw_name.grid(row=self.row_counter, column=3, padx=(8,0), pady=10)
         
-        special_entry = customtkinter.CTkEntry(self.tabview.tab("Hardware"), textvariable=input["Start_Adress"])
+        special_entry = customtkinter.CTkEntry(self.hw_frame, textvariable=input["Start_Adress"])
         special_entry.grid(row=self.row_counter, column=4, padx=(8,0), pady=10)
         
         special_entry.bind('<Return>', focus_next_widget)
@@ -97,6 +105,28 @@ class HwFrame:
         input["mlfb"].trace_add('write', update_firmware_combobox)
         
         self.row_counter += 1
+        
+        
+        ################### Software tab ###################
+        
+    def configure_sw(self):
+        label_1 = customtkinter.CTkLabel(self.tabview.tab("Software"), text="Robôs que deseja adicionar: ")
+        label_1.grid(row=0, column=0, columnspan=2, padx=(8,0), pady=10)
+        
+        rb_entry = customtkinter.CTkEntry(self.tabview.tab("Software"))
+        rb_entry.grid(row=0, column=2, padx=(8,0), pady=10)
+        
+        label_2 = customtkinter.CTkLabel(self.tabview.tab("Software"), text="Mesas giratórias que deseja adicionar: ")
+        label_2.grid(row=1, column=0, columnspan=2, padx=(8,0), pady=10)
+        
+        mg_entry = customtkinter.CTkEntry(self.tabview.tab("Software"))
+        mg_entry.grid(row=1, column=2, padx=(8,0), pady=10)
+        
+        label_3 = customtkinter.CTkLabel(self.tabview.tab("Software"), text="Grampos que deseja adicionar: ")
+        label_3.grid(row=2, column=0, columnspan=2, padx=(8,0), pady=10)
+        
+        gp_entry = customtkinter.CTkEntry(self.tabview.tab("Software"))
+        gp_entry.grid(row=2, column=2, padx=(8,0), pady=10)
         
     def get_mlfb_by_hw_type(self):
         for i, hw_type in enumerate(self.opcoes_Hardware):
