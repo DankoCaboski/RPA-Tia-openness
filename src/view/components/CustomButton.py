@@ -1,4 +1,5 @@
-import customtkinter
+from CustomTkinter import customtkinter
+
 import tkinter as tk
 
 class CustomButton:

@@ -1,4 +1,3 @@
-import customtkinter
 import tkinter as tk
 from view.pages.CreateProject import CreateProject
 from view.pages.OpenProject import OpenProject

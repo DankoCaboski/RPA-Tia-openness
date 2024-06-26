@@ -1,4 +1,5 @@
-import customtkinter
+from CustomTkinter import customtkinter
+
 
 class CustomCheckbox:
     def __init__(self, frame, texto):
