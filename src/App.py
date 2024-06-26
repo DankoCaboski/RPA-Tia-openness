@@ -16,7 +16,7 @@ class App(customtkinter.CTk):
 
         self.geometry("720x540")
         self.minsize(600,580)
-        self.iconbitmap("favico_path")
+        self.iconbitmap(favico_path)
 
 app = App()
 database = DbManagement()
