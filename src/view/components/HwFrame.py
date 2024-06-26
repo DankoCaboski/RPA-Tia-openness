@@ -57,19 +57,19 @@ class HwFrame:
             return "break"
         
         type_hw = customtkinter.CTkComboBox(self.hw_frame, width=120, variable=input["combobox"], values=self.opcoes_Hardware)
-        type_hw.grid(row=self.row_counter, column=0, padx=(8,0), pady=10, sticky='e')
+        type_hw.grid(row=self.row_counter, column=0, padx=(10,0), pady=10, sticky='e')
         
         hw_mlfb = customtkinter.CTkComboBox(self.hw_frame, variable=input["mlfb"])
-        hw_mlfb.grid(row=self.row_counter, column=1, padx=(8,0), pady=10)
+        hw_mlfb.grid(row=self.row_counter, column=1, padx=(10,0), pady=10)
         
         hw_firmware = customtkinter.CTkComboBox(self.hw_frame, width=120, variable=input["firm_version"])
-        hw_firmware.grid(row=self.row_counter, column=2, padx=(8,0), pady=10)
+        hw_firmware.grid(row=self.row_counter, column=2, padx=(10,0), pady=10)
         
         hw_name = customtkinter.CTkEntry(self.hw_frame, width=120, textvariable=input["entry"])
-        hw_name.grid(row=self.row_counter, column=3, padx=(8,0), pady=10)
+        hw_name.grid(row=self.row_counter, column=3, padx=(10,0), pady=10)
         
         special_entry = customtkinter.CTkEntry(self.hw_frame, textvariable=input["Start_Adress"])
-        special_entry.grid(row=self.row_counter, column=4, padx=(8,0), pady=10)
+        special_entry.grid(row=self.row_counter, column=4, padx=(10,0), pady=10)
         
         special_entry.bind('<Return>', focus_next_widget)
         special_entry.grid_remove()  # Inicia sem aparecer
@@ -121,22 +121,28 @@ class HwFrame:
         self.sw_frame.grid_columnconfigure(3, weight=1)
         
         label_1 = customtkinter.CTkLabel(self.sw_frame, text="Robôs que deseja adicionar: ")
-        label_1.grid(row=0, column=0, sticky="e", padx=(8,0), pady=10)
+        label_1.grid(row=0, column=0, sticky="e", padx=(0,10), pady=10)
         
+        global rb_entry
         rb_entry = customtkinter.CTkEntry(self.sw_frame)
-        rb_entry.grid(row=0, column=1, padx=(8,0), pady=10, sticky="w")
+        rb_entry.insert(0, "0")
+        rb_entry.grid(row=0, column=1, padx=(10,10), pady=10, sticky="w")
         
         label_2 = customtkinter.CTkLabel(self.sw_frame, text="Mesas giratórias que deseja adicionar: ")
-        label_2.grid(row=1, column=0, sticky="e", padx=(8,0), pady=10)
+        label_2.grid(row=1, column=0, sticky="e", padx=(0,10), pady=10)
         
+        global mg_entry
         mg_entry = customtkinter.CTkEntry(self.sw_frame)
-        mg_entry.grid(row=1, column=1, padx=(8,0), pady=10, sticky="w")
+        mg_entry.insert(0, "0")
+        mg_entry.grid(row=1, column=1, padx=(10,10), pady=10, sticky="w")
         
         label_3 = customtkinter.CTkLabel(self.sw_frame, text="Grampos que deseja adicionar: ")
-        label_3.grid(row=2, column=0, sticky="e", padx=(8,0), pady=10)
+        label_3.grid(row=2, column=0, sticky="e", padx=(0,10), pady=10)
         
+        global gp_entry
         gp_entry = customtkinter.CTkEntry(self.sw_frame)
-        gp_entry.grid(row=2, column=1, padx=(8,0), pady=10, sticky="w")
+        gp_entry.insert(0, "0")
+        gp_entry.grid(row=2, column=1, padx=(10,10), pady=10, sticky="w")
         
     def get_mlfb_by_hw_type(self):
         for i, hw_type in enumerate(self.opcoes_Hardware):
@@ -164,3 +170,10 @@ class HwFrame:
             }
             result.append(hw_dict)
         return result
+    
+    def get_blocks_to_import(self):
+        return {
+            'robots': rb_entry.get(),
+            'turntables': mg_entry.get(),
+            'grippers': gp_entry.get()
+        }

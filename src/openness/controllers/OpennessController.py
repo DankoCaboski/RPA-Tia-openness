@@ -15,7 +15,7 @@ class OpennessController:
     def open_tia_ui(self):
         self.openness_service.tia.open_tia_ui()
         
-    def create_project(self, proj_name, proj_path, tia_version: str, hardwware: list):
+    def create_project(self, proj_name, proj_path, tia_version: str, hardwware: list, blocks_to_import: dict):
         if self.curent_tia_version is None:
             self.openness_service.set_dll(tia_version)
         self.openness_service.tia.create_project(proj_name, proj_path)
