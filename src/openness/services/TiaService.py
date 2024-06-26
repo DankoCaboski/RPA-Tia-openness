@@ -259,3 +259,34 @@ class TiaService:
             else:
                 print('Error importing data type from: ', data_type_path)
                 print('Error message: ', e)
+                
+    def export_data_type(self, device, data_type_name : str, data_type_path : str):
+        try:
+            types = self.get_types(device)
+            data_type_path = data_type_path + "\\" + data_type_name + ".xml"
+            data_type_path = Utils().get_file_info(data_type_path)
+            
+            data_type = types.Find(str(data_type_name))
+            
+            if data_type is not None:
+                attempts = 0
+                while data_type.GetAttribute("IsConsistent") == False:
+                    result = self.comp.compilate_item(data_type) != "Success"
+                    if result == "Success":
+                        break
+                    attempts += 1
+                    if attempts > 3:
+                        raise Exception("Error compiling data type")
+            
+                data_type.Export(data_type_path, self.tia.ExportOptions.WithDefaults)
+                RPA_status = 'Data type exported successfully!'
+                print(RPA_status)
+                return True
+            
+            else:
+                RPA_status = 'Data type not found'
+                print(RPA_status)
+                return False
+                
+        except Exception as e:
+            print('Error exporting data type while in service:', e)
