@@ -316,3 +316,53 @@ class TiaService:
                 
         except Exception as e:
             print('Error exporting data type while in service:', e)
+            
+            
+    def import_block(self, object, file_path):
+        try:
+            import_options = self.tia.ImportOptions.Override
+            xml_file_info = Utils().get_file_info(file_path)
+            
+            if str(object.GetType()) == "Siemens.Engineering.HW.DeviceImpl":
+                object = object.DeviceItems[1]
+                print(f"Importing block to CPU: {object}")
+                plc_software = self.hwf.get_software(object)
+                plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options)
+                
+            elif str(object.GetType()) == "Siemens.Engineering.SW.Blocks.PlcBlockComposition":
+                print(f"Importing block to group: {object}")
+                object.Import(xml_file_info, import_options)
+                
+            return True
+        
+        except Exception as e:
+            print('Error importing block:', e)
+            return False
+        
+        
+    def export_block(self, device, block_name : str, block_path : str):
+        global RPA_status
+        try:
+            RPA_status = 'Exporting block'
+            print(RPA_status)
+            
+            block_path = Utils().get_file_info(block_path + "\\" + block_name + ".xml")
+            
+            plc_software = self.hwf.get_software(device)
+            myblock = plc_software.BlockGroup.Blocks.Find(block_name)
+        
+            attempts = 0
+            while myblock.GetAttribute("IsConsistent") == False:
+                result = self.comp.compilate_item(myblock) != "Success"
+                if result == "Success":
+                    break
+                attempts += 1
+                if attempts > 3:
+                    raise Exception("Error compiling data type")
+            
+            myblock.Export(block_path, self.tia.ExportOptions.WithDefaults)
+            
+        except Exception as e:
+            RPA_status = 'Error exporting block: ', e
+            print(RPA_status)
+            return
