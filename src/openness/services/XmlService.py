@@ -14,3 +14,14 @@ class XmlService:
             for match in matches:
                 udts.append(match)
         return udts
+    
+    def editar_tags_xml(self, arquivo, novo_nome, novo_numero):
+        with open(arquivo, 'r', encoding='utf-8') as file:
+            conteudo = file.read()
+
+        # Substituir o texto nas tags <Name> e <Number>
+        conteudo = re.sub(r'(?<=<Name>)[^<]+(?=</Name>)', novo_nome, conteudo)
+        conteudo = re.sub(r'(?<=<Number>)[^<]+(?=</Number>)', str(novo_numero), conteudo)
+        
+        with open(arquivo, 'w', encoding='utf-8') as file:
+            file.write(conteudo)

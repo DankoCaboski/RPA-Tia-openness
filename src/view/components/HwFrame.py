@@ -4,13 +4,14 @@ from openness.services.Utils import Utils
 
 class HwFrame:
     def __init__(self, frame):
-        self.frame = customtkinter.CTkScrollableFrame(frame)
+        self.tabview  = customtkinter.CTkTabview(frame, anchor="nw")
         
-        self.frame.grid_columnconfigure(0, weight=1)
-        self.frame.grid_columnconfigure(1, weight=0)
-        self.frame.grid_columnconfigure(2, weight=0)
-        self.frame.grid_columnconfigure(3, weight=0)
-        self.frame.grid_columnconfigure(4, weight=1)
+        self.tabview.add("Hardware")
+        self.tabview.add("Software")
+        self.tabview.set("Hardware")
+        
+        self.hw_frame = customtkinter.CTkScrollableFrame(self.tabview.tab("Hardware"))
+        self.sw_frame = customtkinter.CTkFrame(self.tabview.tab("Software"))
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
@@ -21,13 +22,25 @@ class HwFrame:
         
         self.row_counter = 1
         self.get_mlfb_by_hw_type()
+        
         self.add_hw()
+        self.configure_sw()
+        
+        ################### Hardware tab ###################
     
     def add_hw(self):
-        global btn_add_hw
-        btn_add_hw = customtkinter.CTkButton(self.frame, text="Adicionar Hardware", command=self.add_hw_combobox)
-        btn_add_hw.grid(row=0, column=1, columnspan=2, pady=10)
+        self.hw_frame.pack(fill='both', expand=True)
+        self.hw_frame.configure(fg_color="transparent")
+        self.hw_frame.grid_columnconfigure(0, weight=1)
+        self.hw_frame.grid_columnconfigure(1, weight=0)
+        self.hw_frame.grid_columnconfigure(2, weight=0)
+        self.hw_frame.grid_columnconfigure(3, weight=0)
+        self.hw_frame.grid_columnconfigure(4, weight=1)
         
+        global btn_add_hw
+        btn_add_hw = customtkinter.CTkButton(self.hw_frame, text="Adicionar Hardware", command=self.add_hw_combobox)
+        btn_add_hw.grid(row=0, column=1, columnspan=2, pady=10)
+            
     def add_hw_combobox(self):                
         input = {
             "combobox": tk.StringVar(),
@@ -43,20 +56,20 @@ class HwFrame:
             event.widget.tk_focusNext().focus()
             return "break"
         
-        type_hw = customtkinter.CTkComboBox(self.frame, width=120, variable=input["combobox"], values=self.opcoes_Hardware)
-        type_hw.grid(row=self.row_counter, column=0, padx=(8,0), pady=10, sticky='e')
+        type_hw = customtkinter.CTkComboBox(self.hw_frame, width=120, variable=input["combobox"], values=self.opcoes_Hardware)
+        type_hw.grid(row=self.row_counter, column=0, padx=(10,0), pady=10, sticky='e')
         
-        hw_mlfb = customtkinter.CTkComboBox(self.frame, variable=input["mlfb"])
-        hw_mlfb.grid(row=self.row_counter, column=1, padx=(8,0), pady=10)
+        hw_mlfb = customtkinter.CTkComboBox(self.hw_frame, variable=input["mlfb"])
+        hw_mlfb.grid(row=self.row_counter, column=1, padx=(10,0), pady=10)
         
-        hw_firmware = customtkinter.CTkComboBox(self.frame, width=120, variable=input["firm_version"])
-        hw_firmware.grid(row=self.row_counter, column=2, padx=(8,0), pady=10)
+        hw_firmware = customtkinter.CTkComboBox(self.hw_frame, width=120, variable=input["firm_version"])
+        hw_firmware.grid(row=self.row_counter, column=2, padx=(10,0), pady=10)
         
-        hw_name = customtkinter.CTkEntry(self.frame, width=120, textvariable=input["entry"])
-        hw_name.grid(row=self.row_counter, column=3, padx=(8,0), pady=10)
+        hw_name = customtkinter.CTkEntry(self.hw_frame, width=120, textvariable=input["entry"])
+        hw_name.grid(row=self.row_counter, column=3, padx=(10,0), pady=10)
         
-        special_entry = customtkinter.CTkEntry(self.frame, textvariable=input["Start_Adress"])
-        special_entry.grid(row=self.row_counter, column=4, padx=(8,0), pady=10)
+        special_entry = customtkinter.CTkEntry(self.hw_frame, textvariable=input["Start_Adress"])
+        special_entry.grid(row=self.row_counter, column=4, padx=(10,0), pady=10)
         
         special_entry.bind('<Return>', focus_next_widget)
         special_entry.grid_remove()  # Inicia sem aparecer
@@ -94,6 +107,43 @@ class HwFrame:
         
         self.row_counter += 1
         
+        
+        ################### Software tab ###################
+        
+    def configure_sw(self):
+        self.sw_frame.pack(fill='both', expand=True)
+        self.sw_frame.configure(fg_color="transparent")
+        
+        
+        self.sw_frame.grid_columnconfigure(0, weight=1)
+        self.sw_frame.grid_columnconfigure(1, weight=1)
+        self.sw_frame.grid_columnconfigure(2, weight=1)
+        self.sw_frame.grid_columnconfigure(3, weight=1)
+        
+        label_1 = customtkinter.CTkLabel(self.sw_frame, text="Robôs que deseja adicionar: ")
+        label_1.grid(row=0, column=0, sticky="e", padx=(0,10), pady=10)
+        
+        global rb_entry
+        rb_entry = customtkinter.CTkEntry(self.sw_frame)
+        rb_entry.insert(0, "0")
+        rb_entry.grid(row=0, column=1, padx=(10,10), pady=10, sticky="w")
+        
+        label_2 = customtkinter.CTkLabel(self.sw_frame, text="Mesas giratórias que deseja adicionar: ")
+        label_2.grid(row=1, column=0, sticky="e", padx=(0,10), pady=10)
+        
+        global mg_entry
+        mg_entry = customtkinter.CTkEntry(self.sw_frame)
+        mg_entry.insert(0, "0")
+        mg_entry.grid(row=1, column=1, padx=(10,10), pady=10, sticky="w")
+        
+        label_3 = customtkinter.CTkLabel(self.sw_frame, text="Grampos que deseja adicionar: ")
+        label_3.grid(row=2, column=0, sticky="e", padx=(0,10), pady=10)
+        
+        global gp_entry
+        gp_entry = customtkinter.CTkEntry(self.sw_frame)
+        gp_entry.insert(0, "0")
+        gp_entry.grid(row=2, column=1, padx=(10,10), pady=10, sticky="w")
+        
     def get_mlfb_by_hw_type(self):
         for i, hw_type in enumerate(self.opcoes_Hardware):
             mlfbs = Utils().get_mlfb_by_hw_type(hw_type)
@@ -120,3 +170,10 @@ class HwFrame:
             }
             result.append(hw_dict)
         return result
+    
+    def get_blocks_to_import(self):
+        return {
+            'robots': rb_entry.get(),
+            'turntables': mg_entry.get(),
+            'grippers': gp_entry.get()
+        }

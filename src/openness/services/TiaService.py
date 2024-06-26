@@ -237,6 +237,32 @@ class TiaService:
         plc_software = self.hwf.get_software(cpu)
         type_group = plc_software.TypeGroup
         return type_group.Types
+    
+    def recursive_folder_search(self, groups, group_name):
+        try:
+            found = groups.Find(group_name)
+            if found:
+                return found
+            
+            for group in groups.GetEnumerator():
+                found = self.recursive_folder_search(group.Groups, group_name)
+                if found:
+                    return found
+        except Exception as e:
+            print('Error searching group:', e)
+
+
+    def create_group(self, device, group_name, parent_group):
+        try:
+            plc_software = self.hwf.get_software(device)
+            groups = plc_software.BlockGroup.Groups
+            if not parent_group:
+                return groups.Create(group_name)
+            else:
+                return self.recursive_folder_search(groups, parent_group).Groups.Create(group_name)
+                
+        except Exception as e:
+            print('Error creating group:', e)
 
     def import_data_type(self, cpu, data_type_path):
         try:
@@ -259,3 +285,125 @@ class TiaService:
             else:
                 print('Error importing data type from: ', data_type_path)
                 print('Error message: ', e)
+                
+    def export_data_type(self, device, data_type_name : str, data_type_path : str):
+        try:
+            types = self.get_types(device)
+            data_type_path = data_type_path + "\\" + data_type_name + ".xml"
+            data_type_path = Utils().get_file_info(data_type_path)
+            
+            data_type = types.Find(str(data_type_name))
+            
+            if data_type is not None:
+                attempts = 0
+                while data_type.GetAttribute("IsConsistent") == False:
+                    result = self.comp.compilate_item(data_type) != "Success"
+                    if result == "Success":
+                        break
+                    attempts += 1
+                    if attempts > 3:
+                        raise Exception("Error compiling data type")
+            
+                data_type.Export(data_type_path, self.tia.ExportOptions.WithDefaults)
+                RPA_status = 'Data type exported successfully!'
+                print(RPA_status)
+                return True
+            
+            else:
+                RPA_status = 'Data type not found'
+                print(RPA_status)
+                return False
+                
+        except Exception as e:
+            print('Error exporting data type while in service:', e)
+            
+            
+    def import_block(self, object, file_path):
+        try:
+            import_options = self.tia.ImportOptions.Override
+            xml_file_info = Utils().get_file_info(file_path)
+            
+            if str(object.GetType()) == "Siemens.Engineering.HW.DeviceImpl":
+                object = object.DeviceItems[1]
+                print(f"Importing block to CPU: {object}")
+                plc_software = self.hwf.get_software(object)
+                plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options)
+                
+            elif str(object.GetType()) == "Siemens.Engineering.SW.Blocks.PlcBlockComposition":
+                print(f"Importing block to group: {object}")
+                object.Import(xml_file_info, import_options)
+                
+            return True
+        
+        except Exception as e:
+            print('Error importing block:', e)
+            return False
+        
+        
+    def export_block(self, device, block_name : str, block_path : str):
+        global RPA_status
+        try:
+            RPA_status = 'Exporting block'
+            print(RPA_status)
+            
+            block_path = Utils().get_file_info(block_path + "\\" + block_name + ".xml")
+            
+            plc_software = self.hwf.get_software(device)
+            myblock = plc_software.BlockGroup.Blocks.Find(block_name)
+        
+            attempts = 0
+            while myblock.GetAttribute("IsConsistent") == False:
+                result = self.comp.compilate_item(myblock) != "Success"
+                if result == "Success":
+                    break
+                attempts += 1
+                if attempts > 3:
+                    raise Exception("Error compiling data type")
+            
+            myblock.Export(block_path, self.tia.ExportOptions.WithDefaults)
+            
+        except Exception as e:
+            RPA_status = 'Error exporting block: ', e
+            print(RPA_status)
+            return
+        
+    def verify_and_import(self, device_name, file_path, repetitions=0, tipo='' ):
+        try:
+            
+            device = self.get_device_by_name(device_name)
+            
+            if not device:
+                print(f"Device {device_name} not found in the project.")
+                return
+
+            # Extrair nome e número base do XML
+            if tipo == 'robo':
+                nome_base = "0070_robo"
+                numero_base = 70
+            else:
+                nome_base = "0080_Grampo"
+                numero_base = 80
+
+            if not nome_base or not numero_base:
+                print("Failed to extract base name or number from XML.")
+                return
+
+            # Executar a primeira importação
+            self.import_block(device, file_path)
+
+            # Executar importações adicionais conforme necessário
+            for i in range(repetitions):
+                print(f"Repetition {i+1} of {repetitions}")
+
+                # Modificar o XML com novos valores de nome e número
+                novo_nome = f"{int(nome_base.split('_')[0]) + i + 1:04d}_{nome_base.split('_')[1]}"
+                novo_numero = numero_base + i + 1
+                
+                # Chamar a função para modificar o XML
+                XmlService().editar_tags_xml(file_path, novo_nome, novo_numero)
+
+                # Realizar a importação após modificar o XML
+                self.import_block(device, file_path)
+
+        except Exception as e:
+            print('Error verifying or importing file:', e)

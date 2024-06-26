@@ -4,9 +4,9 @@ from view.components.CustomButton import CustomButton
 from view.components.HwFrame import HwFrame
 
 from view.functions.ButtonHandler import ButtonHandler
+from view.functions.HomeIcon import HomeIcon
 
 from openness.services.Utils import Utils
-
 class CreateProject:
     
     def __init__(self, frame_management):
@@ -21,27 +21,26 @@ class CreateProject:
         
         self.hw_frame: HwFrame = HwFrame(self.frame)
         
-        self.hw_frame_index = 5  # Definindo o índice inicial da linha para self.hw_frame.frame
+        self.hw_frame_index = 4  # Definindo o índice inicial da linha para self.hw_frame.frame
         
         self.frame.grid_rowconfigure(self.hw_frame_index, weight=1)  # Configurando a linha
         
-        self.row_counter = 0  # Contador de linhas para posicionar elementos na grade
+        self.row_counter = 0
         
         self.get_tia_versions()
         
         self.create_project_page()
         
     def create_project_page(self):
-        label = customtkinter.CTkLabel(self.frame, text="Create Project")
-        label.grid(row=self.row_counter, column=0, columnspan=4)
-        self.row_counter += 1
         
-        comp_home_page = CustomButton(self.frame, "Homepage", command=self.call_home_page)
+        home_icon = HomeIcon().load_image()
+        
+        comp_home_page = CustomButton(self.frame, None, home_icon, command=self.call_home_page)
         comp_home_page = comp_home_page.get_button()
-        comp_home_page.grid(row=self.row_counter, column=0, columnspan=4, pady=10)
+        comp_home_page.grid(row=self.row_counter, column=0, columnspan=4, sticky="w", padx=25, pady=25)
         self.row_counter += 1
         
-        button_proj_path = CustomButton(self.frame, "Project Path",  command=self.set_proj_path)
+        button_proj_path = CustomButton(self.frame, "Caminho do projeto", None, command=self.set_proj_path)
         button_proj_path = button_proj_path.get_button()
         button_proj_path.grid(row=self.row_counter, column=0, columnspan=4, pady=10)
         self.row_counter += 1
@@ -62,10 +61,10 @@ class CreateProject:
         tia_version.grid(row=self.row_counter, column=2, sticky="w", padx=(10, 0), pady=10)
         self.row_counter += 1
         
-        self.hw_frame.frame.grid(row=self.hw_frame_index, column=0, columnspan=4, padx=25, pady=25, sticky='nsew')
+        self.hw_frame.tabview.grid(row=self.hw_frame_index, column=0, columnspan=4, padx=25, pady=25, sticky='nsew')
         self.row_counter += 1
         
-        btn_criar = CustomButton(self.frame, "Criar projeto", command=self.call_create_proj)
+        btn_criar = CustomButton(self.frame, "Criar projeto", None, command=self.call_create_proj)
         btn_criar = btn_criar.get_button()
         btn_criar.grid(row=self.row_counter, column=0, columnspan=4, padx=(0, 10), pady=10)
         self.row_counter += 1
@@ -77,9 +76,14 @@ class CreateProject:
         self.button_handler.show_home_page()
         
     def call_create_proj(self):
-        hardware_values = self.hw_frame.get_hardware_values()
-        print("Hardware: ", hardware_values)
-        self.button_handler.create_project(proj_name.get(), proj_path, tia_version.get(), hardware_values)
+        hardware = self.hw_frame.get_hardware_values()
+        blocks = self.hw_frame.get_blocks_to_import()
+        self.button_handler.create_project(
+            proj_name.get(),
+            proj_path,
+            tia_version.get(),
+            hardware, blocks
+            )
         
     def set_proj_path(self):
         global proj_path
