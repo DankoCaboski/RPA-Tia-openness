@@ -366,3 +366,44 @@ class TiaService:
             RPA_status = 'Error exporting block: ', e
             print(RPA_status)
             return
+        
+    def verify_and_import(self, device_name, file_path, repetitions=0, tipo='' ):
+        try:
+            
+            device = self.get_device_by_name(device_name)
+            
+            if not device:
+                print(f"Device {device_name} not found in the project.")
+                return
+
+            # Extrair nome e número base do XML
+            if tipo == 'robo':
+                nome_base = "0070_robo"
+                numero_base = 70
+            else:
+                nome_base = "0080_Grampo"
+                numero_base = 80
+
+            if not nome_base or not numero_base:
+                print("Failed to extract base name or number from XML.")
+                return
+
+            # Executar a primeira importação
+            self.import_block(device, file_path)
+
+            # Executar importações adicionais conforme necessário
+            for i in range(repetitions):
+                print(f"Repetition {i+1} of {repetitions}")
+
+                # Modificar o XML com novos valores de nome e número
+                novo_nome = f"{int(nome_base.split('_')[0]) + i + 1:04d}_{nome_base.split('_')[1]}"
+                novo_numero = numero_base + i + 1
+                
+                # Chamar a função para modificar o XML
+                XmlService().editar_tags_xml(file_path, novo_nome, novo_numero)
+
+                # Realizar a importação após modificar o XML
+                self.import_block(device, file_path)
+
+        except Exception as e:
+            print('Error verifying or importing file:', e)
