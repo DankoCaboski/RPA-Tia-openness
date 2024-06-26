@@ -10,7 +10,7 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
         
-        favico_path = ".view/assets/favico.ico"
+        favico_path = "view/assets/favico.ico"
         if not os.path.exists(favico_path):
             favico_path = "favico.ico"
 
