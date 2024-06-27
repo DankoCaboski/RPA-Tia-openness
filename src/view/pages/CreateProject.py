@@ -81,6 +81,7 @@ class CreateProject:
         
         hardware = self.hw_frame.get_hardware_values()
         blocks = self.hw_frame.get_blocks_to_import()
+        
         status = self.button_handler.create_project(
             proj_name.get(),
             proj_path,
@@ -88,6 +89,7 @@ class CreateProject:
             hardware,
             blocks
             )
+        
         self.status_label.configure(text="Status: " + str(status))
         
     def set_proj_path(self):

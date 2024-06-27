@@ -11,7 +11,15 @@ class ButtonHandler:
     def show_create_project_page(self):
         self.frame_management.show_create_project_page()
         
-    def create_project(self, proj_name, proj_path, tia_version: str, hardwware: list, blocks_to_import: dict):
+    def create_project(
+        self,
+        proj_name: str,
+        proj_path: str,
+        tia_version: str,
+        hardwware: list,
+        blocks_to_import: dict
+        ):
+        
         status = self.openness.create_project(
             proj_name,
             proj_path,

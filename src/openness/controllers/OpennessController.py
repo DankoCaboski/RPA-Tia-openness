@@ -17,7 +17,15 @@ class OpennessController:
     def open_tia_ui(self):
         self.openness_service.tia.open_tia_ui()
         
-    def create_project(self, proj_name, proj_path, tia_version: str, hardwware: list, blocks_to_import: dict):
+    def create_project(
+        self,
+        proj_name: str,
+        proj_path: str,
+        tia_version: str,
+        hardwware: list,
+        blocks_to_import: dict
+        ):
+        
         try:
             if self.curent_tia_version is None:
                 self.openness_service.set_dll(tia_version)
@@ -26,6 +34,7 @@ class OpennessController:
                 raise Exception(error_creating)
             self.openness_service.tia.add_hardware(hardwware)
             self.openness_service.tia.wire_profinet()
+            self.openness_service.tia.import_blocks(blocks_to_import)
             self.openness_service.tia.save_project()
             return "Projeto criado com sucesso!"
         except Exception as e:

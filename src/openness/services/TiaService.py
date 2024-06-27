@@ -316,6 +316,12 @@ class TiaService:
             print('Error exporting data type while in service:', e)
             
             
+    def import_blocks(self, block_list: list):
+        pass
+        for block in block_list:
+            self.import_block(block['device'], block['file_path'])
+            
+            
     def import_block(self, object, file_path):
         try:
             import_options = self.tia.ImportOptions.Override

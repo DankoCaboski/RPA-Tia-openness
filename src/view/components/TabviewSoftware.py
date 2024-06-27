@@ -4,13 +4,23 @@ class TabviewSoftware:
     def __init__(self, sw_frame):
         
         robos = customtkinter.CTkFrame(sw_frame)
-        label_1 = customtkinter.CTkLabel(robos, text="Robôs que deseja adicionar: ")
-        label_1.grid(row=0, column=0, sticky="e", padx=(7,10), pady=10)
+        robos.grid_columnconfigure(0, weight=1)
+        robos.grid_columnconfigure(1, weight=1)
+        robos.grid_columnconfigure(2, weight=1)
+        
+        label_1 = customtkinter.CTkLabel(robos, text="Quantos robôs deseja adicionar: ")
+        label_1.grid(row=0, column=0, columnspan=3, padx=(7,10), pady=10)
+        
+        qtd_rb = customtkinter.CTkLabel(robos, text="Quantidade: ")
+        qtd_rb.grid(row=1, column=0,  sticky="e", padx=(7,10), pady=10)
         
         global rb_entry
         rb_entry = customtkinter.CTkEntry(robos)
         rb_entry.insert(0, "0")
-        rb_entry.grid(row=0, column=1, padx=(10,10), pady=10, sticky="w")
+        rb_entry.grid(row=1, column=1, padx=(10,10), pady=10, sticky="w")
+        
+        fabricantes = customtkinter.CTkComboBox(robos, values=["ABB", "KUKA", "FANUC"])
+        fabricantes.grid(row=1, column=2, padx=(10,10), pady=10, sticky="w")
         
         ################### Mesa giratoria ###################
         
