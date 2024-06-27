@@ -2,7 +2,7 @@ from CustomTkinter import customtkinter
 
 
 from view.components.CustomButton import CustomButton
-from view.components.HwFrame import HwFrame
+from view.components.ProjConfigFrame import ProjConfigFrame
 
 from view.functions.ButtonHandler import ButtonHandler
 from view.functions.HomeIcon import HomeIcon
@@ -20,7 +20,7 @@ class CreateProject:
         
         self.button_handler: ButtonHandler = frame_management.button_handler
         
-        self.hw_frame: HwFrame = HwFrame(self.frame)
+        self.hw_frame: ProjConfigFrame = ProjConfigFrame(self.frame)
         
         self.hw_frame_index = 4  # Definindo o índice inicial da linha para self.hw_frame.frame
         

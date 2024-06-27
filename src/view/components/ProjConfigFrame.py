@@ -3,7 +3,7 @@ from CustomTkinter import customtkinter
 import tkinter as tk
 from openness.services.Utils import Utils
 
-class HwFrame:
+class ProjConfigFrame:
     def __init__(self, frame):
         self.tabview  = customtkinter.CTkTabview(frame, anchor="nw")
         
