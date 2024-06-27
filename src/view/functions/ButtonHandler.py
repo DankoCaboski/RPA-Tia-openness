@@ -15,7 +15,7 @@ class ButtonHandler:
         self.openness.create_project(proj_name, proj_path, tia_version, hardwware, blocks_to_import)
         
     def open_project(self, project_path):
-        self.openness.open_project(project_path)
+        return self.openness.open_project(project_path)
         
     def show_home_page(self):
         self.frame_management.show_home_page()

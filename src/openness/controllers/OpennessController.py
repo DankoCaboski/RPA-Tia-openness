@@ -1,4 +1,6 @@
 from openness.services.OponessService import OpennessService
+from openness.services.Utils import Utils
+
 class OpennessController:
     def __init__(self, database):
         self.database = database
@@ -27,6 +29,7 @@ class OpennessController:
     def open_project(self, project_path):
         if self.curent_tia_version is None:
             extension = project_path.split(".")[-1]
-            print(extension)
             self.set_dll(extension)
-        self.openness_service.tia.open_project(project_path)
+        my_proj = self.openness_service.tia.open_project(project_path)
+        proj_name = Utils().get_attibutes(["Name"], my_proj)
+        return proj_name[0]

@@ -65,5 +65,11 @@ class OpenProject:
         
     def open_project(self):
         project_path = Utils().open_file_dialog()
-        self.button_handler.open_project(project_path)
+        if project_path is None or project_path == "":
+            return
+        
+        self.status_label.configure(text=f"Status: Abrindo projeto")
+        self.status_label.update_idletasks() 
+        proj_name = self.button_handler.open_project(project_path)
+        self.status_label.configure(text=f'Status: Projeto "{proj_name}" aberto com sucesso')
     
