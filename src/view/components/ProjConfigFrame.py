@@ -16,9 +16,15 @@ class ProjConfigFrame:
         self.tabview.set("Hardware")
         
         self.hw_frame = customtkinter.CTkScrollableFrame(self.tabview.tab("Hardware"))
+        
         self.sw_frame = customtkinter.CTkFrame(self.tabview.tab("Software"))
         self.sw_frame.grid_columnconfigure(0, weight=0)
         self.sw_frame.grid_columnconfigure(1, weight=1)
+        
+        self.sw_options = ["Robôs", "Mesa", "Grampos"]
+        self.sw_tabs = []
+        
+        
         self.sw_content = TabviewSoftware(self.sw_frame)
         self.content: customtkinter.CTkFrame = None
         
@@ -123,15 +129,18 @@ class ProjConfigFrame:
     def configure_sw(self):
         self.sw_frame.pack(fill='both', expand=True)
         self.sw_frame.configure(fg_color="transparent")
-        
-        tab_names = ["Robôs", "Mesa", "Grampos"]
-        for index, name in enumerate(tab_names):
+                
+        for name in self.sw_options:
+            index = self.sw_options.index(name)
             button = FakeTab(self.sw_frame, name).get_button()
             button.grid(row=index, column=0, padx=10, pady=10)
             button.configure(command=lambda i=index: set_current_option(i))
+            self.sw_tabs.append(button)
             
             def set_current_option(index):
                 self.change_sw_frame(index)
+                
+        self.color_sw_tab(0)
                 
                 
         ################### Utils ###################
@@ -167,10 +176,16 @@ class ProjConfigFrame:
         return self.sw_content.get_blocks_to_import()
     
     def change_sw_frame(self, index):
-        print(f"Setting current option to {index}")
         if self.content != None:
             self.content.grid_forget()
         self.content = self.sw_content.sw_content(index)
         self.content.grid(row=0, column=1, columnspan=3, padx=10, pady=10, sticky='nsew')
+        self.color_sw_tab(index)
+        
+    def color_sw_tab(self, index):
+        for i in range(len(self.sw_tabs)):
+            self.sw_tabs[i].configure(fg_color="#4A4A4A")
+            
+        self.sw_tabs[index].configure(fg_color="#1F6AA5")
         
         
