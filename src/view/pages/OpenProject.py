@@ -14,6 +14,11 @@ class OpenProject:
         self.frame = customtkinter.CTkFrame(frame_management.root)
         self.frame.grid_columnconfigure(0, weight=1)
         self.button_handler: ButtonHandler = frame_management.button_handler
+    
+        self.frame.grid_columnconfigure(0, weight=1)
+        self.frame.grid_columnconfigure(1, weight=1)
+        self.frame.grid_columnconfigure(2, weight=1)
+        self.frame.grid_columnconfigure(3, weight=1)
         
         self.row_counter = 0
         
@@ -28,13 +33,22 @@ class OpenProject:
         comp_home_page.grid(row=self.row_counter, column=0, sticky="w", padx=25, pady=25)
         self.row_counter += 1
         
+        comp_export_bk = CustomButton(self.frame, "Exportar blocos", None, command=None)
+        comp_export_bk = comp_export_bk.get_button()
+        comp_export_bk.grid(row=self.row_counter, column=0, columnspan=2, sticky="e", padx=25)
+        
+        comp_home_udt = CustomButton(self.frame, "Exportar UDT", None, command=None)
+        comp_home_udt = comp_home_udt.get_button()
+        comp_home_udt.grid(row=self.row_counter, column=2, columnspan=2, sticky="w", padx=25)
+        self.row_counter += 1
+        
         open_tia = CustomButton(self.frame, "Abrir projeto", None, command=self.open_project)
         open_tia = open_tia.get_button()
-        open_tia.grid(row=self.row_counter, column=0, pady=10)
+        open_tia.grid(row=self.row_counter, column=0, columnspan=4, pady=10)
         self.row_counter += 1
         
         self.status_label = customtkinter.CTkLabel(self.frame, text="Status: Idle")
-        self.status_label.grid(row=self.row_counter, column=0, pady=10)
+        self.status_label.grid(row=self.row_counter, column=0, columnspan=4, pady=10, sticky="nsew")
         self.row_counter += 1
         
     def call_home_page(self):
