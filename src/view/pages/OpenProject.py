@@ -20,6 +20,12 @@ class OpenProject:
         self.frame.grid_columnconfigure(2, weight=1)
         self.frame.grid_columnconfigure(3, weight=1)
         
+        self.frame.grid_rowconfigure(0, weight=0)
+        self.frame.grid_rowconfigure(1, weight=0)
+        self.frame.grid_rowconfigure(2, weight=0)
+        self.frame.grid_rowconfigure(3, weight=1)  # Row for expansion
+        self.frame.grid_rowconfigure(4, weight=0)
+        
         self.row_counter = 0
         
         self.create_project_page()
@@ -48,7 +54,7 @@ class OpenProject:
         self.row_counter += 1
         
         self.status_label = customtkinter.CTkLabel(self.frame, text="Status: Idle")
-        self.status_label.grid(row=self.row_counter, column=0, columnspan=4, pady=10, sticky="nsew")
+        self.status_label.grid(row=self.row_counter+1, column=0, columnspan=4, pady=10, sticky="ew")
         self.row_counter += 1
         
     def call_home_page(self):
