@@ -23,6 +23,7 @@ class TabviewSoftware:
         lb_qtd_fanuc.grid(row=4, column=1, padx=(20,0), pady=10, sticky="wens")
         
         lb_qtd = customtkinter.CTkLabel(robos, text="Quantidade")
+        global en_qtd_abb, en_qtd_kuka, en_qtd_fanuc
         en_qtd_abb = customtkinter.CTkEntry(robos)
         en_qtd_kuka = customtkinter.CTkEntry(robos)
         en_qtd_fanuc = customtkinter.CTkEntry(robos)
@@ -68,7 +69,14 @@ class TabviewSoftware:
         
     def get_blocks_to_import(self):
         return {
-            'robots': rb_entry.get(),
+            'robots': self.get_robots(),
             'turntables': mg_entry.get(),
             'grippers': gp_entry.get()
+        }
+        
+    def get_robots(self):
+        return {
+            'abb': en_qtd_abb.get(),
+            'kuka': en_qtd_kuka.get(),
+            'fanuc': en_qtd_fanuc.get()
         }
