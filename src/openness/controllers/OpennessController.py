@@ -18,12 +18,18 @@ class OpennessController:
         self.openness_service.tia.open_tia_ui()
         
     def create_project(self, proj_name, proj_path, tia_version: str, hardwware: list, blocks_to_import: dict):
-        if self.curent_tia_version is None:
-            self.openness_service.set_dll(tia_version)
-        self.openness_service.tia.create_project(proj_name, proj_path)
-        self.openness_service.tia.add_hardware(hardwware)
-        self.openness_service.tia.wire_profinet()
-        self.openness_service.tia.save_project()
+        try:
+            if self.curent_tia_version is None:
+                self.openness_service.set_dll(tia_version)
+            error_creating = self.openness_service.tia.create_project(proj_name, proj_path)
+            if error_creating:
+                raise Exception(error_creating)
+            self.openness_service.tia.add_hardware(hardwware)
+            self.openness_service.tia.wire_profinet()
+            self.openness_service.tia.save_project()
+            return "Projeto criado com sucesso!"
+        except Exception as e:
+            return "Erro ao criar projeto: " + str(e)
 
 
     def open_project(self, project_path):

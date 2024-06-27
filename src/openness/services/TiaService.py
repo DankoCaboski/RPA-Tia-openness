@@ -48,10 +48,8 @@ class TiaService:
                 self.open_tia_ui()
                 
             self.myproject = self.tia_instance.Projects.Create(proj_path, proj_name)
-            if self.myproject != None:
-                result = "Projeto criado com sucesso!"
-                print(result)
-                return result
+            if self.myproject == None:
+                raise Exception("Error creating project")
             
         except Exception as e:
             result = "Falha ao criar projeto: " + str(e)

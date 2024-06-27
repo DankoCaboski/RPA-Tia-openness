@@ -12,7 +12,14 @@ class ButtonHandler:
         self.frame_management.show_create_project_page()
         
     def create_project(self, proj_name, proj_path, tia_version: str, hardwware: list, blocks_to_import: dict):
-        self.openness.create_project(proj_name, proj_path, tia_version, hardwware, blocks_to_import)
+        status = self.openness.create_project(
+            proj_name,
+            proj_path,
+            tia_version,
+            hardwware,
+            blocks_to_import
+            )
+        return status
         
     def open_project(self, project_path):
         return self.openness.open_project(project_path)

@@ -60,9 +60,6 @@ class OpenProject:
     def call_home_page(self):
         self.button_handler.show_home_page()
         
-    def open_tia_ui(self):
-        self.button_handler.open_tia_ui()
-        
     def open_project(self):
         project_path = Utils().open_file_dialog()
         if project_path is None or project_path == "":
