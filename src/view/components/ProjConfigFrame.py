@@ -1,5 +1,8 @@
 from CustomTkinter import customtkinter
 
+from view.components.TabviewSoftware import TabviewSoftware
+
+
 import tkinter as tk
 from openness.services.Utils import Utils
 
@@ -115,35 +118,37 @@ class ProjConfigFrame:
         self.sw_frame.pack(fill='both', expand=True)
         self.sw_frame.configure(fg_color="transparent")
         
+        TabviewSoftware(self.sw_frame)
         
-        self.sw_frame.grid_columnconfigure(0, weight=1)
-        self.sw_frame.grid_columnconfigure(1, weight=1)
-        self.sw_frame.grid_columnconfigure(2, weight=1)
-        self.sw_frame.grid_columnconfigure(3, weight=1)
         
-        label_1 = customtkinter.CTkLabel(self.sw_frame, text="Robôs que deseja adicionar: ")
-        label_1.grid(row=0, column=0, sticky="e", padx=(0,10), pady=10)
+        # self.sw_frame.grid_columnconfigure(0, weight=1)
+        # self.sw_frame.grid_columnconfigure(1, weight=1)
+        # self.sw_frame.grid_columnconfigure(2, weight=1)
+        # self.sw_frame.grid_columnconfigure(3, weight=1)
         
-        global rb_entry
-        rb_entry = customtkinter.CTkEntry(self.sw_frame)
-        rb_entry.insert(0, "0")
-        rb_entry.grid(row=0, column=1, padx=(10,10), pady=10, sticky="w")
+        # label_1 = customtkinter.CTkLabel(self.sw_frame, text="Robôs que deseja adicionar: ")
+        # label_1.grid(row=0, column=0, sticky="e", padx=(0,10), pady=10)
         
-        label_2 = customtkinter.CTkLabel(self.sw_frame, text="Mesas giratórias que deseja adicionar: ")
-        label_2.grid(row=1, column=0, sticky="e", padx=(0,10), pady=10)
+        # global rb_entry
+        # rb_entry = customtkinter.CTkEntry(self.sw_frame)
+        # rb_entry.insert(0, "0")
+        # rb_entry.grid(row=0, column=1, padx=(10,10), pady=10, sticky="w")
         
-        global mg_entry
-        mg_entry = customtkinter.CTkEntry(self.sw_frame)
-        mg_entry.insert(0, "0")
-        mg_entry.grid(row=1, column=1, padx=(10,10), pady=10, sticky="w")
+        # label_2 = customtkinter.CTkLabel(self.sw_frame, text="Mesas giratórias que deseja adicionar: ")
+        # label_2.grid(row=1, column=0, sticky="e", padx=(0,10), pady=10)
         
-        label_3 = customtkinter.CTkLabel(self.sw_frame, text="Grampos que deseja adicionar: ")
-        label_3.grid(row=2, column=0, sticky="e", padx=(0,10), pady=10)
+        # global mg_entry
+        # mg_entry = customtkinter.CTkEntry(self.sw_frame)
+        # mg_entry.insert(0, "0")
+        # mg_entry.grid(row=1, column=1, padx=(10,10), pady=10, sticky="w")
         
-        global gp_entry
-        gp_entry = customtkinter.CTkEntry(self.sw_frame)
-        gp_entry.insert(0, "0")
-        gp_entry.grid(row=2, column=1, padx=(10,10), pady=10, sticky="w")
+        # label_3 = customtkinter.CTkLabel(self.sw_frame, text="Grampos que deseja adicionar: ")
+        # label_3.grid(row=2, column=0, sticky="e", padx=(0,10), pady=10)
+        
+        # global gp_entry
+        # gp_entry = customtkinter.CTkEntry(self.sw_frame)
+        # gp_entry.insert(0, "0")
+        # gp_entry.grid(row=2, column=1, padx=(10,10), pady=10, sticky="w")
         
     def get_mlfb_by_hw_type(self):
         for i, hw_type in enumerate(self.opcoes_Hardware):
