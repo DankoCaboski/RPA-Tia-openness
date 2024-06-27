@@ -9,6 +9,7 @@ class TabviewSoftware:
         label_1 = customtkinter.CTkLabel(frame1, text="Robôs que deseja adicionar: ")
         label_1.grid(row=0, column=0, sticky="e", padx=(0,10), pady=10)
         
+        global rb_entry
         rb_entry = customtkinter.CTkEntry(frame1)
         rb_entry.insert(0, "0")
         rb_entry.grid(row=0, column=1, padx=(10,10), pady=10, sticky="w")
@@ -19,6 +20,7 @@ class TabviewSoftware:
         label_2 = customtkinter.CTkLabel(frame2, text="Mesas giratórias que deseja adicionar: ")
         label_2.grid(row=1, column=0, sticky="e", padx=(0,10), pady=10)
         
+        global mg_entry
         mg_entry = customtkinter.CTkEntry(frame2)
         mg_entry.insert(0, "0")
         mg_entry.grid(row=1, column=1, padx=(10,10), pady=10, sticky="w")
@@ -29,6 +31,7 @@ class TabviewSoftware:
         label_3 = customtkinter.CTkLabel(frame3, text="Grampos que deseja adicionar: ")
         label_3.grid(row=2, column=0, sticky="e", padx=(0,10), pady=10)
         
+        global gp_entry
         gp_entry = customtkinter.CTkEntry(frame3)
         gp_entry.insert(0, "0")
         gp_entry.grid(row=2, column=1, padx=(10,10), pady=10, sticky="w")
@@ -42,3 +45,10 @@ class TabviewSoftware:
             return self.frames[self.current_frame]
         else:
             return self.frames[index]
+        
+    def get_blocks_to_import(self):
+        return {
+            'robots': rb_entry.get(),
+            'turntables': mg_entry.get(),
+            'grippers': gp_entry.get()
+        }

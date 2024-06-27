@@ -163,12 +163,8 @@ class ProjConfigFrame:
             result.append(hw_dict)
         return result
     
-    # def get_blocks_to_import(self):
-    #     return {
-    #         'robots': rb_entry.get(),
-    #         'turntables': mg_entry.get(),
-    #         'grippers': gp_entry.get()
-    #     }
+    def get_blocks_to_import(self):
+        return self.sw_content.get_blocks_to_import()
     
     def change_sw_frame(self, index):
         print(f"Setting current option to {index}")

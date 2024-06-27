@@ -86,7 +86,8 @@ class CreateProject:
             proj_name.get(),
             proj_path,
             tia_version.get(),
-            hardware, blocks
+            hardware,
+            blocks
             )
         self.status_label.configure(text="Status: " + str(status))
         
