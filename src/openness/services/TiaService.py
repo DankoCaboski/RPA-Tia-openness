@@ -48,6 +48,7 @@ class TiaService:
                 self.open_tia_ui()
                 
             self.myproject = self.tia_instance.Projects.Create(proj_path, proj_name)
+            LanguageService().add_language(self.myproject, "pt-BR")
             if self.myproject == None:
                 raise Exception("Error creating project")
             
@@ -317,7 +318,7 @@ class TiaService:
             
             
     def import_blocks(self, block_list: list):
-        pass
+        return
         for block in block_list:
             self.import_block(block['device'], block['file_path'])
             
