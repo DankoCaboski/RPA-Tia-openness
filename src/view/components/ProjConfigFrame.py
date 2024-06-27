@@ -132,7 +132,7 @@ class ProjConfigFrame:
         self.sw_frame.configure(fg_color="transparent")
         
         sw_tabs_frame = customtkinter.CTkFrame(self.sw_frame, fg_color="#4A4A4A", )
-        sw_tabs_frame.grid(row=0, column=0, pady=10, sticky='w')
+        sw_tabs_frame.grid(row=0, column=0, pady=10, sticky='nw')
         
         for name in self.sw_options:
             index = self.sw_options.index(name)

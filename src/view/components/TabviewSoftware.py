@@ -7,20 +7,32 @@ class TabviewSoftware:
         robos.grid_columnconfigure(0, weight=1)
         robos.grid_columnconfigure(1, weight=1)
         robos.grid_columnconfigure(2, weight=1)
+        robos.grid_columnconfigure(3, weight=1)
         
-        label_1 = customtkinter.CTkLabel(robos, text="Quantos robôs deseja adicionar: ")
-        label_1.grid(row=0, column=0, columnspan=3, padx=(7,10), pady=10)
+        label_1 = customtkinter.CTkLabel(robos, text="Quais robôs deseja adicionar:")
+        label_1.grid(row=0, column=0, columnspan=4, padx=(0,80), sticky="wens")
         
-        qtd_rb = customtkinter.CTkLabel(robos, text="Quantidade: ")
-        qtd_rb.grid(row=1, column=0,  sticky="e", padx=(7,10), pady=10)
+        lb_manuf = customtkinter.CTkLabel(robos, text="Fabricante")
+        lb_qtd_abb = customtkinter.CTkLabel(robos, text="ABB")
+        lbqtd_kuka = customtkinter.CTkLabel(robos, text="KUKA")
+        lb_qtd_fanuc = customtkinter.CTkLabel(robos, text="FANUC")
         
-        global rb_entry
-        rb_entry = customtkinter.CTkEntry(robos)
-        rb_entry.insert(0, "0")
-        rb_entry.grid(row=1, column=1, padx=(10,10), pady=10, sticky="w")
+        lb_manuf.grid(row=1, column=1, padx=(23,0), pady=10, sticky="wens")
+        lb_qtd_abb.grid(row=2, column=1, padx=(20,0), pady=10, sticky="wens")
+        lbqtd_kuka.grid(row=3, column=1, padx=(20,0), pady=10, sticky="wens")
+        lb_qtd_fanuc.grid(row=4, column=1, padx=(20,0), pady=10, sticky="wens")
         
-        fabricantes = customtkinter.CTkComboBox(robos, values=["ABB", "KUKA", "FANUC"])
-        fabricantes.grid(row=1, column=2, padx=(10,10), pady=10, sticky="w")
+        lb_qtd = customtkinter.CTkLabel(robos, text="Quantidade")
+        en_qtd_abb = customtkinter.CTkEntry(robos)
+        en_qtd_kuka = customtkinter.CTkEntry(robos)
+        en_qtd_fanuc = customtkinter.CTkEntry(robos)
+        
+        lb_qtd.grid(row=1, column=2, padx=(0,95),  pady=10, sticky="wens")
+        en_qtd_abb.grid(row=2, column=2, padx=(0,80), pady=10, sticky="wens")
+        en_qtd_kuka.grid(row=3, column=2, padx=(0,80), pady=10, sticky="wens")
+        en_qtd_fanuc.grid(row=4, column=2, padx=(0,80), pady=10, sticky="wens")
+        
+        
         
         ################### Mesa giratoria ###################
         
