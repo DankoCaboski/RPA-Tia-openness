@@ -39,13 +39,13 @@ class OpenProject:
         comp_home_page.grid(row=self.row_counter, column=0, sticky="w", padx=25, pady=25)
         self.row_counter += 1
         
-        comp_export_bk = CustomButton(self.frame, "Exportar blocos", None, command=None)
+        comp_export_bk = CustomButton(self.frame, "Exportar blocos", None, command=self.export_bk)
         comp_export_bk = comp_export_bk.get_button()
         comp_export_bk.grid(row=self.row_counter, column=0, columnspan=2, sticky="e", padx=25)
         
-        comp_home_udt = CustomButton(self.frame, "Exportar UDT", None, command=None)
-        comp_home_udt = comp_home_udt.get_button()
-        comp_home_udt.grid(row=self.row_counter, column=2, columnspan=2, sticky="w", padx=25)
+        comp_export_udt = CustomButton(self.frame, "Exportar UDT", None, command=self.export_udt)
+        comp_export_udt = comp_export_udt.get_button()
+        comp_export_udt.grid(row=self.row_counter, column=2, columnspan=2, sticky="w", padx=25)
         self.row_counter += 1
         
         open_tia = CustomButton(self.frame, "Abrir projeto", None, command=self.open_project)
@@ -72,4 +72,16 @@ class OpenProject:
         self.status_label.update_idletasks() 
         proj_name = self.button_handler.open_project(project_path)
         self.status_label.configure(text=f'Status: Projeto "{proj_name}" aberto com sucesso')
+        
+    def export_bk(self):
+        try:
+            raise NotImplementedError("Not implemented yet")
+        except Exception as e:
+            self.status_label.configure(text=f"Status: Ocorreu um erro ao exportar blocos: {e}")
+    
+    def export_udt(self):
+        try:
+            raise NotImplementedError("Not implemented yet")
+        except Exception as e:
+            self.status_label.configure(text=f"Status: Ocorreu um erro ao exportar UDT: {e}")
     
