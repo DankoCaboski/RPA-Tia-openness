@@ -24,14 +24,14 @@ class TabviewSoftware:
         
         lb_qtd = customtkinter.CTkLabel(robos, text="Quantidade")
         global en_qtd_abb, en_qtd_kuka, en_qtd_fanuc
-        en_qtd_abb = customtkinter.CTkEntry(robos)
-        en_qtd_kuka = customtkinter.CTkEntry(robos)
-        en_qtd_fanuc = customtkinter.CTkEntry(robos)
+        en_qtd_abb = customtkinter.CTkEntry(robos, width=50)
+        en_qtd_kuka = customtkinter.CTkEntry(robos, width=50)
+        en_qtd_fanuc = customtkinter.CTkEntry(robos, width=50)
         
-        lb_qtd.grid(row=1, column=2, padx=(0,95),  pady=10, sticky="wens")
-        en_qtd_abb.grid(row=2, column=2, padx=(0,80), pady=10, sticky="wens")
-        en_qtd_kuka.grid(row=3, column=2, padx=(0,80), pady=10, sticky="wens")
-        en_qtd_fanuc.grid(row=4, column=2, padx=(0,80), pady=10, sticky="wens")
+        lb_qtd.grid(row=1, column=2, padx=(0,105),  pady=10, sticky="wens")
+        en_qtd_abb.grid(row=2, column=2, padx=(0,105), pady=10)
+        en_qtd_kuka.grid(row=3, column=2, padx=(0,105), pady=10)
+        en_qtd_fanuc.grid(row=4, column=2, padx=(0,105), pady=10)
         
         
         

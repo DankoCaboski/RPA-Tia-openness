@@ -38,7 +38,7 @@ class OpennessController:
             self.openness_service.tia.save_project()
             return "Projeto criado com sucesso!"
         except Exception as e:
-            return "Erro ao criar projeto: " + str(e)
+            return "Erro ao gerar projeto: " + str(e)
 
 
     def open_project(self, project_path):

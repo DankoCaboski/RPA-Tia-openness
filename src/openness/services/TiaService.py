@@ -52,7 +52,7 @@ class TiaService:
                 raise Exception("Error creating project")
             
         except Exception as e:
-            result = "Falha ao criar projeto: " + str(e)
+            result = "Falha ao gerar projeto: " + str(e)
             print(result)
             return result
         

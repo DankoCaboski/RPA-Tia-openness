@@ -64,7 +64,7 @@ class CreateProject:
         self.hw_frame.tabview.grid(row=self.hw_frame_index, column=0, columnspan=4, padx=25, pady=0, sticky='nsew')
         self.row_counter += 1
         
-        btn_criar = CustomButton(self.frame, "Criar projeto", None, command=self.call_create_proj)
+        btn_criar = CustomButton(self.frame, "Gerar projeto", None, command=self.call_create_proj)
         btn_criar = btn_criar.get_button()
         btn_criar.grid(row=self.row_counter, column=0, columnspan=4, padx=(0, 10), pady=10)
         self.row_counter += 1
