@@ -1,6 +1,7 @@
 from CustomTkinter import customtkinter
 
 from view.components.TabviewSoftware import TabviewSoftware
+from view.components.FakeTab import FakeTab
 
 
 import tkinter as tk
@@ -16,6 +17,11 @@ class ProjConfigFrame:
         
         self.hw_frame = customtkinter.CTkScrollableFrame(self.tabview.tab("Hardware"))
         self.sw_frame = customtkinter.CTkFrame(self.tabview.tab("Software"))
+        self.sw_frame.grid_columnconfigure(0, weight=0)
+        self.sw_frame.grid_columnconfigure(1, weight=1)
+        self.sw_content = TabviewSoftware(self.sw_frame)
+        self.content: customtkinter.CTkFrame = None
+        
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
@@ -118,37 +124,17 @@ class ProjConfigFrame:
         self.sw_frame.pack(fill='both', expand=True)
         self.sw_frame.configure(fg_color="transparent")
         
-        TabviewSoftware(self.sw_frame)
-        
-        
-        # self.sw_frame.grid_columnconfigure(0, weight=1)
-        # self.sw_frame.grid_columnconfigure(1, weight=1)
-        # self.sw_frame.grid_columnconfigure(2, weight=1)
-        # self.sw_frame.grid_columnconfigure(3, weight=1)
-        
-        # label_1 = customtkinter.CTkLabel(self.sw_frame, text="Robôs que deseja adicionar: ")
-        # label_1.grid(row=0, column=0, sticky="e", padx=(0,10), pady=10)
-        
-        # global rb_entry
-        # rb_entry = customtkinter.CTkEntry(self.sw_frame)
-        # rb_entry.insert(0, "0")
-        # rb_entry.grid(row=0, column=1, padx=(10,10), pady=10, sticky="w")
-        
-        # label_2 = customtkinter.CTkLabel(self.sw_frame, text="Mesas giratórias que deseja adicionar: ")
-        # label_2.grid(row=1, column=0, sticky="e", padx=(0,10), pady=10)
-        
-        # global mg_entry
-        # mg_entry = customtkinter.CTkEntry(self.sw_frame)
-        # mg_entry.insert(0, "0")
-        # mg_entry.grid(row=1, column=1, padx=(10,10), pady=10, sticky="w")
-        
-        # label_3 = customtkinter.CTkLabel(self.sw_frame, text="Grampos que deseja adicionar: ")
-        # label_3.grid(row=2, column=0, sticky="e", padx=(0,10), pady=10)
-        
-        # global gp_entry
-        # gp_entry = customtkinter.CTkEntry(self.sw_frame)
-        # gp_entry.insert(0, "0")
-        # gp_entry.grid(row=2, column=1, padx=(10,10), pady=10, sticky="w")
+        tab_names = ["Robôs", "Mesa", "Grampos"]
+        for index, name in enumerate(tab_names):
+            button = FakeTab(self.sw_frame, name).get_button()
+            button.grid(row=index, column=0, padx=10, pady=10)
+            button.configure(command=lambda i=index: set_current_option(i))
+            
+            def set_current_option(index):
+                self.change_sw_frame(index)
+                
+                
+        ################### Utils ###################
         
     def get_mlfb_by_hw_type(self):
         for i, hw_type in enumerate(self.opcoes_Hardware):
@@ -177,9 +163,18 @@ class ProjConfigFrame:
             result.append(hw_dict)
         return result
     
-    def get_blocks_to_import(self):
-        return {
-            'robots': rb_entry.get(),
-            'turntables': mg_entry.get(),
-            'grippers': gp_entry.get()
-        }
+    # def get_blocks_to_import(self):
+    #     return {
+    #         'robots': rb_entry.get(),
+    #         'turntables': mg_entry.get(),
+    #         'grippers': gp_entry.get()
+    #     }
+    
+    def change_sw_frame(self, index):
+        print(f"Setting current option to {index}")
+        if self.content != None:
+            self.content.grid_forget()
+        self.content = self.sw_content.sw_content(index)
+        self.content.grid(row=0, column=1, columnspan=3, padx=10, pady=10, sticky='nsew')
+        
+        
