@@ -1,13 +1,11 @@
 from CustomTkinter import customtkinter
-from view.components.FakeTab import FakeTab
-
 
 class TabviewSoftware:
     def __init__(self, sw_frame):
         
         robos = customtkinter.CTkFrame(sw_frame)
         label_1 = customtkinter.CTkLabel(robos, text="Robôs que deseja adicionar: ")
-        label_1.grid(row=0, column=0, sticky="e", padx=(0,10), pady=10)
+        label_1.grid(row=0, column=0, sticky="e", padx=(7,10), pady=10)
         
         global rb_entry
         rb_entry = customtkinter.CTkEntry(robos)
@@ -18,7 +16,7 @@ class TabviewSoftware:
         
         mesas = customtkinter.CTkFrame(sw_frame)
         label_2 = customtkinter.CTkLabel(mesas, text="Mesas giratórias que deseja adicionar: ")
-        label_2.grid(row=0, column=0, sticky="e", padx=(0,10), pady=10)
+        label_2.grid(row=0, column=0, sticky="e", padx=(7,10), pady=10)
         
         global mg_entry
         mg_entry = customtkinter.CTkEntry(mesas)
@@ -29,7 +27,7 @@ class TabviewSoftware:
         
         grampos = customtkinter.CTkFrame(sw_frame)
         label_3 = customtkinter.CTkLabel(grampos, text="Grampos que deseja adicionar: ")
-        label_3.grid(row=0, column=0, sticky="e", padx=(0,10), pady=10)
+        label_3.grid(row=0, column=0, sticky="e", padx=(7,10), pady=10)
         
         global gp_entry
         gp_entry = customtkinter.CTkEntry(grampos)

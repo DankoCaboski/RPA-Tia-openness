@@ -41,6 +41,7 @@ class ProjConfigFrame:
         
         self.add_hw()
         self.configure_sw()
+        self.change_sw_frame(0)
         
         ################### Hardware tab ###################
     
@@ -129,11 +130,14 @@ class ProjConfigFrame:
     def configure_sw(self):
         self.sw_frame.pack(fill='both', expand=True)
         self.sw_frame.configure(fg_color="transparent")
-                
+        
+        sw_tabs_frame = customtkinter.CTkFrame(self.sw_frame, fg_color="#4A4A4A", )
+        sw_tabs_frame.grid(row=0, column=0, pady=10, sticky='w')
+        
         for name in self.sw_options:
             index = self.sw_options.index(name)
-            button = FakeTab(self.sw_frame, name).get_button()
-            button.grid(row=index, column=0, padx=10, pady=10)
+            button = FakeTab(sw_tabs_frame, name).get_button()
+            button.grid(row=index, column=0, padx=7, pady=5)
             button.configure(command=lambda i=index: set_current_option(i))
             self.sw_tabs.append(button)
             
@@ -179,12 +183,12 @@ class ProjConfigFrame:
         if self.content != None:
             self.content.grid_forget()
         self.content = self.sw_content.sw_content(index)
-        self.content.grid(row=0, column=1, columnspan=3, padx=10, pady=10, sticky='nsew')
+        self.content.grid(row=0, column=1, columnspan=3, pady=10, sticky='nsew')
         self.color_sw_tab(index)
         
     def color_sw_tab(self, index):
         for i in range(len(self.sw_tabs)):
-            self.sw_tabs[i].configure(fg_color="#4A4A4A")
+            self.sw_tabs[i].configure(fg_color="transparent")
             
         self.sw_tabs[index].configure(fg_color="#1F6AA5")
         

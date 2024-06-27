@@ -14,7 +14,8 @@ class FakeTab:
             command=self.command,
             fg_color="transparent",
             bg_color="transparent",
-            width=10
+            font=('Helvetica', 12),
+            width=60
             )
         
         return button
