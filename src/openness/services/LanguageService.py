@@ -1,5 +1,6 @@
 from openness.services.Utils import Utils
 
+
 class LanguageService:
     def __init__(self):
         self.language_composition = None

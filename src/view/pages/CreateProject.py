@@ -80,7 +80,7 @@ class CreateProject:
         self.status_label.update_idletasks() 
         
         hardware = self.hw_frame.get_hardware_values()
-        blocks = self.hw_frame.get_blocks_to_import()
+        blocks: dict = self.hw_frame.get_blocks_to_import()
         
         status = self.button_handler.create_project(
             proj_name.get(),

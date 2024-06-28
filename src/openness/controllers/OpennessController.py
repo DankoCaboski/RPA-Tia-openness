@@ -36,9 +36,11 @@ class OpennessController:
             self.openness_service.tia.wire_profinet()
             self.openness_service.tia.import_blocks(blocks_to_import)
             self.openness_service.tia.save_project()
-            return "Projeto criado com sucesso!"
+            status = "Projeto criado com sucesso!"
+            return status
         except Exception as e:
-            return "Erro ao gerar projeto: " + str(e)
+            error = "Erro ao gerar projeto: " + str(e)
+            return error
 
 
     def open_project(self, project_path):
