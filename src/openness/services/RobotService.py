@@ -48,6 +48,7 @@ class RobotService:
                     udt_path = self.dependencies + '\\' + udt + '.xml'
                     device = self.tia_service.get_device_by_index(0)
                     self.tia_service.import_data_type(device, udt_path)
+                    
                 self.tia_service.import_block(robot_group, abb_bk_path)
                 
             elif robot_robot_brand == 'FANUC':

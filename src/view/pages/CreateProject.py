@@ -28,6 +28,9 @@ class CreateProject:
         
         self.row_counter = 0
         
+        
+        self.proj_path = ""
+        
         self.get_tia_versions()
         
         self.create_project_page()
@@ -76,6 +79,12 @@ class CreateProject:
         self.button_handler.show_home_page()
         
     def call_create_proj(self):
+        if self.proj_path == '' or self.proj_path is None:
+            self.status_label.configure(text="Status: Selecione um caminho para o projeto")
+            return
+        if proj_name.get() == '' or proj_name.get() is None:
+            self.status_label.configure(text="Status: Insira um nome para o projeto")
+            return
         self.status_label.configure(text=f"Status: Criando projeto")
         self.status_label.update_idletasks() 
         
@@ -84,7 +93,7 @@ class CreateProject:
         
         status = self.button_handler.create_project(
             proj_name.get(),
-            proj_path,
+            self.proj_path,
             tia_version.get(),
             hardware,
             blocks
@@ -93,8 +102,7 @@ class CreateProject:
         self.status_label.configure(text="Status: " + str(status))
         
     def set_proj_path(self):
-        global proj_path
-        proj_path = Utils().open_directory_dialog()
+        self.proj_path = Utils().open_directory_dialog()
         
     def get_tia_versions(self):
         global versions
