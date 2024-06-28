@@ -12,7 +12,7 @@ https://github.com/Maroder1/TIA-openness
 
 ## Installation of TIA Openness
 
- 1. Install TIA v15.1 professional, make sure openness is checked [default]
+ 1. Install TIA v15.1 professional, make sure openness is checked
 	[Link to TIA v15.1 trail](https://support.industry.siemens.com/cs/ww/en/view/109761045)
 
  2. Add your user to the Siemens TIA Opennesss Group as shown on page 27 [here](https://cache.industry.siemens.com/dl/files/163/109477163/att_926042/v1/TIAPortalOpennessenUS_en-US.pdf)
