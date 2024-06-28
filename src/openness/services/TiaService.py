@@ -245,7 +245,7 @@ class TiaService:
         type_group = plc_software.TypeGroup
         return type_group.Types
     
-    def recursive_folder_search(self, group, group_name):
+    def recursive_folder_search(self, group, group_name: str):
         try:
             if group == None:
                 for device in self.my_devices:
@@ -260,12 +260,14 @@ class TiaService:
                 found = self.recursive_folder_search(group.Groups, group_name)
                 if found:
                     return 
+            
             return False
+        
         except Exception as e:
             print('Error searching group:', e)
 
 
-    def create_group(self, device, group_name, parent_group):
+    def create_group(self, device, group_name: str, parent_group: str):
         try:
             if device is None:
                 device = self.my_devices[0]
@@ -274,7 +276,11 @@ class TiaService:
             if not parent_group:
                 return groups.Create(group_name)
             else:
-                return self.recursive_folder_search(groups, parent_group).Groups.Create(group_name)
+                mygroup = self.recursive_folder_search(groups, parent_group)
+                if mygroup:
+                    return mygroup.Groups.Create(group_name)
+                else:
+                    raise Exception(f"Parent {parent_group} group not found")
                 
         except Exception as e:
             print('Error creating group:', e)

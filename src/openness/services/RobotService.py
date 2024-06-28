@@ -27,12 +27,16 @@ class RobotService:
 
 
     def create_robot_structure(self, robot_name, robot_brand):
-        op_exist = self.tia_service.recursive_folder_search(None, "03_Blocos Operacionais")
-        if not op_exist:
-            self.tia_service.create_group(None, "03_Blocos Operacionais", None)
+        op_gp = self.tia_service.recursive_folder_search(None, "03_Blocos Operacionais")
+        if not op_gp:
+           op_gp = self.tia_service.create_group(None, "03_Blocos Operacionais", None)
             
+        rb_gp = self.tia_service.recursive_folder_search(op_gp.Groups, "03.5_Robos")
+        if not rb_gp:
+            rb_gp = self.tia_service.create_group(None, "03.5_Robos", "03_Blocos Operacionais")
+        
         group_name = robot_name + '_group'
-        robot_group = self.tia_service.create_group(None, group_name, "03_Blocos Operacionais")
+        robot_group = self.tia_service.create_group(None, group_name, "03.5_Robos")
         self.import_robot_bk(robot_group, robot_brand)
 
 
