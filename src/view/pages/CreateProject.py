@@ -69,7 +69,7 @@ class CreateProject:
         
         btn_criar = CustomButton(self.frame, "Gerar projeto", None, command=self.call_create_proj)
         btn_criar = btn_criar.get_button()
-        btn_criar.grid(row=self.row_counter, column=0, columnspan=4, padx=(0, 10), pady=10)
+        btn_criar.grid(row=self.row_counter, column=0, columnspan=4, padx=10, pady=10)
         self.row_counter += 1
         
         self.status_label = customtkinter.CTkLabel(self.frame, text="Status: Idle")

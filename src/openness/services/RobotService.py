@@ -1,5 +1,5 @@
 from openness.services.UDTService import UDTService
-
+from openness.services.Utils import Utils
 
 
 class RobotService:
@@ -15,12 +15,13 @@ class RobotService:
                 qtd = robots_association.get(robot_brand)
                 if qtd is None or str(qtd) == '':
                     continue
-                if int(qtd) > 1:
+                qtd = int(qtd)
+                if qtd > 1:
                     print("qtd > 1")
-                    for i in range(robot_brand[1]):
-                        self.create_robot_structure(robot_brand[0] + "_" + str(i), robot_brand)
+                    for i in range(qtd):
+                        self.create_robot_structure(robot_brand + "_" + str(i), robot_brand)
                 else:
-                    self.create_robot_structure(robot_brand[0], robot_brand)
+                    self.create_robot_structure(robot_brand, robot_brand)
         except Exception as e:
             print("Error manege_robot: ", e)
 
@@ -39,19 +40,22 @@ class RobotService:
         try:
             robot_robot_brand = robot_robot_brand.upper()
             
-            print(f'Importing {robot_robot_brand} robot block')
+            generated_block_name = Utils().get_attibutes(["Name"],robot_group)
+            print(f'Importing {robot_robot_brand} robot block to {generated_block_name[0]}...')
+            bk_path:str = ""
             if robot_robot_brand == 'ABB':
-                abb_bk_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\03_Blocos Operacionais\robots\bk_abb.xml"
-                udts = UDTService().list_udt_from_bk(abb_bk_path)
-                
-                for udt in udts:
-                    udt_path = self.dependencies + '\\' + udt + '.xml'
-                    device = self.tia_service.get_device_by_index(0)
-                    self.tia_service.import_data_type(device, udt_path)
-                    
-                self.tia_service.import_block(robot_group, abb_bk_path)
-                
+                bk_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\03_Blocos Operacionais\robots\bk_abb.xml"
             elif robot_robot_brand == 'FANUC':
-                self.tia_service.import_block(robot_group, 123, r"C:\Users\Willian\Desktop\exported_bk\bk_fanuc.xml")
+                bk_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\03_Blocos Operacionais\robots\bk_fanuc.xml"
+                
+            udts = UDTService().list_udt_from_bk(bk_path)
+                
+            for udt in udts:
+                udt_path = self.dependencies + '\\' + udt + '.xml'
+                device = self.tia_service.get_device_by_index(0)
+                self.tia_service.import_data_type(device, udt_path)
+                
+            self.tia_service.import_block(robot_group.Blocks, bk_path)
+                
         except Exception as e:
             print("Error importing robot block: ", e)

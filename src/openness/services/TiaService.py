@@ -345,15 +345,21 @@ class TiaService:
             import_options = self.tia.ImportOptions.Override
             xml_file_info = Utils().get_file_info(file_path)
             
-            if str(object.GetType()) == "Siemens.Engineering.HW.DeviceImpl":
-                object = object.DeviceItems[1]
-                print(f"Importing block to CPU: {object}")
-                plc_software = self.hwf.get_software(object)
-                plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options)
-                
-            elif str(object.GetType()) == "Siemens.Engineering.SW.Blocks.PlcBlockComposition":
-                print(f"Importing block to group: {object}")
-                object.Import(xml_file_info, import_options)
+            object_type = str(object.GetType())
+            
+            if object_type != "Siemens.Engineering.HW.DeviceImpl" and object_type != "Siemens.Engineering.SW.Blocks.PlcBlockComposition":
+                raise Exception("Invalid object type: ", object_type)
+        
+            else:
+                if object_type == "Siemens.Engineering.HW.DeviceImpl":
+                    object = object.DeviceItems[1]
+                    print(f"Importing block to CPU: {object}")
+                    plc_software = self.hwf.get_software(object)
+                    plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options)
+                    
+                elif object_type == "Siemens.Engineering.SW.Blocks.PlcBlockComposition":
+                    print(f"Importing block to group: {object}")
+                    object.Import(xml_file_info, import_options)
                 
             return True
         

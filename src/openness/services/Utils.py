@@ -37,7 +37,12 @@ class Utils:
                 mylist.append(str(version[0]))
         return mylist
     
-    def get_attibutes(self, attribute_names, item):
+    def get_attibutes(
+        self,
+        attribute_names: list[str],
+        item
+        ):
+        
         cs_attribute_names = List[str]()
         for i in attribute_names:
             cs_attribute_names.Add(i)
