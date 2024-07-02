@@ -174,7 +174,6 @@ class ProjConfigFrame:
         # return self.sw_content.get_blocks_to_import()
 
     def add_zona(self, zonas_view: customtkinter.CTkTabview):
-        self.n_zonas
         if self.n_zonas >= 5:
             return
         nova_zona = zonas_view.add(f"Zona {self.n_zonas + 1}")
@@ -197,8 +196,7 @@ class ProjConfigFrame:
         # self.color_sw_tab(n)
         
     def frame_zona(self, frame):
-        zona = Zonaframe(frame)
-        return zona.frame
+        Zonaframe(frame)
         
     
     def color_sw_tab(self, index: int):

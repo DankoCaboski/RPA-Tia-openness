@@ -4,7 +4,6 @@ from view.components.TabviewSoftware import TabviewSoftware
 
 class Zonaframe:
     def __init__(self, frame):
-        self.frame = customtkinter.CTkFrame(frame)
         
-        button = customtkinter.CTkButton(self.frame, text="ZonaFrame")
-        button.pack()
+        entidades = customtkinter.CTkComboBox(frame, values=["Robôs", "Mesas", "Esteiras"])
+        entidades.grid(row=0, column=0, padx=(0,10), pady=10)
