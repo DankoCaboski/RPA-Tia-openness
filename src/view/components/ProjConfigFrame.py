@@ -1,6 +1,7 @@
 from CustomTkinter import customtkinter
 
 from view.components.TabviewSoftware import TabviewSoftware
+from view.functions.PlusIcon import PlusIcon
 from view.components.FakeTab import FakeTab
 
 
@@ -17,17 +18,9 @@ class ProjConfigFrame:
         
         self.hw_frame = customtkinter.CTkScrollableFrame(self.tabview.tab("Hardware"))
         
-        self.sw_frame = customtkinter.CTkFrame(self.tabview.tab("Software"))
-        self.sw_frame.grid_columnconfigure(0, weight=0)
-        self.sw_frame.grid_columnconfigure(1, weight=1)
-        
         self.sw_options = ["Robôs", "Mesa", "Grampos"]
-        self.sw_tabs = []
         
-        
-        self.sw_content = TabviewSoftware(self.sw_frame)
-        self.content: customtkinter.CTkFrame = None
-        
+        self.zonas: list[customtkinter.CTkButton] = []
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
@@ -41,7 +34,6 @@ class ProjConfigFrame:
         
         self.add_hw()
         self.configure_sw()
-        self.change_sw_frame(0)
         
         ################### Hardware tab ###################
     
@@ -128,24 +120,27 @@ class ProjConfigFrame:
         ################### Software tab ###################
         
     def configure_sw(self):
-        self.sw_frame.pack(fill='both', expand=True)
-        self.sw_frame.configure(fg_color="transparent")
         
-        sw_tabs_frame = customtkinter.CTkFrame(self.sw_frame, fg_color="#4A4A4A", )
-        sw_tabs_frame.grid(row=0, column=0, pady=10, sticky='nw')
+        zonas_frame = customtkinter.CTkFrame(self.tabview.tab("Software"), fg_color="#4A4A4A")
+        zonas_frame.grid(row=0, column=0, sticky="e")
         
-        for name in self.sw_options:
-            index = self.sw_options.index(name)
-            button = FakeTab(sw_tabs_frame, name).get_button()
-            button.grid(row=index, column=0, padx=7, pady=5)
-            button.configure(command=lambda i=index: set_current_option(i))
-            self.sw_tabs.append(button)
-            
-            def set_current_option(index):
-                self.change_sw_frame(index)
-                
-        self.color_sw_tab(0)
-                
+        plus_icon = PlusIcon().load_image()
+        
+        global add_zona
+        add_zona = customtkinter.CTkButton(
+            zonas_frame,
+            text="",
+            image=plus_icon,
+            width=24,
+            height=24,
+            command=lambda: self.add_zona(zonas_frame)
+            )
+        
+        add_zona.grid(row=0, column=0, padx=10, pady=10)
+        
+        if self.zonas.__len__() == 0:
+            self.add_zona(zonas_frame)  
+          
                 
         ################### Utils ###################
         
@@ -177,19 +172,24 @@ class ProjConfigFrame:
         return result
     
     def get_blocks_to_import(self):
-        return self.sw_content.get_blocks_to_import()
+        raise NotImplementedError("'get_blocks_to_import' method not implemented yet.")
+        # return self.sw_content.get_blocks_to_import()
+
+    def add_zona(self, frame):
+        n = self.zonas.__len__()
+        if n >= 5:
+            return
+        fake_tab = FakeTab(frame, f"Zona {n + 1}", None)
+        zona = fake_tab.get_button()
+        zona.grid(row=0, column=n, padx=10, pady=10)
+        self.zonas.append(zona)
+        add_zona.grid_forget()
+        add_zona.grid(row=0, column=n+1, padx=10, pady=10)
+        self.color_sw_tab(n)
     
-    def change_sw_frame(self, index):
-        if self.content != None:
-            self.content.grid_forget()
-        self.content = self.sw_content.sw_content(index)
-        self.content.grid(row=0, column=1, columnspan=3, pady=10, sticky='nsew')
-        self.color_sw_tab(index)
-        
-    def color_sw_tab(self, index):
-        for i in range(len(self.sw_tabs)):
-            self.sw_tabs[i].configure(fg_color="transparent")
+    def color_sw_tab(self, index: int):
+        for i in range(len(self.zonas)):
+            self.zonas[i].configure(fg_color="transparent")
             
-        self.sw_tabs[index].configure(fg_color="#1F6AA5")
-        
-        
+        self.zonas[index].configure(fg_color="#1F6AA5")
+            
