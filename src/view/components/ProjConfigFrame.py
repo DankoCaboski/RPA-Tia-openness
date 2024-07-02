@@ -24,6 +24,7 @@ class ProjConfigFrame:
         self.sw_options = ["Robôs", "Mesa", "Grampos"]
         
         self.zonas = [[], []]
+        self.n_zonas = 1
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
@@ -123,30 +124,24 @@ class ProjConfigFrame:
         ################### Software tab ###################
         
     def configure_sw(self):
+        global zonas_view
+        zonas_view  = customtkinter.CTkTabview(self.tabview.tab("Software"), anchor="nw", command=self.on_tab_change)
+        zonas_view.add("Zona 1")
+        zonas_view.add("+")
         
-        zonas_frame = customtkinter.CTkFrame(self.tabview.tab("Software"), fg_color="#4A4A4A")
-        zonas_frame.grid(row=0, column=0, sticky="w")
+        zonas_view.set("Zona 1")
         
-        plus_icon = PlusIcon().load_image()
-        
-        global add_zona
-        add_zona = customtkinter.CTkButton(
-            zonas_frame,
-            text="",
-            image=plus_icon,
-            width=24,
-            height=24,
-            command=lambda: self.add_zona(zonas_frame)
-            )
-        
-        add_zona.grid(row=0, column=0, padx=10, pady=10)
-        
-        if self.zonas.__len__() == 0:
-            self.add_zona(zonas_frame)  
+        zonas_view.grid(row=0, column=0, columnspan=2, sticky='nsew')
           
                 
         ################### Utils ###################
         
+    def on_tab_change(self):
+        current_tab = zonas_view.get()
+        if current_tab == "+":
+            self.add_zona(zonas_view)
+            zonas_view.set("Zona 1")
+            
     def get_mlfb_by_hw_type(self):
         for i, hw_type in enumerate(self.opcoes_Hardware):
             mlfbs = Utils().get_mlfb_by_hw_type(hw_type)
@@ -178,23 +173,28 @@ class ProjConfigFrame:
         raise NotImplementedError("'get_blocks_to_import' method not implemented yet.")
         # return self.sw_content.get_blocks_to_import()
 
-    def add_zona(self, frame):
-        n = self.zonas[0].__len__()
-        if n >= 5:
+    def add_zona(self, zonas_view: customtkinter.CTkTabview):
+        self.n_zonas
+        if self.n_zonas >= 5:
             return
-        fake_tab = FakeTab(frame, f"Zona {n + 1}", None)
-        zona = fake_tab.get_button()
-        zona.grid(row=0, column=n, padx=10, pady=10)
-        self.zonas[0].append(zona)
+        nova_zona = zonas_view.add(f"Zona {self.n_zonas + 1}")
+        self.n_zonas += 1
+        zonas_view.move(self.n_zonas, "+")
+        self.frame_zona(nova_zona)
         
-        # Move botão add para direita
-        add_zona.grid_forget()
-        add_zona.grid(row=0, column=n+1, padx=10, pady=10)
+        # fake_tab = FakeTab(frame, f"Zona {n + 1}", None)
+        # zona = fake_tab.get_button()
+        # zona.grid(row=0, column=n, padx=10, pady=10)
+        # self.zonas[0].append(zona)
         
-        zona_frame = self.frame_zona(self.tabview.tab("Software"))
-        self.zonas[1].append(zona_frame)
-        zona_frame.grid(row=1, column=0, columnspan=2, sticky="wnes")
-        self.color_sw_tab(n)
+        # # Move botão add para direita
+        # add_zona.grid_forget()
+        # add_zona.grid(row=0, column=n+1, padx=10, pady=10)
+        
+        # zona_frame = self.frame_zona(self.tabview.tab("Software"))
+        # self.zonas[1].append(zona_frame)
+        # zona_frame.grid(row=1, column=0, columnspan=2, sticky="wnes")
+        # self.color_sw_tab(n)
         
     def frame_zona(self, frame):
         zona = Zonaframe(frame)
