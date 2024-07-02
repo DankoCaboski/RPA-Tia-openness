@@ -1,9 +1,8 @@
 from CustomTkinter import customtkinter
 
-from view.components.TabviewSoftware import TabviewSoftware
 from view.functions.PlusIcon import PlusIcon
 from view.components.FakeTab import FakeTab
-
+from view.components.ZonaFrame import Zonaframe
 
 import tkinter as tk
 from openness.services.Utils import Utils
@@ -13,14 +12,18 @@ class ProjConfigFrame:
         self.tabview  = customtkinter.CTkTabview(frame, anchor="nw")
         
         self.tabview.add("Hardware")
+        
         self.tabview.add("Software")
+        self.tabview.tab("Software").grid_columnconfigure(0, weight=1)
+        self.tabview.tab("Software").grid_columnconfigure(1, weight=1)
+        
         self.tabview.set("Hardware")
         
         self.hw_frame = customtkinter.CTkScrollableFrame(self.tabview.tab("Hardware"))
         
         self.sw_options = ["Robôs", "Mesa", "Grampos"]
         
-        self.zonas: list[customtkinter.CTkButton] = []
+        self.zonas = [[], []]
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
@@ -122,7 +125,7 @@ class ProjConfigFrame:
     def configure_sw(self):
         
         zonas_frame = customtkinter.CTkFrame(self.tabview.tab("Software"), fg_color="#4A4A4A")
-        zonas_frame.grid(row=0, column=0, sticky="e")
+        zonas_frame.grid(row=0, column=0, sticky="w")
         
         plus_icon = PlusIcon().load_image()
         
@@ -176,20 +179,31 @@ class ProjConfigFrame:
         # return self.sw_content.get_blocks_to_import()
 
     def add_zona(self, frame):
-        n = self.zonas.__len__()
+        n = self.zonas[0].__len__()
         if n >= 5:
             return
         fake_tab = FakeTab(frame, f"Zona {n + 1}", None)
         zona = fake_tab.get_button()
         zona.grid(row=0, column=n, padx=10, pady=10)
-        self.zonas.append(zona)
+        self.zonas[0].append(zona)
+        
+        # Move botão add para direita
         add_zona.grid_forget()
         add_zona.grid(row=0, column=n+1, padx=10, pady=10)
+        
+        zona_frame = self.frame_zona(self.tabview.tab("Software"))
+        self.zonas[1].append(zona_frame)
+        zona_frame.grid(row=1, column=0, columnspan=2, sticky="wnes")
         self.color_sw_tab(n)
+        
+    def frame_zona(self, frame):
+        zona = Zonaframe(frame)
+        return zona.frame
+        
     
     def color_sw_tab(self, index: int):
-        for i in range(len(self.zonas)):
-            self.zonas[i].configure(fg_color="transparent")
+        for i in range(len(self.zonas[0])):
+            self.zonas[0][i].configure(fg_color="transparent")
             
-        self.zonas[index].configure(fg_color="#1F6AA5")
+        self.zonas[0][index].configure(fg_color="#1F6AA5")
             

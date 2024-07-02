@@ -34,7 +34,6 @@ class TabviewSoftware:
         en_qtd_fanuc.grid(row=4, column=2, padx=(0,105), pady=10)
         
         
-        
         ################### Mesa giratoria ###################
         
         mesas = customtkinter.CTkFrame(sw_frame)
@@ -45,6 +44,7 @@ class TabviewSoftware:
         mg_entry = customtkinter.CTkEntry(mesas)
         mg_entry.insert(0, "0")
         mg_entry.grid(row=0, column=1, padx=(10,10), pady=10, sticky="w")
+        
         
         ################### gp ###################
         
