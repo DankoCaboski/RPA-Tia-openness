@@ -14,8 +14,6 @@ class ProjConfigFrame:
         self.tabview.add("Hardware")
         
         self.tabview.add("Software")
-        self.tabview.tab("Software").grid_columnconfigure(0, weight=1)
-        self.tabview.tab("Software").grid_columnconfigure(1, weight=1)
         
         self.tabview.set("Hardware")
         
@@ -133,19 +131,26 @@ class ProjConfigFrame:
         ################### Software tab ###################
         
     def configure_sw(self):
-        global zonas_view
-        zonas_view  = customtkinter.CTkTabview(self.tabview.tab("Software"),
-                                               anchor="nw",
-                                               command=self.on_tab_change
-                                               )
+        self.tabview.tab("Software").grid_columnconfigure(0, weight=1)
+        self.tabview.tab("Software").grid_columnconfigure(1, weight=1)
+        self.tabview.tab("Software").grid_columnconfigure(2, weight=1)
+        self.tabview.tab("Software").grid_columnconfigure(3, weight=1)
+
+        self.tabview.tab("Software").grid_rowconfigure(0, weight=1)
         
+        global zonas_view
+        zonas_view = customtkinter.CTkTabview(self.tabview.tab("Software"),
+                                              anchor="nw",
+                                              command=self.on_tab_change
+                                              )
+
         zonas_view.add("Zona 1")
         zonas_view.add("+")
-        
+
         self.frame_zona(zonas_view.tab("Zona 1"))
         zonas_view.set("Zona 1")
-        
-        zonas_view.grid(row=0, column=0, columnspan=2, sticky='nsew')
+
+        zonas_view.grid(row=0, column=0, columnspan=4, padx=0, pady=0, sticky="nsew")
           
                 
         ################### Utils ###################
@@ -153,8 +158,10 @@ class ProjConfigFrame:
     def on_tab_change(self):
         current_tab = zonas_view.get()
         if current_tab == "+":
-            self.add_zona(zonas_view)
-            zonas_view.set("Zona 1")
+            if self.n_zonas >= 5:
+                return
+            zona_name = self.add_zona(zonas_view)
+            zonas_view.set(zona_name)
             
     def get_mlfb_by_hw_type(self):
         for i, hw_type in enumerate(self.opcoes_Hardware):
@@ -188,14 +195,16 @@ class ProjConfigFrame:
         # return self.sw_content.get_blocks_to_import()
 
     def add_zona(self, zonas_view: customtkinter.CTkTabview):
-        if self.n_zonas >= 5:
-            return
-        nova_zona = zonas_view.add(f"Zona {self.n_zonas + 1}")
+        zona_name = f"Zona {self.n_zonas + 1}"
+        nova_zona = zonas_view.add(zona_name)
         self.n_zonas += 1
         zonas_view.move(self.n_zonas, "+")
         self.frame_zona(nova_zona)
+        return zona_name
         
-    def frame_zona(self, frame):
+    def frame_zona(self, frame: customtkinter.CTkFrame):
+        frame.grid_columnconfigure(0, weight=1)
+        frame.grid_columnconfigure(1, weight=1)
         Zonaframe(frame)
         
     
