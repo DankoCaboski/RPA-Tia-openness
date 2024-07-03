@@ -51,7 +51,11 @@ class ProjConfigFrame:
         self.hw_frame.grid_columnconfigure(4, weight=1)
         
         global btn_add_hw
-        btn_add_hw = customtkinter.CTkButton(self.hw_frame, text="Adicionar Hardware", command=self.add_hw_combobox)
+        btn_add_hw = customtkinter.CTkButton(self.hw_frame,
+                                             text="Adicionar Hardware",
+                                             command=self.add_hw_combobox
+                                             )
+        
         btn_add_hw.grid(row=0, column=1, columnspan=2, pady=10)
             
     def add_hw_combobox(self):                
@@ -69,7 +73,12 @@ class ProjConfigFrame:
             event.widget.tk_focusNext().focus()
             return "break"
         
-        type_hw = customtkinter.CTkComboBox(self.hw_frame, width=120, variable=input["combobox"], values=self.opcoes_Hardware)
+        type_hw = customtkinter.CTkComboBox(self.hw_frame,
+                                            width=120,
+                                            variable=input["combobox"],
+                                            values=self.opcoes_Hardware
+                                            )
+        
         type_hw.grid(row=self.row_counter, column=0, padx=(10,0), pady=10, sticky='e')
         
         hw_mlfb = customtkinter.CTkComboBox(self.hw_frame, variable=input["mlfb"])
@@ -125,10 +134,15 @@ class ProjConfigFrame:
         
     def configure_sw(self):
         global zonas_view
-        zonas_view  = customtkinter.CTkTabview(self.tabview.tab("Software"), anchor="nw", command=self.on_tab_change)
+        zonas_view  = customtkinter.CTkTabview(self.tabview.tab("Software"),
+                                               anchor="nw",
+                                               command=self.on_tab_change
+                                               )
+        
         zonas_view.add("Zona 1")
         zonas_view.add("+")
         
+        self.frame_zona(zonas_view.tab("Zona 1"))
         zonas_view.set("Zona 1")
         
         zonas_view.grid(row=0, column=0, columnspan=2, sticky='nsew')
@@ -180,20 +194,6 @@ class ProjConfigFrame:
         self.n_zonas += 1
         zonas_view.move(self.n_zonas, "+")
         self.frame_zona(nova_zona)
-        
-        # fake_tab = FakeTab(frame, f"Zona {n + 1}", None)
-        # zona = fake_tab.get_button()
-        # zona.grid(row=0, column=n, padx=10, pady=10)
-        # self.zonas[0].append(zona)
-        
-        # # Move botão add para direita
-        # add_zona.grid_forget()
-        # add_zona.grid(row=0, column=n+1, padx=10, pady=10)
-        
-        # zona_frame = self.frame_zona(self.tabview.tab("Software"))
-        # self.zonas[1].append(zona_frame)
-        # zona_frame.grid(row=1, column=0, columnspan=2, sticky="wnes")
-        # self.color_sw_tab(n)
         
     def frame_zona(self, frame):
         Zonaframe(frame)
