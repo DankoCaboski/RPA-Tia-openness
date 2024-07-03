@@ -17,7 +17,7 @@ class InputMesa:
         driver_label = customtkinter.CTkLabel(self.frame, text="Driver")
         driver_label.grid(row=0, column=0, padx=3, pady=3, sticky='ws')
         
-        driver_input = customtkinter.CTkComboBox(self.frame, width=90, values=["SWE", "Sinamics"])
+        driver_input = customtkinter.CTkComboBox(self.frame, width=90, values=["SEW", "Sinamics"])
         driver_input.grid(row=1, column=0, padx=3, pady=3, sticky='wn')
         
         ladoA = customtkinter.CTkFrame(self.frame, fg_color="#4A4A4A")
@@ -76,6 +76,3 @@ class InputMesa:
         
         pp_p3 = customtkinter.CTkEntry(frame, width=40, height=15)
         pp_p3.grid(row=3, column=2, padx=3, sticky='w')
-        
-        
-        

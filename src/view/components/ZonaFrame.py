@@ -2,19 +2,22 @@ from CustomTkinter import customtkinter
 from view.components.FakeTab import FakeTab
 from view.components.InputRobo import InputRobo
 from view.components.InputMesa import InputMesa
+from view.components.InputConveyor import InputConveyor
 
 
 import tkinter as tk
 
 class Zonaframe:
     def __init__(self, frame):
-        self.frame: customtkinter.CTkComboBox = frame
+        self.frame = frame
         self.frame.grid_rowconfigure(1, weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
         self.frame.grid_columnconfigure(1, weight=1)
         
         self.entity_type = tk.StringVar()
         self.aux_enity_type = tk.StringVar()
+        
+        self.current_entity = None
         
         self.entidades = customtkinter.CTkFrame(self.frame, fg_color="#4A4A4A")
         self.entidades.grid(row=0, column=0, padx = 0, pady=0, sticky='w')
@@ -24,7 +27,9 @@ class Zonaframe:
         self.lista_mesas = []
         self.lista_esteiras = []
         
-        self.conteudo: customtkinter.CTkFrame = None
+        self.conteudo = customtkinter.CTkFrame(self.frame, fg_color="#4A4A4A")
+        self.conteudo.grid(row=1, column=0, columnspan=2, sticky='nsew')
+        
         
         self.frame_entidades()
         
@@ -53,35 +58,28 @@ class Zonaframe:
             
     def rb_frame(self):
         if self.lista_robos.__len__() == 0:
-            new_ent = FakeTab(self.entidades, "rb1")
+            new_ent = FakeTab(self.entidades, "rb1", self.load_entity_frame)
             new_ent = new_ent.get_button()
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
             self.lista_robos.append(new_ent)
             
-        self.conteudo = customtkinter.CTkFrame(self.frame, fg_color="green")
-        InputRobo(self.conteudo)
-        self.conteudo.grid(row=1, column=0, columnspan=2, sticky='nsew')
+            if self.current_entity is None:
+                self.current_entity = new_ent
+                self.load_entity_frame()
         
     def mesa_frame(self):
         if self.lista_mesas.__len__() == 0:
-            new_ent = FakeTab(self.entidades, "ms1")
+            new_ent = FakeTab(self.entidades, "ms1", self.load_entity_frame)
             new_ent = new_ent.get_button()
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
             self.lista_mesas.append(new_ent)
-            
-        self.conteudo = customtkinter.CTkFrame(self.frame, fg_color="blue")
-        InputMesa(self.conteudo)
-        self.conteudo.grid(row=1, column=0, columnspan=2, sticky='nsew')
     
     def est_frame(self):
         if self.lista_esteiras.__len__() == 0:
-            new_ent = FakeTab(self.entidades, "es1")
+            new_ent = FakeTab(self.entidades, "es1", self.load_entity_frame)
             new_ent = new_ent.get_button()
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
             self.lista_esteiras.append(new_ent)
-            
-        self.conteudo = customtkinter.CTkFrame(self.frame, fg_color="red")
-        self.conteudo.grid(row=1, column=0, columnspan=2, sticky='nsew')
         
         
         ################### Utils ###################
@@ -91,23 +89,23 @@ class Zonaframe:
         if entityes.get() == self.aux_enity_type:
             return
         if entityes.get() == "Robôs":
-            print("Robôs")
             self.remove_entity()
             self.set_entidades(self.lista_robos)
+            self.load_entity_frame()
             
             self.aux_enity_type = "Robôs"
             self.rb_frame()
         elif entityes.get() == "Mesas":
-            print("Mesas")
             self.remove_entity()
             self.set_entidades(self.lista_mesas)
+            self.load_entity_frame()
             
             self.aux_enity_type = "Mesas"
             self.mesa_frame()
         elif entityes.get() == "Esteiras":
-            print("Esteiras")
             self.remove_entity()
             self.set_entidades(self.lista_esteiras)
+            self.load_entity_frame()
             
             self.aux_enity_type = "Esteiras"
             self.est_frame()
@@ -122,7 +120,6 @@ class Zonaframe:
             text = widget.cget("text")
             if text == "+":
                 continue
-            print(text)
             widget.grid_forget()
                 
     def set_entidades(self, entidades: list):
@@ -156,7 +153,7 @@ class Zonaframe:
         add_ent.grid_forget()
         
         nome = f"{nome} {n_entidades + 1}"
-        new_ent = FakeTab(self.entidades, nome)
+        new_ent = FakeTab(self.entidades, nome, self.load_entity_frame)
         new_ent = new_ent.get_button()
         new_ent.grid(row = grid_info.get('row'),
                      column = grid_info.get('column'),
@@ -178,4 +175,17 @@ class Zonaframe:
             
         elif self.entity_type.get() == "Esteiras":
             self.lista_esteiras.append(new_ent)
+            
+    def load_entity_frame(self):
+        # TODO: revisar a função que remove os widgets, com ela descomentada a aplicação cracha ao trocar de monitor
+        # self.remove_widgets()
+        if self.entity_type.get() == "Robôs":
+            InputRobo(self.conteudo)
+        elif self.entity_type.get() == "Mesas":
+            InputMesa(self.conteudo)
+        elif self.entity_type.get() == "Esteiras":
+            InputConveyor(self.conteudo)
         
+    def remove_widgets(self):
+        for widget in self.conteudo.winfo_children():
+            widget.destroy()

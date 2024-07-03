@@ -139,7 +139,8 @@ class ProjConfigFrame:
         global zonas_view
         zonas_view = customtkinter.CTkTabview(self.tabview.tab("Software"),
                                               anchor="nw",
-                                              command=self.on_tab_change
+                                              command=self.on_tab_change,
+                                              fg_color="#3D3D3D"
                                               )
 
         zonas_view.add("Zona 1")
