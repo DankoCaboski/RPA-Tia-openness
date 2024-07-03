@@ -1,5 +1,7 @@
 from CustomTkinter import customtkinter
 from view.components.FakeTab import FakeTab
+from view.components.InputRobo import InputRobo
+from view.components.InputMesa import InputMesa
 
 
 import tkinter as tk
@@ -33,6 +35,7 @@ class Zonaframe:
                                              variable=self.actual_entity,
                                              width=90
                                              )
+        
         entityes.grid(row=0, column=0, padx=3, pady=3, sticky='w')
         
         entityes.set("Robôs")
@@ -54,6 +57,7 @@ class Zonaframe:
             self.lista_robos.append(new_ent)
             
         self.conteudo = customtkinter.CTkFrame(self.frame, fg_color="green")
+        InputRobo(self.conteudo)
         self.conteudo.grid(row=1, column=0, columnspan=2, sticky='nsew')
         
     def mesa_frame(self):
@@ -64,6 +68,7 @@ class Zonaframe:
             self.lista_mesas.append(new_ent)
             
         self.conteudo = customtkinter.CTkFrame(self.frame, fg_color="blue")
+        InputMesa(self.conteudo)
         self.conteudo.grid(row=1, column=0, columnspan=2, sticky='nsew')
     
     def est_frame(self):

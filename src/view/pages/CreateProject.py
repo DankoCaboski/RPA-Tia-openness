@@ -57,11 +57,11 @@ class CreateProject:
         self.row_counter += 1
         
         label_tia = customtkinter.CTkLabel(self.frame, text="Versão do TIA:")
-        label_tia.grid(row=self.row_counter, column=1, sticky="e", padx=(0, 10), pady=(0, 10))
+        label_tia.grid(row=self.row_counter, column=1, sticky="e", padx=(0, 10), pady=0)
         
         global tia_version
         tia_version = customtkinter.CTkComboBox(self.frame, values=versions)
-        tia_version.grid(row=self.row_counter, column=2, sticky="w", padx=(10, 0), pady=(0, 10))
+        tia_version.grid(row=self.row_counter, column=2, sticky="w", padx=(10, 0), pady=0)
         self.row_counter += 1
         
         self.hw_frame.tabview.grid(row=self.hw_frame_index, column=0, columnspan=4, padx=25, pady=0, sticky='nsew')
@@ -69,7 +69,7 @@ class CreateProject:
         
         btn_criar = CustomButton(self.frame, "Gerar projeto", None, command=self.call_create_proj)
         btn_criar = btn_criar.get_button()
-        btn_criar.grid(row=self.row_counter, column=0, columnspan=4, padx=10, pady=(5, 10))
+        btn_criar.grid(row=self.row_counter, column=0, columnspan=4, padx=10, pady=5)
         self.row_counter += 1
         
         self.status_label = customtkinter.CTkLabel(self.frame, text="Status: Idle")
