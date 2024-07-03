@@ -12,6 +12,6 @@ class HomeIcon:
         
         image = customtkinter.CTkImage(light_image=Image.open(home_ico_path),
                                   dark_image=Image.open(home_ico_path),
-                                  size=(18, 18))
+                                  size=(15, 15))
         
         return image

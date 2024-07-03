@@ -1,7 +1,5 @@
 from CustomTkinter import customtkinter
 
-from view.functions.PlusIcon import PlusIcon
-from view.components.FakeTab import FakeTab
 from view.components.ZonaFrame import Zonaframe
 
 import tkinter as tk
