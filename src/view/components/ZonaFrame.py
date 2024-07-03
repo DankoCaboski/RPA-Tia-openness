@@ -14,6 +14,7 @@ class Zonaframe:
         self.frame.grid_columnconfigure(1, weight=1)
         
         self.entity_type = tk.StringVar()
+        self.aux_enity_type = tk.StringVar()
         
         self.entidades = customtkinter.CTkFrame(self.frame, fg_color="#4A4A4A")
         self.entidades.grid(row=0, column=0, padx = 0, pady=0, sticky='w')
@@ -45,6 +46,7 @@ class Zonaframe:
         add_ent = add_ent.get_button()
         add_ent.grid(row=0, column=2, padx=3, pady=3, sticky='w')
         
+        self.aux_enity_type = "Robôs"
         self.rb_frame()
         
         self.entity_type.trace_add('write', self.on_entidades_selected)
@@ -86,23 +88,28 @@ class Zonaframe:
         
 
     def on_entidades_selected(self, *args):
+        if entityes.get() == self.aux_enity_type:
+            return
         if entityes.get() == "Robôs":
             print("Robôs")
             self.remove_entity()
             self.set_entidades(self.lista_robos)
             
+            self.aux_enity_type = "Robôs"
             self.rb_frame()
         elif entityes.get() == "Mesas":
             print("Mesas")
             self.remove_entity()
             self.set_entidades(self.lista_mesas)
             
+            self.aux_enity_type = "Mesas"
             self.mesa_frame()
         elif entityes.get() == "Esteiras":
             print("Esteiras")
             self.remove_entity()
             self.set_entidades(self.lista_esteiras)
             
+            self.aux_enity_type = "Esteiras"
             self.est_frame()
             
     def remove_entity(self):
