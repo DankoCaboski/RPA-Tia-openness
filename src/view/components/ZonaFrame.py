@@ -13,10 +13,10 @@ class Zonaframe:
         self.frame.grid_columnconfigure(0, weight=1)
         self.frame.grid_columnconfigure(1, weight=1)
         
-        self.actual_entity = tk.StringVar()
+        self.entity_type = tk.StringVar()
         
         self.entidades = customtkinter.CTkFrame(self.frame, fg_color="#4A4A4A")
-        self.entidades.grid(row=0, column=0, padx = 3, pady=0, sticky='w')
+        self.entidades.grid(row=0, column=0, padx = 0, pady=0, sticky='w')
         
         self.options_entidade = ["Robôs", "Mesas", "Esteiras"]
         self.lista_robos = []
@@ -32,7 +32,7 @@ class Zonaframe:
         global entityes
         entityes = customtkinter.CTkComboBox(self.entidades,
                                              values=self.options_entidade,
-                                             variable=self.actual_entity,
+                                             variable=self.entity_type,
                                              width=90
                                              )
         
@@ -47,7 +47,7 @@ class Zonaframe:
         
         self.rb_frame()
         
-        self.actual_entity.trace_add('write', self.on_entidades_selected)
+        self.entity_type.trace_add('write', self.on_entidades_selected)
             
     def rb_frame(self):
         if self.lista_robos.__len__() == 0:
@@ -106,6 +106,9 @@ class Zonaframe:
             self.est_frame()
             
     def remove_entity(self):
+        """
+        Remove todas as entidades do frame de entidades
+        """
         for widget in self.entidades.winfo_children():
             if type(widget) == customtkinter.CTkComboBox:
                 continue
@@ -116,23 +119,26 @@ class Zonaframe:
             widget.grid_forget()
                 
     def set_entidades(self, entidades: list):
+        """
+        Popula o frame de entidades com os botões da entidade selecionada
+        """
         for i in entidades:
             i.grid(row=0, column=entidades.index(i) + 1, padx=5, pady=0, sticky='w')
             
     def new_entity(self):
-        if self.actual_entity.get() == "Robôs":
+        if self.entity_type.get() == "Robôs":
             n_entidades = self.lista_robos.__len__()
             nome = "rb"
             if n_entidades >= 5:
                 return
             
-        elif self.actual_entity.get() == "Mesas":
+        elif self.entity_type.get() == "Mesas":
             n_entidades = self.lista_mesas.__len__()
             nome = "ms"
             if n_entidades >= 5:
                 return
             
-        elif self.actual_entity.get() == "Esteiras":
+        elif self.entity_type.get() == "Esteiras":
             n_entidades = self.lista_esteiras.__len__()
             nome = "es"
             if n_entidades >= 5:
@@ -157,12 +163,12 @@ class Zonaframe:
                  pady = 3,
                  sticky ='w')
         
-        if self.actual_entity.get() == "Robôs":
+        if self.entity_type.get() == "Robôs":
             self.lista_robos.append(new_ent)
             
-        elif self.actual_entity.get() == "Mesas":
+        elif self.entity_type.get() == "Mesas":
             self.lista_mesas.append(new_ent)
             
-        elif self.actual_entity.get() == "Esteiras":
+        elif self.entity_type.get() == "Esteiras":
             self.lista_esteiras.append(new_ent)
         
