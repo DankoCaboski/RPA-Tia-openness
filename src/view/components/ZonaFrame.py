@@ -178,7 +178,9 @@ class Zonaframe:
             
     def load_entity_frame(self):
         # TODO: revisar a função que remove os widgets, com ela descomentada a aplicação cracha ao trocar de monitor
-        # self.remove_widgets()
+        # Subistituir "widget.destroy()" por "widget.grid_forget()" aparentemente resolve o problema
+        # Rever o retrive do widget que está sendo ocultado para evitar memory leak
+        self.remove_widgets()
         if self.entity_type.get() == "Robôs":
             InputRobo(self.conteudo)
         elif self.entity_type.get() == "Mesas":
@@ -188,4 +190,4 @@ class Zonaframe:
         
     def remove_widgets(self):
         for widget in self.conteudo.winfo_children():
-            widget.destroy()
+            widget.grid_forget()
