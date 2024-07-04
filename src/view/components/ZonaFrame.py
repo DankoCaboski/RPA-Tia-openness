@@ -9,7 +9,7 @@ import tkinter as tk
 
 class Zonaframe:
     def __init__(self, frame):
-        self.frame = frame
+        self.frame: customtkinter.CTkFrame = frame
         self.frame.grid_rowconfigure(1, weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
         self.frame.grid_columnconfigure(1, weight=1)
@@ -17,6 +17,8 @@ class Zonaframe:
         self.entity_type = tk.StringVar()
         self.aux_enity_type = tk.StringVar()
         
+        self.add_ent = None
+                
         self.selected_entity = None
         
         self.entidades = customtkinter.CTkFrame(self.frame, fg_color="#4A4A4A")
@@ -46,10 +48,9 @@ class Zonaframe:
         
         entityes.set("Robôs")
         
-        global add_ent
-        add_ent = FakeTab(self.entidades, "+", self.new_entity)
-        add_ent = add_ent.get_button()
-        add_ent.grid(row=0, column=2, padx=3, pady=3, sticky='w')
+        self.add_ent = FakeTab(self.entidades, "+", self.new_entity)
+        self.add_ent = self.add_ent.get_button()
+        self.add_ent.grid(row=0, column=2, padx=3, pady=3, sticky='w')
         
         self.aux_enity_type = "Robôs"
         self.rb_frame()
@@ -78,24 +79,33 @@ class Zonaframe:
             self.lista_esteiras.append(new_ent)
             
     def gera_entidade(self, nome):
-        new_ent = FakeTab(self.entidades, nome)
+        try:
+            new_ent = FakeTab(self.entidades, nome)
+                
+            new_ent = new_ent.get_button()
+                
+            new_ent.configure(command=lambda btn=new_ent: self.load_entity_frame(btn))
+            new_ent.invoke()
             
-        new_ent = new_ent.get_button()
+            if new_ent is None:
+                raise Exception("Erro ao criar nova entidade")
             
-        new_ent.configure(command=lambda btn=new_ent: self.load_entity_frame(btn))
-        new_ent.invoke()
-        
-        return new_ent
-        
+            return new_ent
+        except Exception as e:
+            print(f"Erro na função 'gera_entidade': {e}")
+            return
         
         ################### Utils ###################
         
 
     def on_entidades_selected(self, *args):
+        entityes.update_idletasks() 
         try:
             selecionado = entityes.get()
             if selecionado == self.aux_enity_type or selecionado == "":
+                print("retornou")
                 return
+            print(f"Selecionado: {selecionado}")
             self.remove_entity()
             self.remove_widgets()
             
@@ -113,6 +123,11 @@ class Zonaframe:
                 self.set_entidades(self.lista_esteiras)
                 self.aux_enity_type = "Esteiras"
                 self.est_frame()
+                
+            else:
+                return
+                
+                
         
         except Exception as e:
             msg = f"Erro na função on_entidades_selected: {e}"
@@ -125,8 +140,7 @@ class Zonaframe:
         for widget in self.entidades.winfo_children():
             if type(widget) == customtkinter.CTkComboBox:
                 continue
-            text = widget.cget("text")
-            if text == "+":
+            if widget == self.add_ent:
                 continue
             widget.grid_forget()
                 
@@ -136,6 +150,7 @@ class Zonaframe:
         """
         for i in entidades:
             i.grid(row=0, column=entidades.index(i) + 1, padx=5, pady=0, sticky='w')
+            i.update_idletasks() 
             
     def new_entity(self):
         entity_type = self.entity_type.get()
@@ -145,15 +160,15 @@ class Zonaframe:
             if n_entidades >= 5:
                 return
             nome = f"rb {n_entidades + 1}"
-            new_ent = self.move_new_entity(nome)
+            new_ent = self.move_add_ent(nome)
             self.lista_robos.append(new_ent) 
             
         elif entity_type == "Mesas":
             n_entidades = self.lista_mesas.__len__()
             if n_entidades >= 5:
                 return
-            nome = f"ms {n_entidades + 1}"
-            new_ent = self.move_new_entity(nome) 
+            nome = f"mg {n_entidades + 1}"
+            new_ent = self.move_add_ent(nome) 
             self.lista_mesas.append(new_ent)
                
         elif entity_type == "Esteiras":
@@ -161,29 +176,38 @@ class Zonaframe:
             if n_entidades >= 5:
                 return
             nome = f"es {n_entidades + 1}"
-            new_ent = self.move_new_entity(nome)
+            new_ent = self.move_add_ent(nome)
             self.lista_esteiras.append(new_ent)     
             
         
-    def move_new_entity(self, nome):
-        grid_info: dict = add_ent.grid_info()
-        aux = add_ent
-        add_ent.grid_forget()
-    
-        new_ent = self.gera_entidade(nome)
+    def move_add_ent(self, nome):
+        try:
+            grid_info: dict = self.add_ent.grid_info()
+            
+            self.add_ent.grid_forget()
         
-        new_ent.grid(row = grid_info.get('row'),
-                     column = grid_info.get('column'),
-                     padx = 3,
-                     pady = 3,
-                     sticky ='w')
-        
-        aux.grid(row = grid_info.get('row'),
-                 column = grid_info.get('column') + 1,
-                 padx = 3,
-                 pady = 3,
-                 sticky ='w')
-        return new_ent
+            new_ent = self.gera_entidade(nome)
+            
+            new_ent.grid(row=0,
+                        column = grid_info.get('column'),
+                        padx = 3,
+                        pady = 3,
+                        sticky ='w')
+            
+            self.add_ent.grid(row=0,
+                    column = grid_info.get('column') + 1,
+                    padx = 3,
+                    pady = 3,
+                    sticky ='w')
+            
+            self.add_ent.update_idletasks()
+            
+            if new_ent is None:
+                raise Exception("Erro ao criar nova entidade")
+                
+            return new_ent
+        except Exception as e:
+            print(f"Erro na função 'move_add_ent': {e}")
             
     def load_entity_frame(self, parent: customtkinter.CTkButton=None):
         # TODO: revisar a função que remove os widgets, com ela descomentada a aplicação cracha ao trocar de monitor

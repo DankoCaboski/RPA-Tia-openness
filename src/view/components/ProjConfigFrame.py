@@ -19,8 +19,9 @@ class ProjConfigFrame:
         
         self.sw_options = ["Robôs", "Mesa", "Grampos"]
         
-        self.zonas = [[], []]
-        self.n_zonas = 1
+        self.zonas = []
+        
+        self.n_zonas = 0
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
@@ -143,11 +144,11 @@ class ProjConfigFrame:
                                               fg_color="#3D3D3D"
                                               )
 
-        zonas_view.add("Zona 1")
+
         zonas_view.add("+")
 
-        self.frame_zona(zonas_view.tab("Zona 1"))
-        zonas_view.set("Zona 1")
+        self.add_zona(zonas_view)
+        self.zonas.append(zonas_view.set("Zona 1"))
 
         zonas_view.grid(row=0, column=0, columnspan=4, padx=0, pady=0, sticky="nsew")
           
@@ -195,21 +196,16 @@ class ProjConfigFrame:
 
     def add_zona(self, zonas_view: customtkinter.CTkTabview):
         zona_name = f"Zona {self.n_zonas + 1}"
-        nova_zona = zonas_view.add(zona_name)
+        self.zonas.append(zonas_view.add(zona_name))
+        
         self.n_zonas += 1
+        
         zonas_view.move(self.n_zonas, "+")
-        self.frame_zona(nova_zona)
-        return zona_name
+        zonas_view.tab(zona_name).grid_rowconfigure(0, weight=1)
+        zonas_view.tab(zona_name).grid_columnconfigure(0, weight=1)
+        zonas_view.tab(zona_name).grid_columnconfigure(1, weight=1)
         
-    def frame_zona(self, frame: customtkinter.CTkFrame):
-        frame.grid_columnconfigure(0, weight=1)
-        frame.grid_columnconfigure(1, weight=1)
-        Zonaframe(frame)
-        
-    
-    def color_sw_tab(self, index: int):
-        for i in range(len(self.zonas[0])):
-            self.zonas[0][i].configure(fg_color="transparent")
-            
-        self.zonas[0][index].configure(fg_color="#1F6AA5")
+        Zonaframe(zonas_view.tab(zona_name))
+
+        return zona_name     
             
