@@ -18,6 +18,7 @@ class Zonaframe:
         self.aux_enity_type = tk.StringVar()
         
         self.add_ent = None
+        self.entityes = None
                 
         self.selected_entity = None
         
@@ -37,16 +38,15 @@ class Zonaframe:
         
             
     def frame_entidades(self):
-        global entityes
-        entityes = customtkinter.CTkComboBox(self.entidades,
+        self.entityes = customtkinter.CTkComboBox(self.entidades,
                                              values=self.options_entidade,
                                              variable=self.entity_type,
                                              width=90
                                              )
         
-        entityes.grid(row=0, column=0, padx=3, pady=3, sticky='w')
+        self.entityes.grid(row=0, column=0, padx=3, pady=3, sticky='w')
         
-        entityes.set("Robôs")
+        self.entityes.set("Robôs")
         
         self.add_ent = FakeTab(self.entidades, "+", self.new_entity)
         self.add_ent = self.add_ent.get_button()
@@ -99,9 +99,9 @@ class Zonaframe:
         
 
     def on_entidades_selected(self, *args):
-        entityes.update_idletasks() 
+        self.entityes.update_idletasks() 
         try:
-            selecionado = entityes.get()
+            selecionado = self.entityes.get()
             if selecionado == self.aux_enity_type or selecionado == "":
                 print("retornou")
                 return
