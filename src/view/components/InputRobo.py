@@ -13,7 +13,6 @@ class InputRobo:
         self.input_robo()
         
         self.lista_robos = []
-        return
         
     def input_robo(self):
         lb_fabricante = customtkinter.CTkLabel(self.frame, text="Fabricante")
@@ -34,4 +33,3 @@ class InputRobo:
         lb_nome.grid(row=0, column=2, padx=3, pady=3, sticky='ws')
         nome = customtkinter.CTkEntry(self.frame, width=90)
         nome.grid(row=1, column=2, padx=3, pady=3, sticky='wn')
-        return
