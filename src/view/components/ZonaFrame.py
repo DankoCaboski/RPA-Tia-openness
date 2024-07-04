@@ -19,8 +19,6 @@ class Zonaframe:
         
         self.selected_entity = None
         
-        self.current_entity = None
-        
         self.entidades = customtkinter.CTkFrame(self.frame, fg_color="#4A4A4A")
         self.entidades.grid(row=0, column=0, padx = 0, pady=0, sticky='w')
         
@@ -64,9 +62,8 @@ class Zonaframe:
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
             self.lista_robos.append(new_ent)
             
-            if self.current_entity is None:
-                self.current_entity = new_ent
-                self.load_entity_frame(None, new_ent)
+            if self.selected_entity is None:
+                new_ent.invoke()
         
     def mesa_frame(self):
         if self.lista_mesas.__len__() == 0:   
@@ -85,7 +82,8 @@ class Zonaframe:
             
         new_ent = new_ent.get_button()
             
-        new_ent.configure(command=lambda btn=new_ent: self.load_entity_frame(None, btn))
+        new_ent.configure(command=lambda btn=new_ent: self.load_entity_frame(btn))
+        new_ent.invoke()
         
         return new_ent
         
@@ -99,22 +97,20 @@ class Zonaframe:
             if selecionado == self.aux_enity_type or selecionado == "":
                 return
             self.remove_entity()
+            self.remove_widgets()
             
             if selecionado == "Robôs":
                 self.set_entidades(self.lista_robos)
-                self.load_entity_frame(selecionado)
                 self.aux_enity_type = "Robôs"
                 self.rb_frame()
                 
             elif selecionado == "Mesas":
                 self.set_entidades(self.lista_mesas)
-                self.load_entity_frame(selecionado)
                 self.aux_enity_type = "Mesas"
                 self.mesa_frame()
                 
             elif selecionado == "Esteiras":
                 self.set_entidades(self.lista_esteiras)
-                self.load_entity_frame(selecionado)
                 self.aux_enity_type = "Esteiras"
                 self.est_frame()
         
@@ -189,31 +185,32 @@ class Zonaframe:
                  sticky ='w')
         return new_ent
             
-    def load_entity_frame(self, selecionado=None, parent: customtkinter.CTkButton=None):
+    def load_entity_frame(self, parent: customtkinter.CTkButton=None):
         # TODO: revisar a função que remove os widgets, com ela descomentada a aplicação cracha ao trocar de monitor
         # Att: Subistituir "widget.destroy()" por "widget.grid_forget()" aparentemente resolve o problema
         # Rever o retrive do widget que está sendo ocultado para evitar memory leak
         self.remove_widgets()
+        self.change_all_entities_fg_color()
         
+        self.selected_entity = parent
         if parent is not None:
-            print("teste parent", parent.cget("text"))
-        
-        if selecionado is None:
-            if self.entity_type.get() == "Robôs":
+            parent.configure(fg_color="#1F6AA5")
+            if self.aux_enity_type == "Robôs":
+                self.aux_enity_type
                 InputRobo(self.conteudo)
-            elif self.entity_type.get() == "Mesas":
+            elif self.aux_enity_type == "Mesas":
                 InputMesa(self.conteudo)
-            elif self.entity_type.get() == "Esteiras":
-                InputConveyor(self.conteudo)
-        
-        else:
-            if selecionado == "Robôs":
-                InputRobo(self.conteudo)
-            elif selecionado == "Mesas":
-                InputMesa(self.conteudo)
-            elif selecionado == "Esteiras":
+            elif self.aux_enity_type == "Esteiras":
                 InputConveyor(self.conteudo)
         
     def remove_widgets(self):
         for widget in self.conteudo.winfo_children():
             widget.grid_forget()
+            
+    def change_all_entities_fg_color(self):
+        for i in self.lista_robos:
+            i.configure(fg_color="#4A4A4A")
+        for i in self.lista_mesas:
+            i.configure(fg_color="#4A4A4A")
+        for i in self.lista_esteiras:
+            i.configure(fg_color="#4A4A4A")
