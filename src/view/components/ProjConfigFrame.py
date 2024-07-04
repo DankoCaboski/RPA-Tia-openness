@@ -21,8 +21,6 @@ class ProjConfigFrame:
         
         self.zonas = []
         
-        self.n_zonas = 0
-        
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
         self.firm_versions = {}
@@ -148,7 +146,6 @@ class ProjConfigFrame:
         zonas_view.add("+")
 
         self.add_zona(zonas_view)
-        self.zonas.append(zonas_view.set("Zona 1"))
 
         zonas_view.grid(row=0, column=0, columnspan=4, padx=0, pady=0, sticky="nsew")
           
@@ -158,7 +155,7 @@ class ProjConfigFrame:
     def on_tab_change(self):
         current_tab = zonas_view.get()
         if current_tab == "+":
-            if self.n_zonas >= 5:
+            if len(self.zonas) >= 5:
                 return
             zona_name = self.add_zona(zonas_view)
             zonas_view.set(zona_name)
@@ -195,15 +192,13 @@ class ProjConfigFrame:
         # return self.sw_content.get_blocks_to_import()
 
     def add_zona(self, zonas_view: customtkinter.CTkTabview):
-        zona_name = f"Zona {self.n_zonas + 1}"
-        self.zonas.append(zonas_view.add(zona_name))
+        l_zonas = len(self.zonas)
+        zona_name = f"Zona {l_zonas + 1}"
+        new_tab = zonas_view.add(zona_name)
+        self.zonas.append(new_tab)
+        zonas_view.set(zona_name)
         
-        self.n_zonas += 1
-        
-        zonas_view.move(self.n_zonas, "+")
-        zonas_view.tab(zona_name).grid_rowconfigure(0, weight=1)
-        zonas_view.tab(zona_name).grid_columnconfigure(0, weight=1)
-        zonas_view.tab(zona_name).grid_columnconfigure(1, weight=1)
+        zonas_view.move(l_zonas + 1, "+")
         
         Zonaframe(zonas_view.tab(zona_name))
 
