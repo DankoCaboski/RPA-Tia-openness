@@ -117,6 +117,7 @@ class Zonaframe:
         
         except Exception as e:
             msg = f"Erro na função on_entidades_selected: {e}"
+            print(msg)
             
     def remove_entity(self):
         """
