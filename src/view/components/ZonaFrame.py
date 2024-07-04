@@ -86,29 +86,37 @@ class Zonaframe:
         
 
     def on_entidades_selected(self, *args):
-        if entityes.get() == self.aux_enity_type:
-            return
-        if entityes.get() == "Robôs":
-            self.remove_entity()
-            self.set_entidades(self.lista_robos)
-            self.load_entity_frame()
+        try:
+            if entityes.get() == self.aux_enity_type:
+                return
             
-            self.aux_enity_type = "Robôs"
-            self.rb_frame()
-        elif entityes.get() == "Mesas":
             self.remove_entity()
-            self.set_entidades(self.lista_mesas)
-            self.load_entity_frame()
             
-            self.aux_enity_type = "Mesas"
-            self.mesa_frame()
-        elif entityes.get() == "Esteiras":
-            self.remove_entity()
-            self.set_entidades(self.lista_esteiras)
-            self.load_entity_frame()
+            selecionado = entityes.get()
             
-            self.aux_enity_type = "Esteiras"
-            self.est_frame()
+            if selecionado == "Robôs":
+                self.set_entidades(self.lista_robos)
+                self.load_entity_frame(selecionado)
+                
+                self.aux_enity_type = "Robôs"
+                self.rb_frame()
+                
+            elif selecionado == "Mesas":
+                self.set_entidades(self.lista_mesas)
+                self.load_entity_frame(selecionado)
+                
+                self.aux_enity_type = "Mesas"
+                self.mesa_frame()
+                
+            elif selecionado == "Esteiras":
+                self.set_entidades(self.lista_esteiras)
+                self.load_entity_frame(selecionado)
+                
+                self.aux_enity_type = "Esteiras"
+                self.est_frame()
+        
+        except Exception as e:
+            msg = f"Erro na função on_entidades_selected: {e}"
             
     def remove_entity(self):
         """
@@ -176,17 +184,27 @@ class Zonaframe:
         elif self.entity_type.get() == "Esteiras":
             self.lista_esteiras.append(new_ent)
             
-    def load_entity_frame(self):
+    def load_entity_frame(self, selecionado=None):
         # TODO: revisar a função que remove os widgets, com ela descomentada a aplicação cracha ao trocar de monitor
-        # Subistituir "widget.destroy()" por "widget.grid_forget()" aparentemente resolve o problema
+        # Att: Subistituir "widget.destroy()" por "widget.grid_forget()" aparentemente resolve o problema
         # Rever o retrive do widget que está sendo ocultado para evitar memory leak
         self.remove_widgets()
-        if self.entity_type.get() == "Robôs":
-            InputRobo(self.conteudo)
-        elif self.entity_type.get() == "Mesas":
-            InputMesa(self.conteudo)
-        elif self.entity_type.get() == "Esteiras":
-            InputConveyor(self.conteudo)
+        
+        if selecionado is None:
+            if self.entity_type.get() == "Robôs":
+                InputRobo(self.conteudo)
+            elif self.entity_type.get() == "Mesas":
+                InputMesa(self.conteudo)
+            elif self.entity_type.get() == "Esteiras":
+                InputConveyor(self.conteudo)
+        
+        else:
+            if selecionado == "Robôs":
+                InputRobo(self.conteudo)
+            elif selecionado == "Mesas":
+                InputMesa(self.conteudo)
+            elif selecionado == "Esteiras":
+                InputConveyor(self.conteudo)
         
     def remove_widgets(self):
         for widget in self.conteudo.winfo_children():
