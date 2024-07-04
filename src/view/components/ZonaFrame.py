@@ -99,13 +99,12 @@ class Zonaframe:
         
 
     def on_entidades_selected(self, *args):
-        self.entityes.update_idletasks() 
         try:
             selecionado = self.entityes.get()
             if selecionado == self.aux_enity_type or selecionado == "":
-                print("retornou")
+                self.entityes.update_idletasks() 
                 return
-            print(f"Selecionado: {selecionado}")
+            
             self.remove_entity()
             self.remove_widgets()
             
@@ -113,21 +112,22 @@ class Zonaframe:
                 self.set_entidades(self.lista_robos)
                 self.aux_enity_type = "Robôs"
                 self.rb_frame()
+                self.entityes.update_idletasks() 
                 
             elif selecionado == "Mesas":
                 self.set_entidades(self.lista_mesas)
                 self.aux_enity_type = "Mesas"
                 self.mesa_frame()
+                self.entityes.update_idletasks() 
                 
             elif selecionado == "Esteiras":
                 self.set_entidades(self.lista_esteiras)
                 self.aux_enity_type = "Esteiras"
                 self.est_frame()
+                self.entityes.update_idletasks() 
                 
             else:
-                return
-                
-                
+                raise Exception("Entidade não encontrada")
         
         except Exception as e:
             msg = f"Erro na função on_entidades_selected: {e}"
