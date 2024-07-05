@@ -16,20 +16,20 @@ class InputRobo:
         
     def input_robo(self):
         lb_fabricante = customtkinter.CTkLabel(self.frame, text="Fabricante")
-        lb_fabricante.grid(row=0, column=0, padx=3, pady=3, sticky='ws')
+        lb_fabricante.grid(row=0, column=0, padx=20, pady=(15, 3), sticky='es')
         fabricante = customtkinter.CTkComboBox(self.frame,
                                                width=90,
                                                values=self.fabricantes)
-        fabricante.grid(row=1, column=0, padx=3, pady=3, sticky='wn')
+        fabricante.grid(row=1, column=0, padx=3, pady=3, sticky='en')
         
         lb_aplicacao = customtkinter.CTkLabel(self.frame, text="Aplicação")
-        lb_aplicacao.grid(row=0, column=1, padx=3, pady=3, sticky='ws')
+        lb_aplicacao.grid(row=0, column=1, padx=3, pady=(15, 3), sticky='nsew')
         aplicacao = customtkinter.CTkComboBox(self.frame,
                                               width=90,
                                               values=self.operacoes)
-        aplicacao.grid(row=1, column=1, padx=3, pady=3, sticky='wn')
+        aplicacao.grid(row=1, column=1)
         
         lb_nome = customtkinter.CTkLabel(self.frame, text="Nome")
-        lb_nome.grid(row=0, column=2, padx=3, pady=3, sticky='ws')
+        lb_nome.grid(row=0, column=2, padx=(27, 0), pady=(15, 3), sticky='ws')
         nome = customtkinter.CTkEntry(self.frame, width=90)
         nome.grid(row=1, column=2, padx=3, pady=3, sticky='wn')
