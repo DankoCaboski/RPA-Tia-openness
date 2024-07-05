@@ -26,10 +26,22 @@ class Zonaframe:
         self.entidades.grid(row=0, column=0, padx = 0, pady=0, sticky='w')
         
         self.options_entidade = ["Robôs", "Mesas", "Esteiras"]
-        self.lista_robos = []
-        self.lista_mesas = []
-        self.lista_esteiras = []
         
+        self.botoes_robo: list[customtkinter.CTkButton] = []
+        self.frames_robo: list[customtkinter.CTkFrame] = []
+        self.lista_robos = [self.botoes_robo, self.frames_robo]
+        
+        self.botoes_mesa: list[customtkinter.CTkButton] = []
+        self.frames_mesas: list[customtkinter.CTkFrame] = []
+        self.lista_mesas = [self.botoes_mesa, self.frames_mesas]
+        
+        self.botoes_esteira: list[customtkinter.CTkButton] = []
+        self.frames_esteira: list[customtkinter.CTkFrame] = []
+        self.lista_esteiras = [self.botoes_esteira, self.frames_esteira]
+        
+        self.lista_entidades = [self.lista_robos, self.lista_mesas, self.lista_esteiras]
+        
+        # Frame onde o conteudo da entidade será carregado
         self.conteudo = customtkinter.CTkFrame(self.frame, fg_color="#4A4A4A")
         self.conteudo.grid(row=1, column=0, columnspan=2, sticky='nsew')
         
@@ -58,25 +70,25 @@ class Zonaframe:
         self.entity_type.trace_add('write', self.on_entidades_selected)
             
     def rb_frame(self):
-        if self.lista_robos.__len__() == 0:
+        if len(self.lista_robos[0]) == 0:
             new_ent = self.gera_entidade("rb1")
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
-            self.lista_robos.append(new_ent)
+            self.lista_robos[0].append(new_ent)
             
             if self.selected_entity is None:
                 new_ent.invoke()
         
     def mesa_frame(self):
-        if self.lista_mesas.__len__() == 0:   
+        if len(self.lista_mesas[0]) == 0:   
             new_ent = self.gera_entidade("ms1")
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
-            self.lista_mesas.append(new_ent)
+            self.lista_mesas[0].append(new_ent)
             
     def est_frame(self):
-        if self.lista_esteiras.__len__() == 0:
+        if len(self.lista_esteiras[0]) == 0:
             new_ent = self.gera_entidade("es1")
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
-            self.lista_esteiras.append(new_ent)
+            self.lista_esteiras[0].append(new_ent)
             
     def gera_entidade(self, nome):
         try:
@@ -109,19 +121,19 @@ class Zonaframe:
             self.remove_widgets()
             
             if selecionado == "Robôs":
-                self.set_entidades(self.lista_robos)
+                self.set_entidades(self.lista_robos[0])
                 self.aux_enity_type = "Robôs"
                 self.rb_frame()
                 self.entityes.update_idletasks() 
                 
             elif selecionado == "Mesas":
-                self.set_entidades(self.lista_mesas)
+                self.set_entidades(self.lista_mesas[0])
                 self.aux_enity_type = "Mesas"
                 self.mesa_frame()
                 self.entityes.update_idletasks() 
                 
             elif selecionado == "Esteiras":
-                self.set_entidades(self.lista_esteiras)
+                self.set_entidades(self.lista_esteiras[0])
                 self.aux_enity_type = "Esteiras"
                 self.est_frame()
                 self.entityes.update_idletasks() 
@@ -156,28 +168,28 @@ class Zonaframe:
         entity_type = self.entity_type.get()
         
         if entity_type == "Robôs":
-            n_entidades = self.lista_robos.__len__()
+            n_entidades = len(self.lista_robos[0])
             if n_entidades >= 5:
                 return
             nome = f"rb {n_entidades + 1}"
             new_ent = self.move_add_ent(nome)
-            self.lista_robos.append(new_ent) 
+            self.lista_robos[0].append(new_ent) 
             
         elif entity_type == "Mesas":
-            n_entidades = self.lista_mesas.__len__()
+            n_entidades = len(self.lista_mesas[0])
             if n_entidades >= 5:
                 return
             nome = f"mg {n_entidades + 1}"
             new_ent = self.move_add_ent(nome) 
-            self.lista_mesas.append(new_ent)
+            self.lista_mesas[0].append(new_ent)
                
         elif entity_type == "Esteiras":
-            n_entidades = self.lista_esteiras.__len__()
+            n_entidades = len(self.lista_esteiras[0])
             if n_entidades >= 5:
                 return
             nome = f"es {n_entidades + 1}"
             new_ent = self.move_add_ent(nome)
-            self.lista_esteiras.append(new_ent)     
+            self.lista_esteiras[0].append(new_ent)     
             
         
     def move_add_ent(self, nome):
@@ -210,9 +222,6 @@ class Zonaframe:
             print(f"Erro na função 'move_add_ent': {e}")
             
     def load_entity_frame(self, parent: customtkinter.CTkButton=None):
-        # TODO: revisar a função que remove os widgets, com ela descomentada a aplicação cracha ao trocar de monitor
-        # Att: Subistituir "widget.destroy()" por "widget.grid_forget()" aparentemente resolve o problema
-        # Rever o retrive do widget que está sendo ocultado para evitar memory leak
         self.remove_widgets()
         self.change_all_entities_fg_color()
         
@@ -232,9 +241,9 @@ class Zonaframe:
             widget.grid_forget()
             
     def change_all_entities_fg_color(self):
-        for i in self.lista_robos:
+        for i in self.lista_robos[0]:
             i.configure(fg_color="#4A4A4A")
-        for i in self.lista_mesas:
+        for i in self.lista_mesas[0]:
             i.configure(fg_color="#4A4A4A")
-        for i in self.lista_esteiras:
+        for i in self.lista_esteiras[0]:
             i.configure(fg_color="#4A4A4A")
