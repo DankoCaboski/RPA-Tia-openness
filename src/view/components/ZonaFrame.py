@@ -17,8 +17,8 @@ class Zonaframe:
         self.entity_type = tk.StringVar()
         self.aux_enity_type = tk.StringVar()
         
-        self.add_ent = None
-        self.entityes = None
+        self.add_ent: customtkinter.CTkButton = None
+        self.entityes: customtkinter.CTkComboBox = None
                 
         self.selected_entity = None
         
@@ -77,17 +77,24 @@ class Zonaframe:
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
             
             if self.selected_entity is None:
-                new_ent.invoke()
+                new_ent.invoke()      
+        else:
+            self.botoes_robo[0].invoke()
         
     def mesa_frame(self):
         if len(self.lista_mesas[0]) == 0:   
             new_ent = self.gera_entidade("ms1")
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
+        
+        else:
+            self.botoes_mesa[0].invoke()
             
     def est_frame(self):
         if len(self.lista_esteiras[0]) == 0:
             new_ent = self.gera_entidade("es1")
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
+        else:
+            self.botoes_esteira[0].invoke()
             
     def gera_entidade(self, nome) -> customtkinter.CTkButton:
         try:
@@ -125,7 +132,7 @@ class Zonaframe:
                 return
             
             self.remove_entity()
-            self.remove_widgets()
+            self.forget_widgets_self_conteudo()
             
             if selecionado == "Robôs":
                 self.set_entidades(self.lista_robos[0])
@@ -226,10 +233,13 @@ class Zonaframe:
             print(f"Erro na função 'move_add_ent': {e}")
             
     def load_entity_frame(self, parent: customtkinter.CTkButton=None):
-        self.remove_widgets()
-        self.change_all_entities_fg_color()
-        
+        if parent == self.selected_entity:
+            return
         self.selected_entity = parent
+        
+        self.forget_widgets_self_conteudo()
+        self.change_all_entities_fg_color()       
+        
         if parent is not None:
             if parent in self.botoes_robo:
                 btn_index = self.botoes_robo.index(parent)
@@ -273,9 +283,10 @@ class Zonaframe:
             parent.configure(fg_color="#1F6AA5")
                 
                 
-    def remove_widgets(self):
+    def forget_widgets_self_conteudo(self):
         for widget in self.conteudo.winfo_children():
             widget.grid_forget()
+            
             
     def change_all_entities_fg_color(self):
         for i in self.lista_robos[0]:
