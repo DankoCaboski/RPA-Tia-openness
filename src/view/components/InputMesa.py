@@ -20,19 +20,19 @@ class InputMesa:
         driver_input.grid(row=1, column=0, padx=3, pady=3, sticky='wn')
         
         ladoA = customtkinter.CTkFrame(self.frame, fg_color="transparent")
-        ladoA.grid(row=0, column=0, padx=6 , pady=3, sticky='e')
+        ladoA.grid(row=0, column=0, padx=6 , pady=3, sticky='es')
         self.frame_lado(ladoA, "A")
         
         ladoB = customtkinter.CTkFrame(self.frame, fg_color="transparent")
-        ladoB.grid(row=0, column=1, padx=6, pady=3, sticky='w')
+        ladoB.grid(row=0, column=1, padx=6, pady=3, sticky='ws')
         self.frame_lado(ladoB, "B")
         
         ladoC = customtkinter.CTkFrame(self.frame, fg_color="transparent")
-        ladoC.grid(row=1, column=0, padx=6 , pady=3, sticky='e')
+        ladoC.grid(row=1, column=0, padx=6 , pady=3, sticky='en')
         self.frame_lado(ladoC, "C")
         
         ladoD = customtkinter.CTkFrame(self.frame, fg_color="transparent")
-        ladoD.grid(row=1, column=1, padx=6, pady=3, sticky='w')
+        ladoD.grid(row=1, column=1, padx=6, pady=3, sticky='wn')
         self.frame_lado(ladoD, "D")
         
         
