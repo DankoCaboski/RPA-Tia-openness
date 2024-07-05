@@ -3,7 +3,7 @@ from tkinter import BooleanVar
 
 class InputConveyor:
     def __init__(self, frame):
-        self.frame: customtkinter.CTkFrame = frame
+        self.frame = customtkinter.CTkFrame(frame, fg_color="transparent")
         
         self.inversor = BooleanVar()
         self.sensor_presenca = BooleanVar()

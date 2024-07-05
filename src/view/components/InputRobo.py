@@ -2,7 +2,7 @@ from CustomTkinter import customtkinter
 
 class InputRobo:
     def __init__(self, frame) -> None:
-        self.frame: customtkinter.CTkFrame = frame
+        self.frame = customtkinter.CTkFrame(frame, fg_color="transparent")
         self.frame.grid_columnconfigure(0, weight=1)
         self.frame.grid_columnconfigure(1, weight=1)
         self.frame.grid_columnconfigure(2, weight=1)

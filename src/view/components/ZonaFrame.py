@@ -29,20 +29,22 @@ class Zonaframe:
         
         self.botoes_robo: list[customtkinter.CTkButton] = []
         self.frames_robo: list[customtkinter.CTkFrame] = []
-        self.lista_robos = [self.botoes_robo, self.frames_robo]
+        self.lista_robos: list[list, list] = [self.botoes_robo, self.frames_robo]
         
         self.botoes_mesa: list[customtkinter.CTkButton] = []
         self.frames_mesas: list[customtkinter.CTkFrame] = []
-        self.lista_mesas = [self.botoes_mesa, self.frames_mesas]
+        self.lista_mesas: list[list, list] = [self.botoes_mesa, self.frames_mesas]
         
         self.botoes_esteira: list[customtkinter.CTkButton] = []
         self.frames_esteira: list[customtkinter.CTkFrame] = []
-        self.lista_esteiras = [self.botoes_esteira, self.frames_esteira]
+        self.lista_esteiras: list[list, list] = [self.botoes_esteira, self.frames_esteira]
         
         self.lista_entidades = [self.lista_robos, self.lista_mesas, self.lista_esteiras]
         
         # Frame onde o conteudo da entidade será carregado
         self.conteudo = customtkinter.CTkFrame(self.frame, fg_color="#4A4A4A")
+        self.conteudo.grid_columnconfigure(0, weight=1)
+        self.conteudo.grid_rowconfigure(0, weight=1)
         self.conteudo.grid(row=1, column=0, columnspan=2, sticky='nsew')
         
         
@@ -73,7 +75,6 @@ class Zonaframe:
         if len(self.lista_robos[0]) == 0:
             new_ent = self.gera_entidade("rb1")
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
-            self.lista_robos[0].append(new_ent)
             
             if self.selected_entity is None:
                 new_ent.invoke()
@@ -82,21 +83,27 @@ class Zonaframe:
         if len(self.lista_mesas[0]) == 0:   
             new_ent = self.gera_entidade("ms1")
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
-            self.lista_mesas[0].append(new_ent)
             
     def est_frame(self):
         if len(self.lista_esteiras[0]) == 0:
             new_ent = self.gera_entidade("es1")
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
-            self.lista_esteiras[0].append(new_ent)
             
-    def gera_entidade(self, nome):
+    def gera_entidade(self, nome) -> customtkinter.CTkButton:
         try:
             new_ent = FakeTab(self.entidades, nome)
                 
             new_ent = new_ent.get_button()
                 
             new_ent.configure(command=lambda btn=new_ent: self.load_entity_frame(btn))
+            
+            if self.aux_enity_type == "Robôs":
+                self.botoes_robo.append(new_ent)
+            elif self.aux_enity_type == "Mesas":
+                self.botoes_mesa.append(new_ent)
+            elif self.aux_enity_type == "Esteiras":
+                self.botoes_esteira.append(new_ent)
+                
             new_ent.invoke()
             
             if new_ent is None:
@@ -172,24 +179,21 @@ class Zonaframe:
             if n_entidades >= 5:
                 return
             nome = f"rb {n_entidades + 1}"
-            new_ent = self.move_add_ent(nome)
-            self.lista_robos[0].append(new_ent) 
+            self.move_add_ent(nome)
             
         elif entity_type == "Mesas":
             n_entidades = len(self.lista_mesas[0])
             if n_entidades >= 5:
                 return
             nome = f"mg {n_entidades + 1}"
-            new_ent = self.move_add_ent(nome) 
-            self.lista_mesas[0].append(new_ent)
+            self.move_add_ent(nome) 
                
         elif entity_type == "Esteiras":
             n_entidades = len(self.lista_esteiras[0])
             if n_entidades >= 5:
                 return
             nome = f"es {n_entidades + 1}"
-            new_ent = self.move_add_ent(nome)
-            self.lista_esteiras[0].append(new_ent)     
+            self.move_add_ent(nome)  
             
         
     def move_add_ent(self, nome):
@@ -227,15 +231,48 @@ class Zonaframe:
         
         self.selected_entity = parent
         if parent is not None:
+            if parent in self.botoes_robo:
+                btn_index = self.botoes_robo.index(parent)
+                print(f"\nbtn_index:{btn_index}")
+                if len(self.lista_robos[1]) > btn_index:
+                    print(f"entrou para robo\nlen lista_robos: {len(self.lista_robos[1])}")
+                    frame: customtkinter.CTkFrame = self.lista_robos[1][btn_index]
+                    frame.grid(row=0, column=0, columnspan=2, padx=0, pady=0, sticky='nsew')
+                else:
+                    print("no else para robo\n")
+                    n_frame = InputRobo(self.conteudo)
+                    self.lista_robos[1].append(n_frame.frame)
+                    n_frame.frame.grid(row=0, column=0, columnspan=2, padx=0, pady=0, sticky='nsew')
+                    
+            elif parent in self.botoes_mesa:
+                btn_index = self.botoes_mesa.index(parent)
+                print(f"\nbtn_index:{btn_index}")
+                if len(self.lista_mesas[1]) > btn_index:
+                    print(f"entrou para mesa\nlen lista_mesas: {len(self.lista_mesas[1])}")
+                    frame: customtkinter.CTkFrame = self.lista_mesas[1][btn_index]
+                    frame.grid(row=0, column=0, columnspan=2, padx=0, pady=0, sticky='nsew')
+                else:
+                    print("no else para mesa\n")
+                    n_frame = InputMesa(self.conteudo)
+                    self.lista_mesas[1].append(n_frame.frame)
+                    n_frame.frame.grid(row=0, column=0, columnspan=2, padx=0, pady=0, sticky='nsew')
+                    
+            elif parent in self.botoes_esteira:
+                btn_index = self.botoes_esteira.index(parent)
+                print(f"\nbtn_index:{btn_index}")
+                if len(self.lista_esteiras[1]) > btn_index:
+                    print(f"entrou para esteira\nlen lista_esteiras: {len(self.lista_esteiras[1])}")
+                    frame: customtkinter.CTkFrame = self.lista_esteiras[1][btn_index]
+                    frame.grid(row=0, column=0, columnspan=2, padx=0, pady=0, sticky='nsew')
+                else:
+                    print("no else para esteira\n")
+                    n_frame = InputConveyor(self.conteudo)
+                    self.lista_esteiras[1].append(n_frame.frame)
+                    n_frame.frame.grid(row=0, column=0, columnspan=2, padx=0, pady=0, sticky='nsew')
+                    
             parent.configure(fg_color="#1F6AA5")
-            if self.aux_enity_type == "Robôs":
-                self.aux_enity_type
-                InputRobo(self.conteudo)
-            elif self.aux_enity_type == "Mesas":
-                InputMesa(self.conteudo)
-            elif self.aux_enity_type == "Esteiras":
-                InputConveyor(self.conteudo)
-        
+                
+                
     def remove_widgets(self):
         for widget in self.conteudo.winfo_children():
             widget.grid_forget()

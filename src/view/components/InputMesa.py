@@ -3,7 +3,7 @@ from CustomTkinter import customtkinter
 
 class InputMesa:
     def __init__(self, frame):
-        self.frame: customtkinter.CTkFrame = frame
+        self.frame = customtkinter.CTkFrame(frame, fg_color="transparent")
         self.frame.grid_rowconfigure(0, weight=1)
         self.frame.grid_rowconfigure(1, weight=1)
         self.frame.grid_columnconfigure(0, weight=0)
