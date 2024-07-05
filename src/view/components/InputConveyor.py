@@ -19,7 +19,7 @@ class InputConveyor:
         
         lb_inversor = customtkinter.CTkLabel(self.frame, text="Inversor?")
         lb_inversor.grid(row=0, column=0, padx=3, pady=(3, 10), sticky='ws')
-        ck_inversor = customtkinter.CTkCheckBox(self.frame, text="", variable=self.inversor)
+        ck_inversor = customtkinter.CTkCheckBox(self.frame, text="", variable=self.inversor, border_color=("#4A4A4A", "#949A9F"))
         ck_inversor.grid(row=1, column=0, padx=3, pady=(3, 10), sticky='nsew')
         
         lb_s_presenca = customtkinter.CTkLabel(self.frame, text="Sensor de presença?")

@@ -22,7 +22,7 @@ class Zonaframe:
                 
         self.selected_entity = None
         
-        self.entidades = customtkinter.CTkFrame(self.frame, fg_color="#4A4A4A")
+        self.entidades = customtkinter.CTkFrame(self.frame, fg_color=("#DEDEDE","#4A4A4A"))
         self.entidades.grid(row=0, column=0, padx = 0, pady=0, sticky='w')
         
         self.options_entidade = ["Robôs", "Mesas", "Esteiras"]
@@ -42,7 +42,7 @@ class Zonaframe:
         self.lista_entidades = [self.lista_robos, self.lista_mesas, self.lista_esteiras]
         
         # Frame onde o conteudo da entidade será carregado
-        self.conteudo = customtkinter.CTkFrame(self.frame, fg_color="#4A4A4A")
+        self.conteudo = customtkinter.CTkFrame(self.frame, fg_color=("#DEDEDE","#4A4A4A"))
         self.conteudo.grid_columnconfigure(0, weight=1)
         self.conteudo.grid_rowconfigure(0, weight=1)
         self.conteudo.grid(row=1, column=0, columnspan=2, sticky='nsew')
@@ -280,7 +280,7 @@ class Zonaframe:
                     self.lista_esteiras[1].append(n_frame.frame)
                     n_frame.frame.grid(row=0, column=0, columnspan=2, padx=0, pady=0, sticky='nsew')
                     
-            parent.configure(fg_color="#1F6AA5")
+            parent.configure(fg_color="#3B8ED0")
                 
                 
     def forget_widgets_self_conteudo(self):

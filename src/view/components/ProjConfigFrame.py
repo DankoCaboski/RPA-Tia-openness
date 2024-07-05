@@ -139,9 +139,8 @@ class ProjConfigFrame:
         zonas_view = customtkinter.CTkTabview(self.tabview.tab("Software"),
                                               anchor="nw",
                                               command=self.on_tab_change,
-                                              fg_color="#3D3D3D"
+                                              fg_color=("#D9D9D9", "#3D3D3D")
                                               )
-
 
         zonas_view.add("+")
 
