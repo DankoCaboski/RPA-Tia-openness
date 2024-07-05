@@ -3,6 +3,8 @@ from openness.services.HwFeaturesService import HwFeaturesService
 from openness.services.CompilerService import CompilerService
 from openness.services.LanguageService import LanguageService
 from openness.services.XmlService import XmlService
+from openness.services.RobotService import RobotService
+
 
 class TiaService:
     def __init__(self, tia, hwf, comp):
@@ -24,6 +26,11 @@ class TiaService:
             RPA_status = 'Falha ao salvar projeto: ', e
             print(RPA_status)
             return RPA_status
+        
+    def get_project(self):
+        if self.myproject is None:
+            raise "No project open"
+        return self.myproject
         
     def open_tia_ui(self):
         # Create an instance of Tia Portal
@@ -67,7 +74,7 @@ class TiaService:
             print('Error getting all devices:', e)
             
     def get_device_by_index(self, index):
-        cpu_list = self.get_all_devices(self.myproject)
+        cpu_list = self.get_all_devices()
         cpu = cpu_list[index]
         return cpu
     
@@ -85,8 +92,9 @@ class TiaService:
                 if self.myproject != None:
                     if deviceType == "PLC":
                         print('Creating CPU: ', deviceName)
-                        config_Plc = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
-                        deviceCPU = self.myproject.Devices.CreateWithItem(config_Plc, deviceName, deviceName)
+                        config_Plc = "OrderNumber:6ES7 512-1SK01-0AB0/V2.5"
+                        # config_Plc = "OrderNumber:"+deviceMlfb+"/"+FirmVersion  #
+                        deviceCPU = self.myproject.Devices.CreateWithItem(config_Plc, deviceName, deviceName)  
                         self.my_devices.append(deviceCPU)
                         
                     elif deviceType == "IHM":
@@ -237,28 +245,42 @@ class TiaService:
         type_group = plc_software.TypeGroup
         return type_group.Types
     
-    def recursive_folder_search(self, groups, group_name):
+    def recursive_folder_search(self, group, group_name: str):
         try:
-            found = groups.Find(group_name)
+            if group == None:
+                for device in self.my_devices:
+                    plc_software = self.hwf.get_software(device)
+                    group = plc_software.BlockGroup.Groups
+            
+            found = group.Find(group_name)
             if found:
                 return found
             
-            for group in groups.GetEnumerator():
+            for group in group.GetEnumerator():
                 found = self.recursive_folder_search(group.Groups, group_name)
                 if found:
-                    return found
+                    return 
+            
+            return False
+        
         except Exception as e:
             print('Error searching group:', e)
 
 
-    def create_group(self, device, group_name, parent_group):
+    def create_group(self, device, group_name: str, parent_group: str):
         try:
+            if device is None:
+                device = self.my_devices[0]
             plc_software = self.hwf.get_software(device)
             groups = plc_software.BlockGroup.Groups
             if not parent_group:
                 return groups.Create(group_name)
             else:
-                return self.recursive_folder_search(groups, parent_group).Groups.Create(group_name)
+                mygroup = self.recursive_folder_search(groups, parent_group)
+                if mygroup:
+                    return mygroup.Groups.Create(group_name)
+                else:
+                    raise Exception(f"Parent {parent_group} group not found")
                 
         except Exception as e:
             print('Error creating group:', e)
@@ -268,7 +290,7 @@ class TiaService:
             udts_dependentes = XmlService().list_udt_from_xml(data_type_path)
             for udt in udts_dependentes:
                 udt_path = data_type_path.rsplit(".xml", 1)[0] + "\\" + udt + ".xml"
-                self.import_data_type(self.myproject, cpu, udt_path) 
+                self.import_data_type(cpu, udt_path) 
             
             types = self.get_types(cpu)
             if type(data_type_path) == str:
@@ -279,7 +301,7 @@ class TiaService:
         except Exception as e:
             if str(e).__contains__("culture"):
                 LanguageService().add_language(self.myproject, "pt-BR")
-                self.import_data_type(self.myproject, cpu, data_type_path)
+                self.import_data_type(cpu, data_type_path)
                 
             else:
                 print('Error importing data type from: ', data_type_path)
@@ -317,10 +339,11 @@ class TiaService:
             print('Error exporting data type while in service:', e)
             
             
-    def import_blocks(self, block_list: list):
-        return
-        for block in block_list:
-            self.import_block(block['device'], block['file_path'])
+    def import_blocks(self, block_list: dict):
+        robos = block_list['robots']
+        robos = RobotService(self).manege_robot(robos)
+        turntables = block_list['turntables']
+        grippers = block_list['grippers']
             
             
     def import_block(self, object, file_path):
@@ -328,15 +351,21 @@ class TiaService:
             import_options = self.tia.ImportOptions.Override
             xml_file_info = Utils().get_file_info(file_path)
             
-            if str(object.GetType()) == "Siemens.Engineering.HW.DeviceImpl":
-                object = object.DeviceItems[1]
-                print(f"Importing block to CPU: {object}")
-                plc_software = self.hwf.get_software(object)
-                plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options)
-                
-            elif str(object.GetType()) == "Siemens.Engineering.SW.Blocks.PlcBlockComposition":
-                print(f"Importing block to group: {object}")
-                object.Import(xml_file_info, import_options)
+            object_type = str(object.GetType())
+            
+            if object_type != "Siemens.Engineering.HW.DeviceImpl" and object_type != "Siemens.Engineering.SW.Blocks.PlcBlockComposition":
+                raise Exception("Invalid object type: ", object_type)
+        
+            else:
+                if object_type == "Siemens.Engineering.HW.DeviceImpl":
+                    object = object.DeviceItems[1]
+                    print(f"Importing block to CPU: {object}")
+                    plc_software = self.hwf.get_software(object)
+                    plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options)
+                    
+                elif object_type == "Siemens.Engineering.SW.Blocks.PlcBlockComposition":
+                    print(f"Importing block to group: {object}")
+                    object.Import(xml_file_info, import_options)
                 
             return True
         

@@ -28,6 +28,9 @@ class CreateProject:
         
         self.row_counter = 0
         
+        
+        self.proj_path = ""
+        
         self.get_tia_versions()
         
         self.create_project_page()
@@ -46,19 +49,19 @@ class CreateProject:
         self.row_counter += 1
         
         proj_name_label = customtkinter.CTkLabel(self.frame, text="Nome do projeto:")
-        proj_name_label.grid(row=self.row_counter, column=1, sticky="e", padx=(0, 10), pady=10)
+        proj_name_label.grid(row=self.row_counter, column=1, sticky="e", padx=(0, 10), pady=(0, 10))
              
         global proj_name
         proj_name = customtkinter.CTkEntry(self.frame)
-        proj_name.grid(row=self.row_counter, column=2, sticky="w", padx=(10, 0), pady=10)
+        proj_name.grid(row=self.row_counter, column=2, sticky="w", padx=(10, 0), pady=(0, 10))
         self.row_counter += 1
         
         label_tia = customtkinter.CTkLabel(self.frame, text="Versão do TIA:")
-        label_tia.grid(row=self.row_counter, column=1, sticky="e", padx=(0, 10), pady=10)
+        label_tia.grid(row=self.row_counter, column=1, sticky="e", padx=(0, 10), pady=0)
         
         global tia_version
         tia_version = customtkinter.CTkComboBox(self.frame, values=versions)
-        tia_version.grid(row=self.row_counter, column=2, sticky="w", padx=(10, 0), pady=10)
+        tia_version.grid(row=self.row_counter, column=2, sticky="w", padx=(10, 0), pady=0)
         self.row_counter += 1
         
         self.hw_frame.tabview.grid(row=self.hw_frame_index, column=0, columnspan=4, padx=25, pady=0, sticky='nsew')
@@ -66,7 +69,7 @@ class CreateProject:
         
         btn_criar = CustomButton(self.frame, "Gerar projeto", None, command=self.call_create_proj)
         btn_criar = btn_criar.get_button()
-        btn_criar.grid(row=self.row_counter, column=0, columnspan=4, padx=(0, 10), pady=10)
+        btn_criar.grid(row=self.row_counter, column=0, columnspan=4, padx=10, pady=5)
         self.row_counter += 1
         
         self.status_label = customtkinter.CTkLabel(self.frame, text="Status: Idle")
@@ -76,15 +79,21 @@ class CreateProject:
         self.button_handler.show_home_page()
         
     def call_create_proj(self):
+        if self.proj_path == '' or self.proj_path is None:
+            self.status_label.configure(text="Status: Defina um caminho para o projeto")
+            return
+        if proj_name.get() == '' or proj_name.get() is None:
+            self.status_label.configure(text="Status: Defina um nome para o projeto")
+            return
         self.status_label.configure(text=f"Status: Criando projeto")
         self.status_label.update_idletasks() 
         
         hardware = self.hw_frame.get_hardware_values()
-        blocks = self.hw_frame.get_blocks_to_import()
+        blocks: dict = self.hw_frame.get_blocks_to_import()
         
         status = self.button_handler.create_project(
             proj_name.get(),
-            proj_path,
+            self.proj_path,
             tia_version.get(),
             hardware,
             blocks
@@ -93,8 +102,7 @@ class CreateProject:
         self.status_label.configure(text="Status: " + str(status))
         
     def set_proj_path(self):
-        global proj_path
-        proj_path = Utils().open_directory_dialog()
+        self.proj_path = Utils().open_directory_dialog()
         
     def get_tia_versions(self):
         global versions

@@ -32,13 +32,18 @@ class OpennessController:
             error_creating = self.openness_service.tia.create_project(proj_name, proj_path)
             if error_creating:
                 raise Exception(error_creating)
-            self.openness_service.tia.add_hardware(hardwware)
-            self.openness_service.tia.wire_profinet()
-            self.openness_service.tia.import_blocks(blocks_to_import)
+            hardwware_count = hardwware.__len__()
+            if hardwware_count > 0:
+                self.openness_service.tia.add_hardware(hardwware)
+                if hardwware_count > 1:
+                    self.openness_service.tia.wire_profinet()
+                self.openness_service.tia.import_blocks(blocks_to_import)
             self.openness_service.tia.save_project()
-            return "Projeto criado com sucesso!"
+            status = "Projeto criado com sucesso!"
+            return status
         except Exception as e:
-            return "Erro ao gerar projeto: " + str(e)
+            error = "Erro ao gerar projeto: " + str(e)
+            return error
 
 
     def open_project(self, project_path):

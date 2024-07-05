@@ -13,7 +13,7 @@ class CustomButton:
         if self.image is not None:
             button = customtkinter.CTkButton(self.frame, image=self.image, text="", width=24, height=24, command=self.command)
         elif self.texto is not None:
-            button = customtkinter.CTkButton(self.frame, text=self.texto, command=self.command)
+            button = customtkinter.CTkButton(self.frame, text=self.texto, height=24, command=self.command)
         else:
             raise ValueError("Both 'texto' and 'image' cannot be None.")
         

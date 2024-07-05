@@ -1,9 +1,6 @@
 from CustomTkinter import customtkinter
 
-from view.components.TabviewSoftware import TabviewSoftware
-from view.functions.PlusIcon import PlusIcon
-from view.components.FakeTab import FakeTab
-
+from view.components.ZonaFrame import Zonaframe
 
 import tkinter as tk
 from openness.services.Utils import Utils
@@ -13,14 +10,16 @@ class ProjConfigFrame:
         self.tabview  = customtkinter.CTkTabview(frame, anchor="nw")
         
         self.tabview.add("Hardware")
+        
         self.tabview.add("Software")
+        
         self.tabview.set("Hardware")
         
         self.hw_frame = customtkinter.CTkScrollableFrame(self.tabview.tab("Hardware"))
         
         self.sw_options = ["Robôs", "Mesa", "Grampos"]
         
-        self.zonas: list[customtkinter.CTkButton] = []
+        self.zonas = []
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
@@ -47,7 +46,11 @@ class ProjConfigFrame:
         self.hw_frame.grid_columnconfigure(4, weight=1)
         
         global btn_add_hw
-        btn_add_hw = customtkinter.CTkButton(self.hw_frame, text="Adicionar Hardware", command=self.add_hw_combobox)
+        btn_add_hw = customtkinter.CTkButton(self.hw_frame,
+                                             text="Adicionar Hardware",
+                                             command=self.add_hw_combobox
+                                             )
+        
         btn_add_hw.grid(row=0, column=1, columnspan=2, pady=10)
             
     def add_hw_combobox(self):                
@@ -65,7 +68,12 @@ class ProjConfigFrame:
             event.widget.tk_focusNext().focus()
             return "break"
         
-        type_hw = customtkinter.CTkComboBox(self.hw_frame, width=120, variable=input["combobox"], values=self.opcoes_Hardware)
+        type_hw = customtkinter.CTkComboBox(self.hw_frame,
+                                            width=120,
+                                            variable=input["combobox"],
+                                            values=self.opcoes_Hardware
+                                            )
+        
         type_hw.grid(row=self.row_counter, column=0, padx=(10,0), pady=10, sticky='e')
         
         hw_mlfb = customtkinter.CTkComboBox(self.hw_frame, variable=input["mlfb"])
@@ -120,30 +128,38 @@ class ProjConfigFrame:
         ################### Software tab ###################
         
     def configure_sw(self):
+        self.tabview.tab("Software").grid_columnconfigure(0, weight=1)
+        self.tabview.tab("Software").grid_columnconfigure(1, weight=1)
+        self.tabview.tab("Software").grid_columnconfigure(2, weight=1)
+        self.tabview.tab("Software").grid_columnconfigure(3, weight=1)
+
+        self.tabview.tab("Software").grid_rowconfigure(0, weight=1)
         
-        zonas_frame = customtkinter.CTkFrame(self.tabview.tab("Software"), fg_color="#4A4A4A")
-        zonas_frame.grid(row=0, column=0, sticky="e")
-        
-        plus_icon = PlusIcon().load_image()
-        
-        global add_zona
-        add_zona = customtkinter.CTkButton(
-            zonas_frame,
-            text="",
-            image=plus_icon,
-            width=24,
-            height=24,
-            command=lambda: self.add_zona(zonas_frame)
-            )
-        
-        add_zona.grid(row=0, column=0, padx=10, pady=10)
-        
-        if self.zonas.__len__() == 0:
-            self.add_zona(zonas_frame)  
+        global zonas_view
+        zonas_view = customtkinter.CTkTabview(self.tabview.tab("Software"),
+                                              anchor="nw",
+                                              command=self.on_tab_change,
+                                              fg_color="#3D3D3D"
+                                              )
+
+
+        zonas_view.add("+")
+
+        self.add_zona(zonas_view)
+
+        zonas_view.grid(row=0, column=0, columnspan=4, padx=0, pady=0, sticky="nsew")
           
                 
         ################### Utils ###################
         
+    def on_tab_change(self):
+        current_tab = zonas_view.get()
+        if current_tab == "+":
+            if len(self.zonas) >= 5:
+                return
+            zona_name = self.add_zona(zonas_view)
+            zonas_view.set(zona_name)
+            
     def get_mlfb_by_hw_type(self):
         for i, hw_type in enumerate(self.opcoes_Hardware):
             mlfbs = Utils().get_mlfb_by_hw_type(hw_type)
@@ -175,21 +191,16 @@ class ProjConfigFrame:
         raise NotImplementedError("'get_blocks_to_import' method not implemented yet.")
         # return self.sw_content.get_blocks_to_import()
 
-    def add_zona(self, frame):
-        n = self.zonas.__len__()
-        if n >= 5:
-            return
-        fake_tab = FakeTab(frame, f"Zona {n + 1}", None)
-        zona = fake_tab.get_button()
-        zona.grid(row=0, column=n, padx=10, pady=10)
-        self.zonas.append(zona)
-        add_zona.grid_forget()
-        add_zona.grid(row=0, column=n+1, padx=10, pady=10)
-        self.color_sw_tab(n)
-    
-    def color_sw_tab(self, index: int):
-        for i in range(len(self.zonas)):
-            self.zonas[i].configure(fg_color="transparent")
-            
-        self.zonas[index].configure(fg_color="#1F6AA5")
+    def add_zona(self, zonas_view: customtkinter.CTkTabview):
+        l_zonas = len(self.zonas)
+        zona_name = f"Zona {l_zonas + 1}"
+        new_tab = zonas_view.add(zona_name)
+        self.zonas.append(new_tab)
+        zonas_view.set(zona_name)
+        
+        zonas_view.move(l_zonas + 1, "+")
+        
+        Zonaframe(zonas_view.tab(zona_name))
+
+        return zona_name     
             
