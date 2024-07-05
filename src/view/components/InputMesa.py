@@ -6,34 +6,33 @@ class InputMesa:
         self.frame = customtkinter.CTkFrame(frame, fg_color="transparent")
         self.frame.grid_rowconfigure(0, weight=1)
         self.frame.grid_rowconfigure(1, weight=1)
-        self.frame.grid_columnconfigure(0, weight=0)
+        self.frame.grid_columnconfigure(0, weight=1)
         self.frame.grid_columnconfigure(1, weight=1)
-        self.frame.grid_columnconfigure(2, weight=1)
         
         self.main_content()
         
         
     def main_content(self):
         driver_label = customtkinter.CTkLabel(self.frame, text="Driver")
-        driver_label.grid(row=0, column=0, padx=3, pady=3, sticky='ws')
+        driver_label.grid(row=0, column=0, padx=6, pady=3, sticky='ws')
         
         driver_input = customtkinter.CTkComboBox(self.frame, width=90, values=["SEW", "Sinamics"])
         driver_input.grid(row=1, column=0, padx=3, pady=3, sticky='wn')
         
         ladoA = customtkinter.CTkFrame(self.frame, fg_color="transparent")
-        ladoA.grid(row=0, column=1, padx=3 , pady=3, sticky='e')
+        ladoA.grid(row=0, column=0, padx=6 , pady=3, sticky='e')
         self.frame_lado(ladoA, "A")
         
         ladoB = customtkinter.CTkFrame(self.frame, fg_color="transparent")
-        ladoB.grid(row=0, column=2, padx=3, pady=3, sticky='w')
+        ladoB.grid(row=0, column=1, padx=6, pady=3, sticky='w')
         self.frame_lado(ladoB, "B")
         
         ladoC = customtkinter.CTkFrame(self.frame, fg_color="transparent")
-        ladoC.grid(row=1, column=1, padx=3 , pady=3, sticky='e')
+        ladoC.grid(row=1, column=0, padx=6 , pady=3, sticky='e')
         self.frame_lado(ladoC, "C")
         
         ladoD = customtkinter.CTkFrame(self.frame, fg_color="transparent")
-        ladoD.grid(row=1, column=2, padx=3, pady=3, sticky='w')
+        ladoD.grid(row=1, column=1, padx=6, pady=3, sticky='w')
         self.frame_lado(ladoD, "D")
         
         
