@@ -11,9 +11,10 @@ class CustomButton:
 
     def get_button(self) -> customtkinter.CTkButton:
         if self.image is not None:
-            button = customtkinter.CTkButton(self.frame, image=self.image, text="", width=24, height=24, command=self.command)
+            # TODO: validar cor
+            button = customtkinter.CTkButton(self.frame, image=self.image, text="", width=24, height=24, command=self.command, fg_color="#C4314B")
         elif self.texto is not None:
-            button = customtkinter.CTkButton(self.frame, text=self.texto, height=24, command=self.command)
+            button = customtkinter.CTkButton(self.frame, text=self.texto, height=24, command=self.command, fg_color="#C4314B")
         else:
             raise ValueError("Both 'texto' and 'image' cannot be None.")
         

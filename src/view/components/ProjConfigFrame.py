@@ -13,6 +13,8 @@ class ProjConfigFrame:
         
         self.tabview.add("Software")
         
+        self.tabview.add("Safety")
+        
         self.tabview.set("Hardware")
         
         self.hw_frame = customtkinter.CTkScrollableFrame(self.tabview.tab("Hardware"))
