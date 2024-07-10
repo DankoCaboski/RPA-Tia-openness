@@ -133,11 +133,11 @@ class DbManagement:
             self.connection = sqlite3.connect(self.db_path)
             self.cursor = self.connection.cursor()
             
-        if hw_type == "PLC":
+        if hw_type == "CONTROLLERS" or hw_type == "REMOTAS":
             self.cursor.execute('SELECT mlfb FROM CPU_List WHERE type = ?', (hw_type,))
         elif hw_type == "IHM":
             self.cursor.execute('SELECT mlfb FROM IHM_List WHERE type = ?', (hw_type,))
-        elif hw_type == "IO Node":
+        elif hw_type == "DI" or hw_type == "DO":
             self.cursor.execute('SELECT mlfb FROM IO_List WHERE type = ?', (hw_type,))
         return self.cursor.fetchall()
     

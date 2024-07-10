@@ -25,7 +25,7 @@ class OpennessController:
         hardwware: list,
         blocks_to_import: dict
         ):
-        
+        redes = []
         try:
             if self.curent_tia_version is None:
                 self.openness_service.set_dll(tia_version)
@@ -37,7 +37,12 @@ class OpennessController:
                 self.openness_service.tia.add_hardware(hardwware)
                 if hardwware_count > 1:
                     self.openness_service.tia.wire_profinet()
+                    redes = self.openness_service.tia.create_IO_System()
+                    print(redes)
+                    self.openness_service.tia.connect_IO_System(hardwware, redes)
+                    self.openness_service.tia.addIORemota(hardwware)
                 # self.openness_service.tia.import_blocks(blocks_to_import)
+
             self.openness_service.tia.save_project()
             status = "Projeto criado com sucesso!"
             return status

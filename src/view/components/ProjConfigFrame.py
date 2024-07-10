@@ -4,6 +4,7 @@ from view.components.ZonaFrame import Zonaframe
 
 import tkinter as tk
 from openness.services.Utils import Utils
+import re
 
 class ProjConfigFrame:
     def __init__(self, frame):
@@ -23,10 +24,10 @@ class ProjConfigFrame:
         
         self.zonas:list[str] = []
         
-        self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
+        self.opcoes_Hardware = ["CONTROLLERS", "IHM", "DI", "DO", "REMOTAS"]
         
         self.firm_versions = {}
-        self.mlfb_List = [[], [], []]
+        self.mlfb_List = [[], [], [], [], []]
         
         self.hardware_values = []
         
@@ -35,7 +36,16 @@ class ProjConfigFrame:
         
         self.add_hw()
         self.configure_sw()
-        
+
+    def validate_address_input(self, P):
+        input = self.hardware_values[-1]  # Assumindo que quer validar o último hardware adicionado
+        if input["combobox"].get() in ["CONTROLLERS", "IHM", "REMOTAS"]:
+            return re.match(r'^\d{0,3}(\.\d{0,3}){0,3}(\.\d{0,2})?$', P) is not None
+        elif input["combobox"].get() in ["DI", "DO"]:
+            return re.match(r'^\d{0,5}$', P) is not None
+        else:
+            return P.isdigit()
+         
         ################### Hardware tab ###################
     
     def add_hw(self):
@@ -89,24 +99,31 @@ class ProjConfigFrame:
         
         special_entry = customtkinter.CTkEntry(self.hw_frame, textvariable=input["Start_Adress"])
         special_entry.grid(row=self.row_counter, column=4, padx=(10,0), pady=10)
+
+        # Vinculando a validação ao evento de digitação:
+        vc = self.hw_frame.register(self.validate_address_input)  # Registrar a função de validação
+        special_entry.configure(validate="key", validatecommand=(vc, '%P'))  # '%P' passa o valor da entrada antes da mudança
+
         
         special_entry.bind('<Return>', focus_next_widget)
-        special_entry.grid_remove()  # Inicia sem aparecer
+
         
         def update_mlfb_combobox(*args):
             selected_option = input["combobox"].get()
-            print(f"Selected hardware type: {selected_option}")
             
-            if selected_option == "PLC":
+            if selected_option == "CONTROLLERS":
                 valueSource = self.mlfb_List[0]
-                special_entry.grid_remove()
+                input["Start_Adress"].set("192.168.0.01")
             elif selected_option == "IHM":
                 valueSource = self.mlfb_List[1]
-                special_entry.grid_remove()
-            elif selected_option == "IO Node":
-                valueSource = self.mlfb_List[2]
+                input["Start_Adress"].set("192.168.0.01")
+            elif selected_option == "DI" or selected_option == "DO":
+                valueSource = self.mlfb_List[2 if selected_option == "DI" else 3]
+                input["Start_Adress"].set("0")
                 special_entry.grid()
-                btn_add_hw.grid(row=0, column=0, columnspan=5, pady=10)
+            elif selected_option == "REMOTAS":
+                valueSource = self.mlfb_List[4]
+                input["Start_Adress"].set("192.168.0.01")
             else:
                 valueSource = []
 
@@ -119,7 +136,7 @@ class ProjConfigFrame:
             print(f"Firmware versions for {selected_mlfb}: {firmware_versions}")
             hw_firmware.configure(values=firmware_versions)
             if firmware_versions:
-                hw_firmware.set(firmware_versions[0])  # Define a primeira versão como padrão
+                input["firm_version"].set(firmware_versions[-1])
         
         input["combobox"].trace_add('write', update_mlfb_combobox)
         input["mlfb"].trace_add('write', update_firmware_combobox)
@@ -192,7 +209,8 @@ class ProjConfigFrame:
                 'type': hw_value['combobox'].get(),
                 'mlfb': hw_value['mlfb'].get(),
                 'firmware': hw_value['firm_version'].get(),
-                'name': hw_value['entry'].get()
+                'name': hw_value['entry'].get(),
+                'Address': hw_value['Start_Adress'].get()
             }
             result.append(hw_dict)
         return result

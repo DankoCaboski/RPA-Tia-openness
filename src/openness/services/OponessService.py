@@ -33,7 +33,7 @@ class OpennessService:
             import Siemens.Engineering as tia # type: ignore
             self.tia = TiaService(tia, hwf, comp)
         
-            result = "Versãod o tia configurada com sucesso!"
+            result = "Versão do tia configurada com sucesso!"
             print(result)
             return result
 
