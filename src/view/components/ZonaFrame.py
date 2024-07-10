@@ -408,7 +408,7 @@ class Zonaframe:
             isinstance(i, customtkinter.CTkEntry):
                 info.update({"Cl": i.get()})
                   
-            if grid_info.get('column') == 2 and \
+            elif grid_info.get('column') == 2 and \
             grid_info.get('row') == 1 and \
             isinstance(i, customtkinter.CTkEntry):
                 info.update({"PP": i.get()})
@@ -423,7 +423,7 @@ class Zonaframe:
             isinstance(i, customtkinter.CTkEntry):
                 info.update({"Cl": i.get()})
                   
-            if grid_info.get('column') == 2 and \
+            elif grid_info.get('column') == 2 and \
             grid_info.get('row') == 2 and \
             isinstance(i, customtkinter.CTkEntry):
                 info.update({"PP": i.get()})
@@ -438,7 +438,7 @@ class Zonaframe:
             isinstance(i, customtkinter.CTkEntry):
                 info.update({"Cl": i.get()})
                   
-            if grid_info.get('column') == 2 and \
+            elif grid_info.get('column') == 2 and \
             grid_info.get('row') == 3 and \
             isinstance(i, customtkinter.CTkEntry):
                 info.update({"PP": i.get()})
@@ -446,6 +446,27 @@ class Zonaframe:
             prod["Produto 3"].update(info)
             
         return prod
+    
+    def get_es_blocks(self, frame: customtkinter.CTkFrame):
+        info_es:dict = {"Inversor": "", "Presença": "", "Posição": ""}
+        for i in frame.winfo_children():
+            grid_info = i.grid_info()
+            if grid_info.get('column') == 0 and \
+                grid_info.get('row') == 1 and \
+                isinstance(i, customtkinter.CTkCheckBox):
+                info_es.update({"Inversor": bool(i.get())})
+                
+            elif grid_info.get('column') == 1 and \
+                grid_info.get('row') == 1 and \
+                isinstance(i, customtkinter.CTkCheckBox):
+                info_es.update({"Presença": bool(i.get())})
+                
+            elif grid_info.get('column') == 2 and \
+                grid_info.get('row') == 1 and \
+                isinstance(i, customtkinter.CTkCheckBox):
+                info_es.update({"Posição": bool(i.get())})
+                
+        return info_es        
 
 
     def get_blocks_to_import(self):
@@ -455,4 +476,7 @@ class Zonaframe:
 
         for i in self.lista_mesas[1]:
             blocks["Mesas"].append(self.get_mg_blocks(i))
+            
+        for i in self.lista_esteiras[1]:
+            blocks["Esteiras"].append(self.get_es_blocks(i))
         return blocks
