@@ -1,3 +1,4 @@
+import os
 from openness.services.Utils import Utils
 from openness.services.HwFeaturesService import HwFeaturesService
 from openness.services.CompilerService import CompilerService
@@ -53,7 +54,7 @@ class TiaService:
         proj_path = Utils().get_directory_info(proj_path)
         try:
             if self.tia_instance is None:
-                self.open_tia_ui()
+               self.mytia = self.open_tia_ui()
                 
             self.myproject = self.tia_instance.Projects.Create(proj_path, proj_name)
             LanguageService().add_language(self.myproject, "pt-BR")
@@ -238,19 +239,20 @@ class TiaService:
             return redes
 
     def connect_IO_System(self, hardware, redes):
-        for rede in redes:  # Loop para cada rede na lista de redes
-            print(hardware)
-            for device in hardware:
-                deviceType = device ["type"]
-                if deviceType == "REMOTAS":
-                    Devices = self.myproject.UngroupedDevicesGroup.Devices  # Referenciando a lista de dispositivos
-                    for i, Device in enumerate(Devices):
-                        networkInterface = self.hwf.get_network_interface_REMOTAS(Device)
-                        Io_System = networkInterface.IoConnectors[0]
-                        if Io_System.GetAttribute("ConnectedToIoSystem") == "" or Io_System.GetAttribute("ConnectedToIoSystem") == None:  # Verifica se o Io_System não está conectado
-                            connect = Io_System.ConnectToIoSystem(rede)  # Usando a rede atual do loop externo
-                            RPA_status = "Rede IO Conectada"
-                            print(RPA_status)
+        count = self.myproject.UngroupedDevicesGroup.Devices.Count
+        if count >= 1:
+            for rede in redes:  # Loop para cada rede na lista de redes
+                for device in hardware:
+                    deviceType = device ["type"]
+                    if deviceType == "REMOTAS":
+                        Devices = self.myproject.UngroupedDevicesGroup.Devices  # Referenciando a lista de dispositivos
+                        for i, Device in enumerate(Devices):
+                            networkInterface = self.hwf.get_network_interface_REMOTAS(Device)
+                            Io_System = networkInterface.IoConnectors[0]
+                            if Io_System.GetAttribute("ConnectedToIoSystem") == "" or Io_System.GetAttribute("ConnectedToIoSystem") == None:  # Verifica se o Io_System não está conectado
+                                connect = Io_System.ConnectToIoSystem(rede)  # Usando a rede atual do loop externo
+                                RPA_status = "Rede IO Conectada"
+                                print(RPA_status)
             
     def SetSubnetName(self, subnet_name):
         RPA_status = 'Setting subnet name'
@@ -570,3 +572,40 @@ class TiaService:
 
         except Exception as e:
             print('Error verifying or importing file:', e)
+
+    def import_libraries(self):
+        biblioteca = Utils().get_file_info(r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\Library")
+        OpenGlobalLibrary = self.tia_instance.GlobalLibraries.Open(biblioteca, self.tia.OpenMode.ReadWrite)
+        print("Open Library")
+        enumLibrary =  OpenGlobalLibrary.TypeFolder.Folders
+        projectLib = self.myproject.ProjectLibrary
+        for folder in enumLibrary:
+            # Verifica se 'Types' não está vazio antes de tentar acessar um índice
+            try:
+                updateLibrary = folder.Types[0].UpdateLibrary(projectLib)
+                nameFolderEnum = Utils().get_attibutes(["Name"], folder)
+                nameFolder = nameFolderEnum[0]
+                print('update library:', nameFolder)
+            except IndexError:
+                # Ocorre se não houver itens em Types
+                print('Erro: Não há tipos disponíveis em', folder)
+            except Exception as e:
+                # Captura outras exceções que podem ocorrer no processo
+                print('Erro ao atualizar a biblioteca:', e)
+        CloseGlobalLibrary = self.mytia.GlobalLibraries[0].Close()
+        print("Close Library")
+
+    def import_graphics(self):
+        print("Import graphic start")
+        # Define o caminho do diretório onde estão os arquivos .xml
+        directory_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\IHM\Graphic"
+        # Lista todos os arquivos que terminam com '.xml' no diretório especificado
+        arquivos_xml = [f for f in os.listdir(directory_path) if f.endswith('.xml')]
+        for arquivo in arquivos_xml:
+            # Constrói o caminho completo para cada arquivo .xml
+            full_path = os.path.join(directory_path, arquivo)
+            # Obtém as informações do arquivo através do caminho completo
+            arquivoFile = Utils().get_file_info(full_path)
+            import_options = self.tia.ImportOptions.Override
+            import_graph = self.myproject.Graphics.Import(arquivoFile, import_options)
+        print("Import graphic done")

@@ -38,9 +38,12 @@ class OpennessController:
                 if hardwware_count > 1:
                     self.openness_service.tia.wire_profinet()
                     redes = self.openness_service.tia.create_IO_System()
-                    print(redes)
                     self.openness_service.tia.connect_IO_System(hardwware, redes)
                     self.openness_service.tia.addIORemota(hardwware)
+                    self.openness_service.tia.save_project()
+                    self.openness_service.tia.import_libraries()
+                    self.openness_service.tia.import_graphics()
+
                 # self.openness_service.tia.import_blocks(blocks_to_import)
 
             self.openness_service.tia.save_project()
