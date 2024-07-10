@@ -346,17 +346,16 @@ class Zonaframe:
             i.configure(fg_color="#4A4A4A")
 
     def get_rb_blocks(self, frame: customtkinter.CTkFrame):
-        info_rb:str = None
+        info_rb = {"Fabricante": "", "Aplicação": "", "Nome": ""}
         rb = None
         for i in frame.winfo_children():
             grid_info = i.grid_info()
             if grid_info.get('column') == 0 and isinstance(i, customtkinter.CTkComboBox):
-                rb = i.get()
-                info_rb = f"{rb}"
+                info_rb.update({"Fabricante": i.get()})
             if grid_info.get('column') == 1 and isinstance(i, customtkinter.CTkComboBox):
-                info_rb = f"{info_rb}-{i.get()}"
+                info_rb.update({"Aplicação": i.get()})
             if grid_info.get('column') == 2 and isinstance(i, customtkinter.CTkEntry):
-                info_rb = f"{info_rb}-{i.get()}"
+                info_rb.update({"Nome": i.get()})
         
         return info_rb
 
