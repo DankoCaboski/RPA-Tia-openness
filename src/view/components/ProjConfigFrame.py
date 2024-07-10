@@ -197,9 +197,15 @@ class ProjConfigFrame:
             result.append(hw_dict)
         return result
     
-    def get_blocks_to_import(self):
-        raise NotImplementedError("'get_blocks_to_import' method not implemented yet.")
-        # return self.sw_content.get_blocks_to_import()
+    # def get_blocks_to_import(self):
+    #     return self.sw_content.get_blocks_to_import()
+
+    def get_zonas(self):
+        dict_zonas = {}
+        for zona in self.zonas:
+            dict_zonas.update({zona: ""})
+            dict_zonas[zona] = self.sw_content.get_blocks_to_import()
+        print(dict_zonas)
 
     def add_zona(self, zonas_view: customtkinter.CTkTabview):
         l_zonas = len(self.zonas)
@@ -211,7 +217,7 @@ class ProjConfigFrame:
         zonas_view.move(l_zonas + 2, "+")
         zonas_view.move(l_zonas + 2, "-")
         
-        Zonaframe(zonas_view.tab(zona_name))
+        self.sw_content = Zonaframe(zonas_view.tab(zona_name))
 
         return zona_name     
             
