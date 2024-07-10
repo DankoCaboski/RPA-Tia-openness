@@ -22,6 +22,7 @@ class ProjConfigFrame:
         self.sw_options = ["Robôs", "Mesa", "Grampos"]
         
         self.zonas:list[str] = []
+        self.sw_content: list[Zonaframe] = []
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         
@@ -203,21 +204,20 @@ class ProjConfigFrame:
     def get_zonas(self):
         dict_zonas = {}
         for zona in self.zonas:
-            dict_zonas.update({zona: ""})
-            dict_zonas[zona] = self.sw_content.get_blocks_to_import()
+            dict_zonas.update({zona: self.sw_content[self.zonas.index(zona)].get_blocks_to_import()})
         print(dict_zonas)
 
     def add_zona(self, zonas_view: customtkinter.CTkTabview):
         l_zonas = len(self.zonas)
         zona_name = f"Zona {l_zonas + 1}"
-        new_tab = zonas_view.add(zona_name)
+        zonas_view.add(zona_name)
         self.zonas.append(zona_name)
         zonas_view.set(zona_name)
         
         zonas_view.move(l_zonas + 2, "+")
         zonas_view.move(l_zonas + 2, "-")
         
-        self.sw_content = Zonaframe(zonas_view.tab(zona_name))
+        self.sw_content.append(Zonaframe(zonas_view.tab(zona_name)))
 
         return zona_name     
             

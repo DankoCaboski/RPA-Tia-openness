@@ -347,7 +347,6 @@ class Zonaframe:
 
     def get_rb_blocks(self, frame: customtkinter.CTkFrame):
         info_rb = {"Fabricante": "", "Aplicação": "", "Nome": ""}
-        rb = None
         for i in frame.winfo_children():
             grid_info = i.grid_info()
             if grid_info.get('column') == 0 and isinstance(i, customtkinter.CTkComboBox):
