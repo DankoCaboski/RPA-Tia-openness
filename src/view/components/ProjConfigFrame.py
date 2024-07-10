@@ -21,7 +21,7 @@ class ProjConfigFrame:
         
         self.sw_options = ["Robôs", "Mesa", "Grampos"]
         
-        self.zonas = []
+        self.zonas:list[str] = []
         
         self.opcoes_Hardware = ["PLC", "IHM", "IO Node"]
         

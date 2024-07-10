@@ -18,6 +18,7 @@ class Zonaframe:
         self.aux_enity_type = tk.StringVar()
         
         self.add_ent: customtkinter.CTkButton = None
+        self.rm_ent: customtkinter.CTkButton = None
         self.entityes: customtkinter.CTkComboBox = None
                 
         self.selected_entity = None
@@ -65,6 +66,10 @@ class Zonaframe:
         self.add_ent = FakeTab(self.entidades, "+", self.new_entity)
         self.add_ent = self.add_ent.get_button()
         self.add_ent.grid(row=0, column=2, padx=3, pady=3, sticky='w')
+        
+        self.rm_ent = FakeTab(self.entidades, "-", self.pop_ent)
+        self.rm_ent = self.rm_ent.get_button()
+        self.rm_ent.grid(row=0, column=3, padx=3, pady=3, sticky='w')
         
         self.aux_enity_type = "Robôs"
         self.rb_frame()
@@ -164,9 +169,9 @@ class Zonaframe:
         Remove todas as entidades do frame de entidades
         """
         for widget in self.entidades.winfo_children():
-            if type(widget) == customtkinter.CTkComboBox:
-                continue
-            if widget == self.add_ent:
+            if widget == self.add_ent or \
+               widget == self.rm_ent or \
+               isinstance(widget, customtkinter.CTkComboBox):
                 continue
             widget.grid_forget()
                 
@@ -186,28 +191,30 @@ class Zonaframe:
             if n_entidades >= 5:
                 return
             nome = f"rb {n_entidades + 1}"
-            self.move_add_ent(nome)
+            self.append_ent(nome)
             
         elif entity_type == "Mesas":
             n_entidades = len(self.lista_mesas[0])
             if n_entidades >= 5:
                 return
             nome = f"mg {n_entidades + 1}"
-            self.move_add_ent(nome) 
+            self.append_ent(nome) 
                
         elif entity_type == "Esteiras":
             n_entidades = len(self.lista_esteiras[0])
             if n_entidades >= 5:
                 return
             nome = f"es {n_entidades + 1}"
-            self.move_add_ent(nome)  
+            self.append_ent(nome)  
             
         
-    def move_add_ent(self, nome):
+    def append_ent(self, nome):
         try:
             grid_info: dict = self.add_ent.grid_info()
             
             self.add_ent.grid_forget()
+            
+            self.rm_ent.grid_forget()
         
             new_ent = self.gera_entidade(nome)
             
@@ -223,6 +230,12 @@ class Zonaframe:
                     pady = 3,
                     sticky ='w')
             
+            self.rm_ent.grid(row=0,
+                    column = grid_info.get('column') + 2,
+                    padx = 3,
+                    pady = 3,
+                    sticky ='w')
+            
             self.add_ent.update_idletasks()
             
             if new_ent is None:
@@ -231,6 +244,40 @@ class Zonaframe:
             return new_ent
         except Exception as e:
             print(f"Erro na função 'move_add_ent': {e}")
+    
+    def pop_ent(self):
+        try:
+            grid_info: dict = self.add_ent.grid_info()
+            entity_type = self.entity_type.get()
+            ent_list = None
+            
+            if entity_type == "Robôs":
+                ent_list = self.lista_robos
+            
+            elif entity_type == "Mesas":
+                ent_list = self.lista_mesas
+                
+            elif entity_type == "Esteiras":
+                ent_list = self.lista_esteiras
+                
+            if len(ent_list[0]) == 1:
+                return
+            
+            ent_list[0][-1].destroy()
+            ent_list[1][-1].destroy()
+            ent_list[0].pop()
+            ent_list[1].pop()
+            
+            self.add_ent.grid_forget()
+            self.rm_ent.grid_forget()
+            self.add_ent.grid(row=0, column=grid_info.get('column'), padx=3, pady=3, sticky='w')
+            self.rm_ent.grid(row=0, column=grid_info.get('column') + 1, padx=3, pady=3, sticky='w')
+            
+            ent_list[0][-1].invoke()
+        
+        except Exception as e:
+            print(f"Erro na função 'pop_ent': {e}")
+            
             
     def load_entity_frame(self, parent: customtkinter.CTkButton=None):
         if parent == self.selected_entity:
