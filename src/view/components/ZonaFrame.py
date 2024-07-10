@@ -357,7 +357,7 @@ class Zonaframe:
                 info_rb = f"{info_rb}-{i.get()}"
             if grid_info.get('column') == 2 and isinstance(i, customtkinter.CTkEntry):
                 info_rb = f"{info_rb}-{i.get()}"
-        info_rb = f"{info_rb};"
+        
         return info_rb
 
     def get_mg_blocks(self, frame: customtkinter.CTkFrame):
@@ -372,36 +372,80 @@ class Zonaframe:
             if isinstance(i, customtkinter.CTkFrame):
                 if grid_info.get('column') == 0 and \
                 grid_info.get('row') == 0:
-                    info_mg.update({"ladoA": []})
+                    info_mg.update({"ladoA": ""})
+                    prods = self.get_prod_info(i)
+                    info_mg["ladoA"] = prods
 
-                if grid_info.get('column') == 1 and \
+                elif grid_info.get('column') == 1 and \
                 grid_info.get('row') == 0:
-                    info_mg.update({"ladoB": []})
+                    info_mg.update({"ladoB": ""})
+                    prods = self.get_prod_info(i)
+                    info_mg["ladoB"] = prods
 
-                if grid_info.get('column') == 0 and \
+                elif grid_info.get('column') == 0 and \
                 grid_info.get('row') == 1:
-                    info_mg.update({"ladoC": []})
+                    info_mg.update({"ladoC": ""})
+                    prods = self.get_prod_info(i)
+                    info_mg["ladoC"] = prods
 
-                if grid_info.get('column') == 1 and \
+                elif grid_info.get('column') == 1 and \
                 grid_info.get('row') == 1:
-                    info_mg.update({"ladoD": []})
+                    info_mg.update({"ladoD": ""})
+                    prods = self.get_prod_info(i)
+                    info_mg["ladoD"] = prods
 
         return info_mg
 
     def get_prod_info(self, frame: customtkinter.CTkFrame):
-        info = {}
+        prod = {"Produto 1": {}, "Produto 2": {}, "Produto 3": {}}
+        info = {"Cl": "", "PP": ""}
+        
         for i in frame.winfo_children():
             grid_info = i.grid_info()
+            
             if grid_info.get('column') == 1 and \
             grid_info.get('row') == 1 and \
             isinstance(i, customtkinter.CTkEntry):
-                info.update({"CL": i.get()})
-
+                info.update({"Cl": i.get()})
+                  
+            if grid_info.get('column') == 2 and \
+            grid_info.get('row') == 1 and \
+            isinstance(i, customtkinter.CTkEntry):
+                info.update({"PP": i.get()})
+                
+            prod["Produto 1"].update(info)
+                        
+        for i in frame.winfo_children():
+            grid_info = i.grid_info()
+            
             if grid_info.get('column') == 1 and \
             grid_info.get('row') == 2 and \
             isinstance(i, customtkinter.CTkEntry):
+                info.update({"Cl": i.get()})
+                  
+            if grid_info.get('column') == 2 and \
+            grid_info.get('row') == 2 and \
+            isinstance(i, customtkinter.CTkEntry):
                 info.update({"PP": i.get()})
-        return info
+                
+            prod["Produto 2"].update(info)
+            
+        for i in frame.winfo_children():
+            grid_info = i.grid_info()
+            
+            if grid_info.get('column') == 1 and \
+            grid_info.get('row') == 3 and \
+            isinstance(i, customtkinter.CTkEntry):
+                info.update({"Cl": i.get()})
+                  
+            if grid_info.get('column') == 2 and \
+            grid_info.get('row') == 3 and \
+            isinstance(i, customtkinter.CTkEntry):
+                info.update({"PP": i.get()})
+                
+            prod["Produto 3"].update(info)
+            
+        return prod
 
 
     def get_blocks_to_import(self):
