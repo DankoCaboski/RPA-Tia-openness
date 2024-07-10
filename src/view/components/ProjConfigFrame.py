@@ -151,6 +151,19 @@ class ProjConfigFrame:
         self.add_zona(zonas_view)
 
         zonas_view.grid(row=0, column=0, columnspan=4, padx=0, pady=0, sticky="nsew")
+        
+        
+        ################### Safety tab ###################
+        
+        
+        self.tabview.tab("Safety").grid_columnconfigure(0, weight=1)
+        self.tabview.tab("Safety").grid_columnconfigure(1, weight=1)
+        self.tabview.tab("Safety").grid_columnconfigure(2, weight=1)
+        self.tabview.tab("Safety").grid_columnconfigure(3, weight=1)
+        
+        warning = customtkinter.CTkLabel(self.tabview.tab("Safety"), text="Em desenvolvimento")
+        warning.grid(row=0, column=0, columnspan=4, padx=0, pady=0, sticky="nsew")
+        
           
                 
         ################### Utils ###################
@@ -183,8 +196,6 @@ class ProjConfigFrame:
                     self.firm_versions[mlfb].append(version)
                 else:
                     self.firm_versions[mlfb] = [version]
-        
-        print("Firmware versions dictionary:", self.firm_versions)
     
     def get_hardware_values(self):
         result = []
@@ -197,15 +208,16 @@ class ProjConfigFrame:
             }
             result.append(hw_dict)
         return result
-    
-    # def get_blocks_to_import(self):
-    #     return self.sw_content.get_blocks_to_import()
+
+    def get_safety_config(self):
+        return "Em desenvolvimento"
 
     def get_zonas(self):
         dict_zonas = {}
         for zona in self.zonas:
             dict_zonas.update({zona: self.sw_content[self.zonas.index(zona)].get_blocks_to_import()})
-        print(dict_zonas)
+        return dict_zonas
+
 
     def add_zona(self, zonas_view: customtkinter.CTkTabview):
         l_zonas = len(self.zonas)

@@ -89,6 +89,7 @@ class CreateProject:
         
         hardware = self.hw_frame.get_hardware_values()
         blocks: dict = self.hw_frame.get_zonas()
+        safaty: dict = self.hw_frame.get_safety_config()
         
         
         status = self.button_handler.create_project(
@@ -96,7 +97,8 @@ class CreateProject:
             self.proj_path,
             tia_version.get(),
             hardware,
-            blocks
+            blocks,
+            safaty
             )
         
         self.status_label.configure(text="Status: " + str(status))

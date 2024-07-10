@@ -346,15 +346,15 @@ class Zonaframe:
             i.configure(fg_color="#4A4A4A")
 
     def get_rb_blocks(self, frame: customtkinter.CTkFrame):
-        info_rb = {"Fabricante": "", "Aplicação": "", "Nome": ""}
+        info_rb = {"brand": "", "Aplicação": "", "name": ""}
         for i in frame.winfo_children():
             grid_info = i.grid_info()
             if grid_info.get('column') == 0 and isinstance(i, customtkinter.CTkComboBox):
-                info_rb.update({"Fabricante": i.get()})
+                info_rb.update({"brand": i.get()})
             if grid_info.get('column') == 1 and isinstance(i, customtkinter.CTkComboBox):
                 info_rb.update({"Aplicação": i.get()})
             if grid_info.get('column') == 2 and isinstance(i, customtkinter.CTkEntry):
-                info_rb.update({"Nome": i.get()})
+                info_rb.update({"name": i.get()})
         
         return info_rb
 
@@ -468,13 +468,13 @@ class Zonaframe:
 
 
     def get_blocks_to_import(self):
-        blocks = { "Robôs": [], "Mesas": [], "Esteiras": [] }
+        blocks = { "robots": [], "turntables": [], "Conveyor": [] }
         for i in self.lista_robos[1]:
-            blocks["Robôs"].append(self.get_rb_blocks(i))
+            blocks["robots"].append(self.get_rb_blocks(i))
 
         for i in self.lista_mesas[1]:
-            blocks["Mesas"].append(self.get_mg_blocks(i))
+            blocks["turntables"].append(self.get_mg_blocks(i))
             
         for i in self.lista_esteiras[1]:
-            blocks["Esteiras"].append(self.get_es_blocks(i))
+            blocks["Conveyor"].append(self.get_es_blocks(i))
         return blocks

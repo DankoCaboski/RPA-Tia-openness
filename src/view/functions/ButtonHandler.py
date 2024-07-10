@@ -17,7 +17,8 @@ class ButtonHandler:
         proj_path: str,
         tia_version: str,
         hardwware: list,
-        blocks_to_import: dict
+        blocks_to_import: dict,
+        safaty: dict
         ):
         
         status = self.openness.create_project(
@@ -25,7 +26,8 @@ class ButtonHandler:
             proj_path,
             tia_version,
             hardwware,
-            blocks_to_import
+            blocks_to_import,
+            safaty
             )
         return status
         

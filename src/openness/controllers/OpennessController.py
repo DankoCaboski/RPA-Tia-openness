@@ -23,7 +23,8 @@ class OpennessController:
         proj_path: str,
         tia_version: str,
         hardwware: list,
-        blocks_to_import: dict
+        blocks_to_import: dict,
+        safaty: dict
         ):
         
         try:
@@ -37,12 +38,13 @@ class OpennessController:
                 self.openness_service.tia.add_hardware(hardwware)
                 if hardwware_count > 1:
                     self.openness_service.tia.wire_profinet()
-                # self.openness_service.tia.import_blocks(blocks_to_import)
+                self.openness_service.tia.import_blocks(blocks_to_import)
             self.openness_service.tia.save_project()
             status = "Projeto criado com sucesso!"
             return status
         except Exception as e:
             error = "Erro ao gerar projeto: " + str(e)
+            print(error)
             return error
 
 
