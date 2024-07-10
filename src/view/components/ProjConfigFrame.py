@@ -145,6 +145,7 @@ class ProjConfigFrame:
                                               )
 
         zonas_view.add("+")
+        zonas_view.add("-")
 
         self.add_zona(zonas_view)
 
@@ -157,9 +158,17 @@ class ProjConfigFrame:
         current_tab = zonas_view.get()
         if current_tab == "+":
             if len(self.zonas) >= 5:
+                zonas_view.set(self.zonas[-1])
                 return
             zona_name = self.add_zona(zonas_view)
             zonas_view.set(zona_name)
+        elif current_tab == "-":
+            if len(self.zonas) == 1:
+                zonas_view.set(self.zonas[0])
+                return
+            zonas_view.delete(self.zonas[-1])
+            self.zonas.pop()
+            zonas_view.set(self.zonas[-1])
             
     def get_mlfb_by_hw_type(self):
         for i, hw_type in enumerate(self.opcoes_Hardware):
@@ -196,10 +205,11 @@ class ProjConfigFrame:
         l_zonas = len(self.zonas)
         zona_name = f"Zona {l_zonas + 1}"
         new_tab = zonas_view.add(zona_name)
-        self.zonas.append(new_tab)
+        self.zonas.append(zona_name)
         zonas_view.set(zona_name)
         
-        zonas_view.move(l_zonas + 1, "+")
+        zonas_view.move(l_zonas + 2, "+")
+        zonas_view.move(l_zonas + 2, "-")
         
         Zonaframe(zonas_view.tab(zona_name))
 
