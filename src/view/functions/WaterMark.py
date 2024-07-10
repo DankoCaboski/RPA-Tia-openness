@@ -15,6 +15,6 @@ class WaterMark:
         
         image = customtkinter.CTkImage(light_image=Image.open(water_mark_path),
                                   dark_image=Image.open(water_mark_path),
-                                  size=(377, 90))
+                                  size=(465, 65))
         
         return image
