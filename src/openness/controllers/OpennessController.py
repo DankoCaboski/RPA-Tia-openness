@@ -37,7 +37,7 @@ class OpennessController:
                 self.openness_service.tia.add_hardware(hardwware)
                 if hardwware_count > 1:
                     self.openness_service.tia.wire_profinet()
-                self.openness_service.tia.import_blocks(blocks_to_import)
+                # self.openness_service.tia.import_blocks(blocks_to_import)
             self.openness_service.tia.save_project()
             status = "Projeto criado com sucesso!"
             return status

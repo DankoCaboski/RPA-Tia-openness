@@ -65,10 +65,12 @@ class Zonaframe:
         
         self.add_ent = FakeTab(self.entidades, "+", self.new_entity)
         self.add_ent = self.add_ent.get_button()
+        self.add_ent.configure(width = 10, hover_color="#696969")
         self.add_ent.grid(row=0, column=2, padx=3, pady=3, sticky='w')
         
         self.rm_ent = FakeTab(self.entidades, "-", self.pop_ent)
         self.rm_ent = self.rm_ent.get_button()
+        self.rm_ent.configure(width = 10, hover_color="#696969")
         self.rm_ent.grid(row=0, column=3, padx=3, pady=3, sticky='w')
         
         self.aux_enity_type = "Robôs"
@@ -78,7 +80,7 @@ class Zonaframe:
             
     def rb_frame(self):
         if len(self.lista_robos[0]) == 0:
-            new_ent = self.gera_entidade("rb1")
+            new_ent = self.gera_entidade("RB1")
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
             
             if self.selected_entity is None:
@@ -88,7 +90,7 @@ class Zonaframe:
         
     def mesa_frame(self):
         if len(self.lista_mesas[0]) == 0:   
-            new_ent = self.gera_entidade("ms1")
+            new_ent = self.gera_entidade("MS1")
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
         
         else:
@@ -96,7 +98,7 @@ class Zonaframe:
             
     def est_frame(self):
         if len(self.lista_esteiras[0]) == 0:
-            new_ent = self.gera_entidade("es1")
+            new_ent = self.gera_entidade("ES1")
             new_ent.grid(row=0, column=1, padx=5, pady=0, sticky='w')
         else:
             self.botoes_esteira[0].invoke()
@@ -190,21 +192,21 @@ class Zonaframe:
             n_entidades = len(self.lista_robos[0])
             if n_entidades >= 5:
                 return
-            nome = f"rb {n_entidades + 1}"
+            nome = f"RB {n_entidades + 1}"
             self.append_ent(nome)
             
         elif entity_type == "Mesas":
             n_entidades = len(self.lista_mesas[0])
             if n_entidades >= 5:
                 return
-            nome = f"mg {n_entidades + 1}"
+            nome = f"MG {n_entidades + 1}"
             self.append_ent(nome) 
                
         elif entity_type == "Esteiras":
             n_entidades = len(self.lista_esteiras[0])
             if n_entidades >= 5:
                 return
-            nome = f"es {n_entidades + 1}"
+            nome = f"ES {n_entidades + 1}"
             self.append_ent(nome)  
             
         

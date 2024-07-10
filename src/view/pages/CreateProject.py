@@ -80,16 +80,17 @@ class CreateProject:
         
     def call_create_proj(self):
         if self.proj_path == '' or self.proj_path is None:
-            self.status_label.configure(text="Status: Defina um caminho para o projeto")
-            return
+            self.set_proj_path()
         if proj_name.get() == '' or proj_name.get() is None:
             self.status_label.configure(text="Status: Defina um nome para o projeto")
             return
-        self.status_label.configure(text=f"Status: Criando projeto")
+        self.status_label.configure(text=f"Status: Criando projeto...")
         self.status_label.update_idletasks() 
         
         hardware = self.hw_frame.get_hardware_values()
-        blocks: dict = self.hw_frame.get_blocks_to_import()
+        # blocks: dict = self.hw_frame.get_blocks_to_import()
+        blocks: dict = None
+        
         
         status = self.button_handler.create_project(
             proj_name.get(),
