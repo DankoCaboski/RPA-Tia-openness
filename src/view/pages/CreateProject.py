@@ -43,9 +43,9 @@ class CreateProject:
         comp_home_page = comp_home_page.get_button()
         comp_home_page.grid(row=self.row_counter, column=0, columnspan=4, sticky="w", padx=25, pady=25)
         
-        button_proj_path = CustomButton(self.frame, "Caminho do projeto", None, command=self.set_proj_path)
+        button_proj_path = CustomButton(self.frame, "Local do Arquivo", None, command=self.set_proj_path)
         button_proj_path = button_proj_path.get_button()
-        button_proj_path.grid(row=self.row_counter, column=0, columnspan=4, pady=25)
+        # button_proj_path.grid(row=self.row_counter, column=0, columnspan=4, pady=25)
         self.row_counter += 1
         
         proj_name_label = customtkinter.CTkLabel(self.frame, text="Nome do projeto:")
@@ -67,7 +67,7 @@ class CreateProject:
         self.hw_frame.tabview.grid(row=self.hw_frame_index, column=0, columnspan=4, padx=25, pady=0, sticky='nsew')
         self.row_counter += 1
         
-        btn_criar = CustomButton(self.frame, "Gerar projeto", None, command=self.call_create_proj)
+        btn_criar = CustomButton(self.frame, "Gerar Projeto", None, command=self.call_create_proj)
         btn_criar = btn_criar.get_button()
         btn_criar.grid(row=self.row_counter, column=0, columnspan=4, padx=10, pady=5)
         self.row_counter += 1
