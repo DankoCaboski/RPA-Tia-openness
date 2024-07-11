@@ -10,6 +10,10 @@ class FolderService:
         self.dt_gp = None
         self.cv_gp = None
         self.rb_gp = None
+        
+        self.plc_gp = None
+        self.celula_gp = None
+        self.prodiag_gp = None
     
     def create_folder_structure(self):
         try:   
@@ -28,6 +32,10 @@ class FolderService:
                 sis_gp = self.tia_service.recursive_group_search(None, "01_Sistema")
                 if not sis_gp:
                     self.sis_gp = self.tia_service.create_group(None, "01_Sistema", None)
+                    
+                    self.create_plc_folder()
+                    self.create_celula_folder()
+                    self.create_prodiag_folder()
                     
         except Exception as e:
             print("Error creating operational structure: ", e)
@@ -122,3 +130,36 @@ class FolderService:
                     
         except Exception as e:
             print("Error creating operational structure: ", e)
+            
+        
+    def create_plc_folder(self):
+        try:
+            if self.plc_gp is None:
+                plc_gp = self.tia_service.recursive_group_search(None, "01.1_PLC")
+                if not plc_gp:
+                    self.plc_gp = self.tia_service.create_group(None, "01.1_PLC", "01_Sistema")
+                
+        except Exception as e:
+            print("Error creating plc folder: ", e)
+            
+        
+    def create_celula_folder(self):
+        try:
+            if self.celula_gp is None:
+                celula_gp = self.tia_service.recursive_group_search(None, "01.2_Célula")
+                if not celula_gp:
+                    self.celula_gp = self.tia_service.create_group(None, "01.2_Célula", "01_Sistema")
+                
+        except Exception as e:
+            print("Error creating celula folder: ", e)
+            
+    
+    def create_prodiag_folder(self):
+        try:
+            if self.prodiag_gp is None:
+                prodiag_gp = self.tia_service.recursive_group_search(None, "01.3_Prodiag")
+                if not prodiag_gp:
+                    self.prodiag_gp = self.tia_service.create_group(None, "01.3_Prodiag", "01_Sistema")
+                
+        except Exception as e:
+            print("Error creating prodiag folder: ", e)
