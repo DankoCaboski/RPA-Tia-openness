@@ -22,19 +22,19 @@ class RobotService:
 
     def create_robot_structure(self, robot_name, robot_brand):
         try:
-            op_gp = self.tia_service.recursive_folder_search(None, "03_Blocos Operacionais")
+            op_gp = self.tia_service.recursive_group_search(None, "03_Blocos Operacionais")
             if not op_gp:
                 op_gp = self.tia_service.create_group(None, "03_Blocos Operacionais", None)
                 
-            rb_gp = self.tia_service.recursive_folder_search(op_gp.Groups, "03.5_Robos")
+            rb_gp = self.tia_service.recursive_group_search(op_gp.Groups, "03.4_Robos")
             if not rb_gp:
-                rb_gp = self.tia_service.create_group(None, "03.5_Robos", "03_Blocos Operacionais")
+                rb_gp = self.tia_service.create_group(None, "03.4_Robos", "03_Blocos Operacionais")
             
             if robot_name == "":
                 robot_name = f"rb{str(random.randint(0, 11))}"
                 
             group_name = f"{robot_name}_group"
-            robot_group = self.tia_service.create_group(None, group_name, "03.5_Robos")
+            robot_group = self.tia_service.create_group(None, group_name, "03.4_Robos")
             
             if not robot_group:
                 raise Exception("Error creating robot group")
@@ -52,7 +52,7 @@ class RobotService:
             print(f'Importing {robot_robot_brand} robot block to {generated_block_name[0]}...')
             bk_path:str = ""
             if robot_robot_brand == 'ABB':
-                bk_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\03_Blocos Operacionais\robots\bk_abb.xml"
+                bk_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\Program blocks\03_Blocos Operacionais\3.4_Robos\3.4.1_RB01\34101_RB01.xml"
             elif robot_robot_brand == 'FANUC':
                 bk_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\03_Blocos Operacionais\robots\bk_fanuc.xml"
                 

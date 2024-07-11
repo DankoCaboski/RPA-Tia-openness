@@ -245,26 +245,18 @@ class TiaService:
         type_group = plc_software.TypeGroup
         return type_group.Types
     
-    def recursive_folder_search(self, group, group_name: str):
+    def recursive_group_search(self, groups, group_name):
         try:
-            print("Tipo de grupo: ", group)
-            if group == None:
-                for device in self.my_devices:
-                    plc_software = self.hwf.get_software(device)
-                    group = plc_software.BlockGroup.Groups
-            
-            found = group.Find(group_name)
+            if not groups:
+                return
+            found = groups.Find(group_name)
             if found:
                 return found
             
-            
-            for group_enum in group.GetEnumerator():
-                found = self.recursive_folder_search(group_enum.Groups, group_name)
+            for group in groups.GetEnumerator():
+                found = self.recursive_group_search(group.Groups, group_name)
                 if found:
-                    return 
-            
-            return False
-        
+                    return found
         except Exception as e:
             print('Error searching group:', e)
 
@@ -279,7 +271,7 @@ class TiaService:
             if not parent_group:
                 return groups.Create(group_name)
             else:
-                mygroup = self.recursive_folder_search(groups, parent_group)
+                mygroup = self.recursive_group_search(groups, parent_group)
                 if mygroup:
                     return mygroup.Groups.Create(group_name)
                 else:
