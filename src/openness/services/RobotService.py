@@ -13,19 +13,15 @@ class RobotService:
     def manage_robots(self, robots_associations: list):
         try:
             print("\n", robots_associations)
-            print("Manage robots: ")
-            for robot in robots_associations:
-                print(robot)
-                self.create_robot_structure(robots_associations.index(robot))
+            for i in enumerate(robots_associations):
+                print(f"Manage robots: i == {i}")
+                self.create_robot_structure(i[0])
         except Exception as e:
             print("Error manage_robots: ", e)
 
 
     def create_robot_structure(self, i):
-        try:
-            operational_service = OperationalService(self.tia_service)
-            operational_service.create_robot_structure()
-            
+        try:            
             group_name = f"03.4.{i+1}_RB{i+1}"
             robot_group = self.tia_service.create_group(None, group_name, "03.4_Robos")
             

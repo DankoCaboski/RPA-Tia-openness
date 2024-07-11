@@ -9,7 +9,7 @@ from openness.services.RobotService import RobotService
 from openness.services.MesaService import MesaService
 from openness.services.ConveyorService import ConveyorService
 
-
+from openness.services.OperationalService import OperationalService
 
 from System import Int32, String # type: ignore
 
@@ -481,6 +481,10 @@ class TiaService:
             print('No blocks to import')
             return
         print('Importing blocks')
+        
+        operational_service = OperationalService(self)
+        operational_service.create_robot_structure()
+            
         for zona in block_list.keys():
             for block in block_list[zona]:
                 if block == "robots":
