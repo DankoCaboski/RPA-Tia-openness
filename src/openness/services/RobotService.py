@@ -1,4 +1,6 @@
+from openness.services.OperationalService import OperationalService
 from openness.services.UDTService import UDTService
+
 from openness.services.Utils import Utils
 
 
@@ -21,18 +23,9 @@ class RobotService:
 
     def create_robot_structure(self, i):
         try:
-            op_gp = self.tia_service.recursive_group_search(None, "03_Blocos Operacionais")
-            print("op_gp: ", op_gp)
-            if not op_gp:
-                print("op_gp not found")
-                op_gp = self.tia_service.create_group(None, "03_Blocos Operacionais", None)
-                
-            rb_gp = self.tia_service.recursive_group_search(op_gp.Groups, "03.4_Robos")
-            print("rb_gp: ", rb_gp)
-            if not rb_gp:
-                print("rb_gp not found")
-                rb_gp = self.tia_service.create_group(None, "03.4_Robos", "03_Blocos Operacionais")
-                
+            operational_service = OperationalService(self.tia_service)
+            operational_service.create_robot_structure()
+            
             group_name = f"03.4.{i+1}_RB{i+1}"
             robot_group = self.tia_service.create_group(None, group_name, "03.4_Robos")
             

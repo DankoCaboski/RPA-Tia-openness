@@ -4,7 +4,13 @@ from openness.services.HwFeaturesService import HwFeaturesService
 from openness.services.CompilerService import CompilerService
 from openness.services.LanguageService import LanguageService
 from openness.services.XmlService import XmlService
+
 from openness.services.RobotService import RobotService
+from openness.services.MesaService import MesaService
+from openness.services.ConveyorService import ConveyorService
+
+
+
 from System import Int32, String # type: ignore
 
 
@@ -479,8 +485,12 @@ class TiaService:
             for block in block_list[zona]:
                 if block == "robots":
                     RobotService(self).manage_robots(block_list[zona][block])
+                elif block == "turntables":
+                    MesaService(self).manage_turntables(block_list[zona][block])
+                elif block == "conveyor":
+                    ConveyorService(self).manage_conveyor(block_list[zona][block])
                 else:
-                    print(block, block_list[zona][block])
+                    raise Exception("Invalid block type: ", block)
             
             
     def import_block(self, object, file_path):
