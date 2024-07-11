@@ -30,8 +30,17 @@ class HwFeaturesService:
                 return Utils().get_service(self.hwf.NetworkInterface, option)
             
     def get_network_interface_IHM(self, deviceComposition):
-        hmi = Utils().getCompositionPosition(deviceComposition)[1].DeviceItems
-        for option in hmi:
+        hmiItems = Utils().getCompositionPosition(deviceComposition)
+        for items in hmiItems:
+            hmi = items.DeviceItems
+            for option in hmi:
+                optionName = option.GetAttribute("Name")
+                if optionName == "PROFINET Interface_1":
+                    return Utils().get_service(self.hwf.NetworkInterface, option)
+    
+    def get_network_interface_REMOTAS(self, deviceComposition):
+        remota = Utils().getCompositionPosition(deviceComposition)[1].DeviceItems
+        for option in remota:
             optionName = option.GetAttribute("Name")
-            if optionName == "PROFINET Interface_1":
+            if optionName == "PROFINET interface":
                 return Utils().get_service(self.hwf.NetworkInterface, option)

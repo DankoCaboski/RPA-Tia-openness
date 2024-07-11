@@ -1,9 +1,11 @@
+import os
 from openness.services.Utils import Utils
 from openness.services.HwFeaturesService import HwFeaturesService
 from openness.services.CompilerService import CompilerService
 from openness.services.LanguageService import LanguageService
 from openness.services.XmlService import XmlService
 from openness.services.RobotService import RobotService
+from System import Int32, String # type: ignore
 
 
 class TiaService:
@@ -52,7 +54,7 @@ class TiaService:
         proj_path = Utils().get_directory_info(proj_path)
         try:
             if self.tia_instance is None:
-                self.open_tia_ui()
+               self.mytia = self.open_tia_ui()
                 
             self.myproject = self.tia_instance.Projects.Create(proj_path, proj_name)
             LanguageService().add_language(self.myproject, "pt-BR")
@@ -83,43 +85,128 @@ class TiaService:
 
     def add_hardware(self,  hardwware: list):
         try:
+            plc_count = 0
+            remota_count = 0
             for device in hardwware:
                 deviceType = device['type']
                 deviceName = device['name']
                 deviceMlfb = device['mlfb']
                 FirmVersion = device['firmware']
-                
+                Start_Adress = device ['Address']
                 if self.myproject != None:
-                    if deviceType == "PLC":
+                    if deviceType == "CONTROLLERS":
+                        if "F" in deviceMlfb:
+                            print("é safety")
+                        plc_count += 1
                         print('Creating CPU: ', deviceName)
-                        config_Plc = "OrderNumber:6ES7 512-1SK01-0AB0/V2.5"
-                        # config_Plc = "OrderNumber:"+deviceMlfb+"/"+FirmVersion  #
-                        deviceCPU = self.myproject.Devices.CreateWithItem(config_Plc, deviceName, deviceName)  
+                        config_Plc = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
+                        deviceCPU = self.myproject.Devices.CreateWithItem(config_Plc, deviceName, deviceName)
+                        count = self.myproject.Devices.Count
+                        Count = count - 1
+                        Device = self.myproject.Devices[Count]
+                        networkIterface = self.hwf.get_network_interface_CPU(Device)
+                        Node = networkIterface.Nodes[0]
+                        address = Node.SetAttribute("Address", String(Start_Adress))
                         self.my_devices.append(deviceCPU)
-                        
+                    elif deviceType == "REMOTAS":
+                        remota_count += 1
+                        print('Creating CPU: ', deviceName)
+                        config_Plc = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
+                        deviceREMOTA = self.myproject.UngroupedDevicesGroup.Devices.CreateWithItem(config_Plc, deviceName, deviceName)
+                        count = self.myproject.UngroupedDevicesGroup.Devices.Count
+                        Count = count - 1
+                        Device = self.myproject.UngroupedDevicesGroup.Devices[Count]
+                        networkIterface = self.hwf.get_network_interface_REMOTAS(Device)
+                        Node = networkIterface.Nodes[0]
+                        address = Node.SetAttribute("Address", String(Start_Adress))
+                        self.my_devices.append(deviceREMOTA)
                     elif deviceType == "IHM":
                         print("Creating IHM: ", deviceName)
                         config_Hmi = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
                         deviceIHM = self.myproject.Devices.CreateWithItem(config_Hmi, deviceName, None)
+                        count = self.myproject.Devices.Count
+                        Count = count - 1
+                        Device = self.myproject.Devices[Count]
+                        networkIterface = self.hwf.get_network_interface_IHM(Device)
+                        Node = networkIterface.Nodes[0]
+                        address = Node.SetAttribute("Address", String(Start_Adress))
                         self.my_devices.append(deviceIHM)
 
-                    # elif deviceType == "IO Node":
-                    #     print('Creating IO Node: ', deviceName)
-                    #     confing_IOnode = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
-                    #     plcRef = hardwware.index() - 1
-                    #     Devices = self.myproject.Devices[plcRef]
-                    #     count = Devices.DeviceItems.Count
-                    #     DeviceItemAssociation = Devices.GetAttribute("Items")
-                    #     if DeviceItemAssociation[0].CanPlugNew(confing_IOnode, deviceName, count):
-                    #         IONode = DeviceItemAssociation[0].PlugNew(confing_IOnode, deviceName, count)
-                    #         self.my_devices.append(deviceIHM)
-                
+                    elif deviceType == "DI" or deviceType == "DO":
+                        Remota = self.myproject.UngroupedDevicesGroup.Devices.Count
+                        if Remota  == 0: 
+                            print('Creating IO Node: ', deviceName)
+                            confing_IOnode = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
+                            Devices = self.myproject.Devices[plc_count]
+                            typeName = Devices.GetAttribute("TypeName")
+                            if typeName == "ET 200SP-Station":
+                                countFINAL = Devices.DeviceItems.Count
+                                count = countFINAL - 1 
+                            elif typeName == "ET 200S station":
+                                countFINAL = Devices.DeviceItems.Count
+                                count = countFINAL + 2
+                            else:
+                                count = Devices.DeviceItems.Count
+                            DeviceItemAssociation = Devices.GetAttribute("Items")
+                            if DeviceItemAssociation[0].CanPlugNew(confing_IOnode, deviceName, count):
+                                IONode = DeviceItemAssociation[0].PlugNew(confing_IOnode, deviceName, count)
+                                if typeName == "ET 200SP-Station":
+                                    Start_Adress_int = int(Start_Adress)
+                                    addressController = Devices.DeviceItems[countFINAL].DeviceItems[0].Addresses[0]
+                                    StartAddress = addressController.SetAttribute("StartAddress", Int32(Start_Adress_int))
+                                    GETStartAddress = addressController.GetAttribute("StartAddress")
+                                elif typeName == "ET 200S station":
+                                    addressController = Devices.DeviceItems[countFINAL].DeviceItems[0].Addresses[0]
+                                    Start_Adress_int = int(Start_Adress)
+                                    StartAddress = addressController.SetAttribute("StartAddress", Int32(Start_Adress_int))
+                                    GETStartAddress = addressController.GetAttribute("StartAddress")
+                                else:
+                                    addressController = Devices.DeviceItems[count].DeviceItems[0].Addresses[0]
+                                    Start_Adress_int = int(Start_Adress)
+                                    StartAddress = addressController.SetAttribute("StartAddress", Int32(Start_Adress_int))
+                                    GETStartAddress = addressController.GetAttribute("StartAddress")
+                                    print("Address Start: " , GETStartAddress )
+                                self.my_devices.append(IONode)
         except Exception as e:
             RPA_status = 'Unknown hardware type: ', deviceType
             print(RPA_status)
             RPA_status = 'Error creating hardware: ', e
             print(RPA_status)
+
+    def addIORemota(self, hardware):
+        deviceName = ''
+        deviceMlfb = ''
+
+        remot_count = 0
+        for device in hardware:
+            deviceType = device['type']
+            deviceName = device['name']
+            deviceMlfb = device['mlfb']
+            FirmVersion = device['firmware']
+            Start_Adress = device ['Address']
             
+            if deviceType == "REMOTAS":
+                remot_count += 1
+            if remot_count > 0:
+                     if deviceType == "DI" or deviceType == "DO":
+                        print('Creating IO Node Remota: ', deviceName)
+                        confing_IOnode = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
+                        remotaRef = remot_count - 1
+                        Remota = self.myproject.UngroupedDevicesGroup.Devices.Count
+                        if Remota  > 0: 
+                            remotas = self.myproject.UngroupedDevicesGroup.Devices[remotaRef]
+                            countFinal = remotas.DeviceItems.Count
+                            count = countFinal - 2
+                            DeviceItemAssociation = remotas.GetAttribute("Items")
+                            if DeviceItemAssociation[0].CanPlugNew(confing_IOnode, deviceName, count):              
+                                IONodeRemota = DeviceItemAssociation[0].PlugNew(confing_IOnode, deviceName, count)
+                                addressController = remotas.DeviceItems[countFinal].DeviceItems[0].Addresses[0]
+                                Start_Adress_int = int(Start_Adress)
+                                StartAddress = addressController.SetAttribute("StartAddress", Int32(Start_Adress_int))
+                                GETStartAddress = addressController.GetAttribute("StartAddress")
+                                print("Address Start: " , GETStartAddress )
+                            self.my_devices.append(IONodeRemota)
+
     def wire_profinet(self):
         ProfinetInterfaces = self.GetAllProfinetInterfaces()
         print("Nº de interfaces PROFINET: ", str(len(ProfinetInterfaces)))
@@ -137,6 +224,35 @@ class TiaService:
             RPA_status = "Número de interfaces PROFINET menor que 2"
             print(RPA_status)
 
+    def create_IO_System(self):
+        redes = []
+        Device = self.myproject.Devices[1]
+        count = self.myproject.UngroupedDevicesGroup.Devices.Count
+        if count >= 1:
+            networkIterface = self.hwf.get_network_interface_CPU(Device)
+            redeIO = networkIterface.IoControllers[0]
+            nomerede = "PROFINET IO-System"
+            rede = redeIO.CreateIoSystem(nomerede)
+            RPA_status = "Rede IO Criada"
+            print(RPA_status)
+            redes.append(rede)
+            return redes
+
+    def connect_IO_System(self, hardware, redes):
+        count = self.myproject.UngroupedDevicesGroup.Devices.Count
+        if count >= 1:
+            for rede in redes:  # Loop para cada rede na lista de redes
+                for device in hardware:
+                    deviceType = device ["type"]
+                    if deviceType == "REMOTAS":
+                        Devices = self.myproject.UngroupedDevicesGroup.Devices  # Referenciando a lista de dispositivos
+                        for i, Device in enumerate(Devices):
+                            networkInterface = self.hwf.get_network_interface_REMOTAS(Device)
+                            Io_System = networkInterface.IoConnectors[0]
+                            if Io_System.GetAttribute("ConnectedToIoSystem") == "" or Io_System.GetAttribute("ConnectedToIoSystem") == None:  # Verifica se o Io_System não está conectado
+                                connect = Io_System.ConnectToIoSystem(rede)  # Usando a rede atual do loop externo
+                                RPA_status = "Rede IO Conectada"
+                                print(RPA_status)
             
     def SetSubnetName(self, subnet_name):
         RPA_status = 'Setting subnet name'
@@ -159,7 +275,7 @@ class TiaService:
                 if (not self.is_gsd(device)):
                     hardware_type = self.getHardwareType(device)
                     
-                    if (hardware_type == "CPU"):
+                    if (hardware_type == "CONTROLLERS"):
                         self.get_types(device)
                         network_interface_cpu = self.hwf.get_network_interface_CPU(device)
                         network_ports.append(network_interface_cpu)
@@ -167,7 +283,10 @@ class TiaService:
                     elif (hardware_type == "IHM"):
                         network_interface_ihm = self.hwf.get_network_interface_IHM(device)
                         network_ports.append(network_interface_ihm)
-                        
+
+                    elif (hardware_type == "REMOTAS"):
+                        network_interface_remota = self.hwf.get_network_interface_REMOTAS(device)
+                        network_ports.append(network_interface_remota)
                 else:
                     RPA_status = 'Device' + str(device.GetAttribute("Name")) + ' is GSD: '
                     print(RPA_status)
@@ -182,11 +301,13 @@ class TiaService:
         try:
             device_item_impl = Utils().getCompositionPosition(device)
             if (self.is_cpu(device_item_impl)):
-                return "CPU"
+                return "CONTROLLERS"
             elif (self.is_hmi(device_item_impl)):
                 return "IHM"
             elif (self.is_IO(device_item_impl)):
                 return "IO Node"
+            elif (self.is_remota(device_item_impl)):
+                return "REMOTAS"
             
         except Exception as e:
             RPA_status = 'Error getting hardware type: ', e
@@ -232,14 +353,24 @@ class TiaService:
             type_identifier = str(device_item.GetAttribute("TypeIdentifier"))
             
             if (type_identifier.__contains__("OrderNumber:6ES7")):
-                print("###################################################IO###################################################") 
                 return True
             return False
         
         except Exception as e:
             RPA_status = 'Error checking IO: ', e
             print(RPA_status)
-            
+
+    def is_remota(self, device):
+        try:
+            device_item = device[1]
+            if str(device_item.GetAttribute("Classification")) == "HM":
+                return True
+            return False
+        
+        except Exception as e:
+            RPA_status = 'Error checking CPU: ', e
+            print(RPA_status)
+
     def get_types(self, cpu):
         plc_software = self.hwf.get_software(cpu)
         type_group = plc_software.TypeGroup
@@ -442,3 +573,40 @@ class TiaService:
 
         except Exception as e:
             print('Error verifying or importing file:', e)
+
+    def import_libraries(self):
+        biblioteca = Utils().get_file_info(r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\Library")
+        OpenGlobalLibrary = self.tia_instance.GlobalLibraries.Open(biblioteca, self.tia.OpenMode.ReadWrite)
+        print("Open Library")
+        enumLibrary =  OpenGlobalLibrary.TypeFolder.Folders
+        projectLib = self.myproject.ProjectLibrary
+        for folder in enumLibrary:
+            # Verifica se 'Types' não está vazio antes de tentar acessar um índice
+            try:
+                updateLibrary = folder.Types[0].UpdateLibrary(projectLib)
+                nameFolderEnum = Utils().get_attibutes(["Name"], folder)
+                nameFolder = nameFolderEnum[0]
+                print('update library:', nameFolder)
+            except IndexError:
+                # Ocorre se não houver itens em Types
+                print('Erro: Não há tipos disponíveis em', folder)
+            except Exception as e:
+                # Captura outras exceções que podem ocorrer no processo
+                print('Erro ao atualizar a biblioteca:', e)
+        CloseGlobalLibrary = self.mytia.GlobalLibraries[0].Close()
+        print("Close Library")
+
+    def import_graphics(self):
+        print("Import graphic start")
+        # Define o caminho do diretório onde estão os arquivos .xml
+        directory_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\IHM\Graphic"
+        # Lista todos os arquivos que terminam com '.xml' no diretório especificado
+        arquivos_xml = [f for f in os.listdir(directory_path) if f.endswith('.xml')]
+        for arquivo in arquivos_xml:
+            # Constrói o caminho completo para cada arquivo .xml
+            full_path = os.path.join(directory_path, arquivo)
+            # Obtém as informações do arquivo através do caminho completo
+            arquivoFile = Utils().get_file_info(full_path)
+            import_options = self.tia.ImportOptions.Override
+            import_graph = self.myproject.Graphics.Import(arquivoFile, import_options)
+        print("Import graphic done")
