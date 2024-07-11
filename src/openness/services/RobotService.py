@@ -22,11 +22,13 @@ class RobotService:
     def create_robot_structure(self, i):
         try:
             op_gp = self.tia_service.recursive_group_search(None, "03_Blocos Operacionais")
+            print("op_gp: ", op_gp)
             if not op_gp:
                 print("op_gp not found")
                 op_gp = self.tia_service.create_group(None, "03_Blocos Operacionais", None)
                 
             rb_gp = self.tia_service.recursive_group_search(op_gp.Groups, "03.4_Robos")
+            print("rb_gp: ", rb_gp)
             if not rb_gp:
                 print("rb_gp not found")
                 rb_gp = self.tia_service.create_group(None, "03.4_Robos", "03_Blocos Operacionais")
