@@ -54,14 +54,14 @@ class InputMesa:
         cl = customtkinter.CTkLabel(frame, text="CL")
         cl.grid(row=0, column=1, padx=3, sticky='w')
         
-        lc_p1 = customtkinter.CTkEntry(frame, width=40, height=15)
-        lc_p1.grid(row=1, column=1, padx=3, sticky='w')
+        cl_p1 = customtkinter.CTkEntry(frame, width=40, height=15)
+        cl_p1.grid(row=1, column=1, padx=3, sticky='w')
         
-        lc_p2 = customtkinter.CTkEntry(frame, width=40, height=15)
-        lc_p2.grid(row=2, column=1, padx=3, sticky='w')
+        cl_p2 = customtkinter.CTkEntry(frame, width=40, height=15)
+        cl_p2.grid(row=2, column=1, padx=3, sticky='w')
         
-        lc_p3 = customtkinter.CTkEntry(frame, width=40, height=15)
-        lc_p3.grid(row=3, column=1, padx=3, sticky='w')
+        cl_p3 = customtkinter.CTkEntry(frame, width=40, height=15)
+        cl_p3.grid(row=3, column=1, padx=3, sticky='w')
         
         
         pp = customtkinter.CTkLabel(frame, text="PP")

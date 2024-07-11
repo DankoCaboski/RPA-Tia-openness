@@ -376,24 +376,18 @@ class TiaService:
         type_group = plc_software.TypeGroup
         return type_group.Types
     
-    def recursive_folder_search(self, group, group_name: str):
+    def recursive_group_search(self, groups, group_name):
         try:
-            if group == None:
-                for device in self.my_devices:
-                    plc_software = self.hwf.get_software(device)
-                    group = plc_software.BlockGroup.Groups
-            
-            found = group.Find(group_name)
+            if not groups:
+                return
+            found = groups.Find(group_name)
             if found:
                 return found
             
-            for group in group.GetEnumerator():
-                found = self.recursive_folder_search(group.Groups, group_name)
+            for group in groups.GetEnumerator():
+                found = self.recursive_group_search(group.Groups, group_name)
                 if found:
-                    return 
-            
-            return False
-        
+                    return found
         except Exception as e:
             print('Error searching group:', e)
 
@@ -404,10 +398,11 @@ class TiaService:
                 device = self.my_devices[0]
             plc_software = self.hwf.get_software(device)
             groups = plc_software.BlockGroup.Groups
+            
             if not parent_group:
                 return groups.Create(group_name)
             else:
-                mygroup = self.recursive_folder_search(groups, parent_group)
+                mygroup = self.recursive_group_search(groups, parent_group)
                 if mygroup:
                     return mygroup.Groups.Create(group_name)
                 else:
@@ -471,10 +466,16 @@ class TiaService:
             
             
     def import_blocks(self, block_list: dict):
-        robos = block_list['robots']
-        robos = RobotService(self).manege_robot(robos)
-        turntables = block_list['turntables']
-        grippers = block_list['grippers']
+        if not block_list:
+            print('No blocks to import')
+            return
+        print('Importing blocks')
+        for zona in block_list.keys():
+            for block in block_list[zona]:
+                if block == "robots":
+                    RobotService(self).manage_robots(block_list[zona][block])
+                else:
+                    print(block, block_list[zona][block])
             
             
     def import_block(self, object, file_path):

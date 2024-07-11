@@ -1,6 +1,8 @@
 from openness.services.UDTService import UDTService
 from openness.services.Utils import Utils
 
+import random
+
 
 class RobotService:
     def __init__(self, tia_service) -> None:
@@ -8,36 +10,38 @@ class RobotService:
         self.dependencies = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\dependence"
         
         
-    def manege_robot(self, robots_association: dict):
+    def manage_robots(self, robots_associations: list):
         try:
-            brands = list(robots_association.keys())
-            for robot_brand in brands:
-                qtd = robots_association.get(robot_brand)
-                if qtd is None or str(qtd) == '':
-                    continue
-                qtd = int(qtd)
-                if qtd > 1:
-                    print("qtd > 1")
-                    for i in range(qtd):
-                        self.create_robot_structure(robot_brand + "_" + str(i), robot_brand)
-                else:
-                    self.create_robot_structure(robot_brand, robot_brand)
+            print("Manage robots: ")
+            for robot in robots_associations:
+                print(robot)
+                self.create_robot_structure(robot["name"], robot["brand"])
         except Exception as e:
-            print("Error manege_robot: ", e)
+            print("Error manage_robots: ", e)
 
 
     def create_robot_structure(self, robot_name, robot_brand):
-        op_gp = self.tia_service.recursive_folder_search(None, "03_Blocos Operacionais")
-        if not op_gp:
-           op_gp = self.tia_service.create_group(None, "03_Blocos Operacionais", None)
+        try:
+            op_gp = self.tia_service.recursive_group_search(None, "03_Blocos Operacionais")
+            if not op_gp:
+                op_gp = self.tia_service.create_group(None, "03_Blocos Operacionais", None)
+                
+            rb_gp = self.tia_service.recursive_group_search(op_gp.Groups, "03.4_Robos")
+            if not rb_gp:
+                rb_gp = self.tia_service.create_group(None, "03.4_Robos", "03_Blocos Operacionais")
             
-        rb_gp = self.tia_service.recursive_folder_search(op_gp.Groups, "03.5_Robos")
-        if not rb_gp:
-            rb_gp = self.tia_service.create_group(None, "03.5_Robos", "03_Blocos Operacionais")
-        
-        group_name = robot_name + '_group'
-        robot_group = self.tia_service.create_group(None, group_name, "03.5_Robos")
-        self.import_robot_bk(robot_group, robot_brand)
+            if robot_name == "":
+                robot_name = f"rb{str(random.randint(0, 11))}"
+                
+            group_name = f"{robot_name}_group"
+            robot_group = self.tia_service.create_group(None, group_name, "03.4_Robos")
+            
+            if not robot_group:
+                raise Exception("Error creating robot group")
+            
+            self.import_robot_bk(robot_group, robot_brand)
+        except Exception as e:
+            print("Error creating robot structure: ", e)
 
 
     def import_robot_bk(self, robot_group, robot_robot_brand : str):
@@ -48,7 +52,7 @@ class RobotService:
             print(f'Importing {robot_robot_brand} robot block to {generated_block_name[0]}...')
             bk_path:str = ""
             if robot_robot_brand == 'ABB':
-                bk_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\03_Blocos Operacionais\robots\bk_abb.xml"
+                bk_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\Program blocks\03_Blocos Operacionais\3.4_Robos\3.4.1_RB01\34101_RB01.xml"
             elif robot_robot_brand == 'FANUC':
                 bk_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\03_Blocos Operacionais\robots\bk_fanuc.xml"
                 

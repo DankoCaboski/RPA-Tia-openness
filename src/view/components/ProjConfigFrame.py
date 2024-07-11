@@ -23,6 +23,7 @@ class ProjConfigFrame:
         self.sw_options = ["Robôs", "Mesa", "Grampos"]
         
         self.zonas:list[str] = []
+        self.sw_content: list[Zonaframe] = []
         
         self.opcoes_Hardware = ["CONTROLLERS", "IHM", "DI", "DO", "REMOTAS"]
         
@@ -167,6 +168,19 @@ class ProjConfigFrame:
         self.add_zona(zonas_view)
 
         zonas_view.grid(row=0, column=0, columnspan=4, padx=0, pady=0, sticky="nsew")
+        
+        
+        ################### Safety tab ###################
+        
+        
+        self.tabview.tab("Safety").grid_columnconfigure(0, weight=1)
+        self.tabview.tab("Safety").grid_columnconfigure(1, weight=1)
+        self.tabview.tab("Safety").grid_columnconfigure(2, weight=1)
+        self.tabview.tab("Safety").grid_columnconfigure(3, weight=1)
+        
+        warning = customtkinter.CTkLabel(self.tabview.tab("Safety"), text="Em desenvolvimento")
+        warning.grid(row=0, column=0, columnspan=4, padx=0, pady=0, sticky="nsew")
+        
           
                 
         ################### Utils ###################
@@ -199,8 +213,6 @@ class ProjConfigFrame:
                     self.firm_versions[mlfb].append(version)
                 else:
                     self.firm_versions[mlfb] = [version]
-        
-        print("Firmware versions dictionary:", self.firm_versions)
     
     def get_hardware_values(self):
         result = []
@@ -214,22 +226,28 @@ class ProjConfigFrame:
             }
             result.append(hw_dict)
         return result
-    
-    def get_blocks_to_import(self):
-        raise NotImplementedError("'get_blocks_to_import' method not implemented yet.")
-        # return self.sw_content.get_blocks_to_import()
+
+    def get_safety_config(self):
+        return "Em desenvolvimento"
+
+    def get_zonas(self):
+        dict_zonas = {}
+        for zona in self.zonas:
+            dict_zonas.update({zona: self.sw_content[self.zonas.index(zona)].get_blocks_to_import()})
+        return dict_zonas
+
 
     def add_zona(self, zonas_view: customtkinter.CTkTabview):
         l_zonas = len(self.zonas)
         zona_name = f"Zona {l_zonas + 1}"
-        new_tab = zonas_view.add(zona_name)
+        zonas_view.add(zona_name)
         self.zonas.append(zona_name)
         zonas_view.set(zona_name)
         
         zonas_view.move(l_zonas + 2, "+")
         zonas_view.move(l_zonas + 2, "-")
         
-        Zonaframe(zonas_view.tab(zona_name))
+        self.sw_content.append(Zonaframe(zonas_view.tab(zona_name)))
 
         return zona_name     
             
