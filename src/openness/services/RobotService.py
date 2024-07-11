@@ -1,4 +1,4 @@
-from openness.services.OperationalService import OperationalService
+from openness.services.FolderService import FolderService
 from openness.services.UDTService import UDTService
 
 from openness.services.Utils import Utils
