@@ -484,6 +484,7 @@ class TiaService:
         
         operational_service = OperationalService(self)
         operational_service.create_robot_structure()
+        operational_service.create_turntable_structure()
             
         for zona in block_list.keys():
             for block in block_list[zona]:

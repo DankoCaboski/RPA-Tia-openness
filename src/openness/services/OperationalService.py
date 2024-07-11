@@ -3,6 +3,7 @@ class OperationalService:
         self.tia_service = tia_service
         self.op_gp = None
         self.rb_gp = None
+        self.tt_gp = None
     
     def create_operational_structure(self):
         try:
@@ -16,6 +17,7 @@ class OperationalService:
         except Exception as e:
             print("Error creating operational structure: ", e)
             
+            
     def create_robot_structure(self):
         try:
             self.create_operational_structure()
@@ -24,7 +26,19 @@ class OperationalService:
                 rb_gp = self.tia_service.recursive_group_search(None, "03.4_Robos")
                 if not rb_gp:
                     self.rb_gp = self.tia_service.create_group(None, "03.4_Robos", "03_Blocos Operacionais")
-                    print(self.rb_gp)
+                    
+        except Exception as e:
+            print("Error creating operational structure: ", e)
+            
+            
+    def create_turntable_structure(self):
+        try:
+            self.create_operational_structure()
+            
+            if self.tt_gp is None:
+                tt_gp = self.tia_service.recursive_group_search(None, "03.3_Esteiras")
+                if not tt_gp:
+                    self.tt_gp = self.tia_service.create_group(None, "03.3_Esteiras", "03_Blocos Operacionais")
                     
         except Exception as e:
             print("Error creating operational structure: ", e)
