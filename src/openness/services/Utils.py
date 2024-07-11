@@ -37,7 +37,7 @@ class Utils:
                 mylist.append(str(version[0]))
         return mylist
     
-    def get_attibutes(
+    def get_attributes(
         self,
         attribute_names: list[str],
         item

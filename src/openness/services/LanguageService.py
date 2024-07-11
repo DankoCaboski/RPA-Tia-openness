@@ -7,12 +7,12 @@ class LanguageService:
 
     def get_active_languages(self, myproject):
         language_settings = myproject.LanguageSettings
-        enum = Utils().get_attibutes(["ActiveLanguages"], language_settings)
+        enum = Utils().get_attributes(["ActiveLanguages"], language_settings)
         return enum[0]
         
     def get_language_by_culture(self, myproject, language_culture):
         for language in myproject.LanguageSettings.Languages:
-            culture = Utils().get_attibutes(["Culture"], language)
+            culture = Utils().get_attributes(["Culture"], language)
             if str(culture[0]) == language_culture:
                 return language
         

@@ -376,22 +376,37 @@ class TiaService:
         type_group = plc_software.TypeGroup
         return type_group.Types
     
-    def recursive_group_search(self, groups, group_name):
+    
+    def recursive_group_search(self, groups, group_name: str):
         try:
             if not groups:
-                return
-            found = groups.Find(group_name)
-            if found:
-                return found
+                return None
+
+            # Verifica o tipo do grupo
+            tipo = str(groups.GetType())
+            if tipo == "Siemens.Engineering.SW.Blocks.PlcBlockUserGroup":
+                # Verifica se o nome do grupo corresponde ao nome procurado
+                if Utils().get_attributes(["Name"], groups) == group_name:
+                    return groups
             
-            for group in groups.GetEnumerator():
-                found = self.recursive_group_search(group.Groups, group_name)
-                if found:
+            # Verifica se o grupo é do tipo PlcBlockUserGroupComposition para usar o método Find
+            elif tipo == "Siemens.Engineering.SW.Blocks.PlcBlockUserGroupComposition":
+                found = groups.Find(group_name)
+                if found is not None:
                     return found
+
+                # Itera recursivamente sobre os subgrupos
+                for group in groups.GetEnumerator():
+                    found = self.recursive_group_search(group, group_name)
+                    if found is not None:
+                        return found
+
+            return None  # Retorna None se o grupo não for encontrado em nenhuma sub-árvore
         except Exception as e:
             print('Error searching group:', e)
-
-
+            return None  # Retorna None em caso de exceção
+        
+    
     def create_group(self, device, group_name: str, parent_group: str):
         try:
             if device is None:
@@ -584,7 +599,7 @@ class TiaService:
             # Verifica se 'Types' não está vazio antes de tentar acessar um índice
             try:
                 updateLibrary = folder.Types[0].UpdateLibrary(projectLib)
-                nameFolderEnum = Utils().get_attibutes(["Name"], folder)
+                nameFolderEnum = Utils().get_attributes(["Name"], folder)
                 nameFolder = nameFolderEnum[0]
                 print('update library:', nameFolder)
             except IndexError:

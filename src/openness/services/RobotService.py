@@ -1,8 +1,6 @@
 from openness.services.UDTService import UDTService
 from openness.services.Utils import Utils
 
-import random
-
 
 class RobotService:
     def __init__(self, tia_service) -> None:
@@ -12,34 +10,33 @@ class RobotService:
         
     def manage_robots(self, robots_associations: list):
         try:
+            print("\n", robots_associations)
             print("Manage robots: ")
             for robot in robots_associations:
                 print(robot)
-                self.create_robot_structure(robot["name"], robot["brand"])
+                self.create_robot_structure(robots_associations.index(robot))
         except Exception as e:
             print("Error manage_robots: ", e)
 
 
-    def create_robot_structure(self, robot_name, robot_brand):
+    def create_robot_structure(self, i):
         try:
             op_gp = self.tia_service.recursive_group_search(None, "03_Blocos Operacionais")
             if not op_gp:
+                print("op_gp not found")
                 op_gp = self.tia_service.create_group(None, "03_Blocos Operacionais", None)
                 
             rb_gp = self.tia_service.recursive_group_search(op_gp.Groups, "03.4_Robos")
             if not rb_gp:
+                print("rb_gp not found")
                 rb_gp = self.tia_service.create_group(None, "03.4_Robos", "03_Blocos Operacionais")
-            
-            if robot_name == "":
-                robot_name = f"rb{str(random.randint(0, 11))}"
                 
-            group_name = f"{robot_name}_group"
+            group_name = f"03.4.{i+1}_RB{i+1}"
             robot_group = self.tia_service.create_group(None, group_name, "03.4_Robos")
             
             if not robot_group:
                 raise Exception("Error creating robot group")
             
-            self.import_robot_bk(robot_group, robot_brand)
         except Exception as e:
             print("Error creating robot structure: ", e)
 
@@ -48,7 +45,7 @@ class RobotService:
         try:
             robot_robot_brand = robot_robot_brand.upper()
             
-            generated_block_name = Utils().get_attibutes(["Name"],robot_group)
+            generated_block_name = Utils().get_attributes(["Name"],robot_group)
             print(f'Importing {robot_robot_brand} robot block to {generated_block_name[0]}...')
             bk_path:str = ""
             if robot_robot_brand == 'ABB':

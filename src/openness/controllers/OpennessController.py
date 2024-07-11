@@ -30,21 +30,19 @@ class OpennessController:
         try:
             if self.curent_tia_version is None:
                 self.openness_service.set_dll(tia_version)
-            error_creating = self.openness_service.tia.create_project(proj_name, proj_path)
-            if error_creating:
-                raise Exception(error_creating)
-            hardwware_count = hardwware.__len__()
+            self.openness_service.tia.create_project(proj_name, proj_path)
+            hardwware_count = len(hardwware)
             if hardwware_count > 0:
                 self.openness_service.tia.add_hardware(hardwware)
                 if hardwware_count > 1:
                     self.openness_service.tia.wire_profinet()
                 self.openness_service.tia.import_blocks(blocks_to_import)
-                redes = self.openness_service.tia.create_IO_System()
-                self.openness_service.tia.connect_IO_System(hardwware, redes)
-                self.openness_service.tia.addIORemota(hardwware)
-                self.openness_service.tia.save_project()
-                self.openness_service.tia.import_libraries()
-                self.openness_service.tia.import_graphics()
+                # redes = self.openness_service.tia.create_IO_System()
+                # self.openness_service.tia.connect_IO_System(hardwware, redes)
+                # self.openness_service.tia.addIORemota(hardwware)
+                # self.openness_service.tia.save_project()
+                # self.openness_service.tia.import_libraries()
+                # self.openness_service.tia.import_graphics()
             self.openness_service.tia.save_project()
             status = "Projeto criado com sucesso!"
             return status
@@ -59,5 +57,5 @@ class OpennessController:
             extension = project_path.split(".")[-1]
             self.set_dll(extension)
         my_proj = self.openness_service.tia.open_project(project_path)
-        proj_name = Utils().get_attibutes(["Name"], my_proj)
+        proj_name = Utils().get_attributes(["Name"], my_proj)
         return proj_name[0]
