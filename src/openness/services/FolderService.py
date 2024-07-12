@@ -64,11 +64,6 @@ class FolderService:
                 if not op_gp:
                     self.op_gp = self.tia_service.create_group(None, "03_Blocos Operacionais", None)
                     
-                    self.create_turntable_structure()
-                    self.create_datadores_structure()
-                    self.create_conveyor_structure()
-                    self.create_robot_structure()
-                    
         except Exception as e:
             print("Error creating operational folder structure: ", e)  
             
@@ -84,17 +79,13 @@ class FolderService:
             print("Error creating operational structure: ", e)      
      
             
-    def create_turntable_structure(self):
+    def create_turntable_structure(self, parent_zone: str, n_zona: int):
         try:
-            self.create_folder_structure()
-            
-            if self.tt_gp is None:
-                tt_gp = self.tia_service.recursive_group_search(None, "03.1_Mesas Giratórias")
-                if not tt_gp:
-                    self.tt_gp = self.tia_service.create_group(None, "03.1_Mesas Giratórias", "03_Blocos Operacionais")
+            ms_name = f"z{n_zona}_Mesas Giratórias"
+            self.tt_gp = self.tia_service.create_group(None, ms_name, parent_zone)
                     
         except Exception as e:
-            print("Error creating operational structure: ", e)
+            print(f"Error creating turntable folder for zone {parent_zone}: ", e)
             
             
     def create_datadores_structure(self):
@@ -110,30 +101,23 @@ class FolderService:
             print("Error creating operational structure: ", e)
 
             
-    def create_conveyor_structure(self):
+    def create_conveyor_structure(self, parent_zone: str, n_zona: int):
         try:
-            self.create_folder_structure()
-            
-            if self.cv_gp is None:
-                cv_gp = self.tia_service.recursive_group_search(None, "03.3_Esteiras")
-                if not cv_gp:
-                    self.cv_gp = self.tia_service.create_group(None, "03.3_Esteiras", "03_Blocos Operacionais")
+            con_name = f"z{n_zona}_Esteiras"
+            self.cv_gp = self.tia_service.create_group(None, con_name, parent_zone)
                     
         except Exception as e:
-            print("Error creating operational structure: ", e)
+            print(f"Error creating conveyor folder for zone {parent_zone}: ", e)
             
             
-    def create_robot_structure(self):
+    def create_robot_structure(self, parent_zone: str, n_zona: int):
         try:
-            self.create_folder_structure()
-            
-            if self.rb_gp is None:
-                rb_gp = self.tia_service.recursive_group_search(None, "03.4_Robos")
-                if not rb_gp:
-                    self.rb_gp = self.tia_service.create_group(None, "03.4_Robos", "03_Blocos Operacionais")
+            rbz_name = f"z{n_zona}_Robos"
+            self.rb_gp = self.tia_service.create_group(None, rbz_name, parent_zone)
+            return rbz_name
                     
         except Exception as e:
-            print("Error creating operational structure: ", e)
+            print(f"Error creating robot folder for zone {parent_zone}: ", e)
             
         
     def create_plc_folder(self):
@@ -170,6 +154,17 @@ class FolderService:
         except Exception as e:
             print("Error creating prodiag folder: ", e)
             
+    
+    def create_zona_folder(self, n_zona: int):
+        try:
+            zona_name = f"Zona {n_zona}"
+            self.tia_service.create_group(None, zona_name, "03_Blocos Operacionais")
+            return zona_name
+                
+        except Exception as e:
+            print("Error creating zona folder: ", e)  
+                  
+                  
     def move_ob_main(self):
         try:
             print("Moving OB_MAIN")
@@ -187,6 +182,8 @@ class FolderService:
             main.Delete()
             
             self.tia_service.import_block(self.plc_gp.Blocks,  block_path)
+            
+            block_path.Delete()
             
             Utils().get_directory_info(str(rpa_tia)).Delete()
             

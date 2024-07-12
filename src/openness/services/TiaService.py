@@ -486,20 +486,28 @@ class TiaService:
             return
         print('Importing blocks')
         
-        operational_service = FolderService(self)
-        operational_service.create_folder_structure()
-            
+        folder_service = FolderService(self)
+        folder_service.create_folder_structure()
+        
+        i = 1
         for zona in block_list.keys():
+            print(f"Zona {zona}")
+            zona_name = folder_service.create_zona_folder(i)
             for block in block_list[zona]:
                 if block == "robots":
-                    RobotService(self).manage_robots(block_list[zona][block])
+                    rbz_name = folder_service.create_robot_structure(zona_name, i)
+                    RobotService(self).manage_robots(block_list[zona][block], rbz_name)
                 elif block == "turntables":
+                    folder_service.create_turntable_structure(zona_name, i)
                     MesaService(self).manage_turntables(block_list[zona][block])
                 elif block == "conveyor":
+                    folder_service.create_conveyor_structure(zona_name, i)
                     ConveyorService(self).manage_conveyor(block_list[zona][block])
                 else:
                     raise Exception("Invalid block type: ", block)
-            
+            i += 1   
+        i = 1
+    
             
     def import_block(self, object, file_path: str):
         try:
