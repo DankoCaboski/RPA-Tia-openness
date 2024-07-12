@@ -5,6 +5,8 @@ from openness.services.CompilerService import CompilerService
 from openness.services.LanguageService import LanguageService
 from openness.services.XmlService import XmlService
 
+from System.IO import DirectoryInfo, FileInfo # type: ignore
+
 from openness.services.RobotService import RobotService
 from openness.services.MesaService import MesaService
 from openness.services.ConveyorService import ConveyorService
@@ -500,7 +502,11 @@ class TiaService:
     def import_block(self, object, file_path: str):
         try:
             import_options = self.tia.ImportOptions.Override
-            xml_file_info = Utils().get_file_info(file_path)
+            if isinstance(file_path, str):
+                xml_file_info = Utils().get_file_info(file_path)
+                
+            if isinstance(file_path, FileInfo):
+                xml_file_info = file_path
             
             object_type = str(object.GetType())
             

@@ -178,7 +178,7 @@ class FolderService:
             
             main = plc_software.BlockGroup.Blocks[0]
             
-            main_path = Path.home() / 'Documents'
+            main_path = Path.home() / 'Documents' / 'RPA_TIA' / 'OB_MAIN'
             
             block_path = self.tia_service.export_block("Main", str(main_path))
             
@@ -188,6 +188,9 @@ class FolderService:
             
             main.Delete()
             
-            self.tia_service.import_block(self.plc_gp,  block_path)
+            self.tia_service.import_block(self.plc_gp.Blocks,  block_path)
+            
+            block_path.Delete()
+            
         except Exception as e:
             print("Error moving OB_MAIN: ", e)
