@@ -455,7 +455,7 @@ class TiaService:
     def create_group(self, device, group_name: str, parent_group: str):
         try:
             if device is None:
-                device = self.my_devices[1]
+                device = self.my_devices[0]
             plc_software = self.hwf.get_software(device)
             groups = plc_software.BlockGroup.Groups
             
