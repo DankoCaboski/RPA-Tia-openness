@@ -4,10 +4,20 @@ from openness.services.HwFeaturesService import HwFeaturesService
 from openness.services.CompilerService import CompilerService
 from openness.services.LanguageService import LanguageService
 from openness.services.XmlService import XmlService
+
+from System.IO import DirectoryInfo, FileInfo # type: ignore
+
 from openness.services.RobotService import RobotService
+
+from openness.services.MesaService import MesaService
+from openness.services.ConveyorService import ConveyorService
+
+from openness.services.FolderService import FolderService
+
 from openness.services.IHMService import IHMService
 import pygetwindow as gw
 import pyautogui
+
 from System import Int32, String # type: ignore
 
 
@@ -380,9 +390,13 @@ class TiaService:
         return type_group.Types
     
     def recursive_group_search(self, groups, group_name: str):
+    
         try:
-            if not groups:
-                return
+            if groups is None:
+                device = self.my_devices[0]
+                plc_software = self.hwf.get_software(device)
+                groups = plc_software.BlockGroup.Groups
+                        
             found = groups.Find(group_name)
             if found:
                 return found
@@ -393,6 +407,7 @@ class TiaService:
                     return found
         except Exception as e:
             print('Error searching group:', e)
+            
     
     def recursive_folder_search(self, groups, group_name):
         try:
@@ -436,6 +451,7 @@ class TiaService:
         except Exception as e:
             print('Error creating group:', e)
 
+            
     def create_group(self, device, group_name: str, parent_group: str):
         try:
             if device is None:
@@ -514,21 +530,35 @@ class TiaService:
             print('No blocks to import')
             return
         print('Importing blocks')
+        
+        operational_service = FolderService(self)
+        operational_service.create_folder_structure()
+            
         for zona in block_list.keys():
             for block in block_list[zona]:
                 if block == "robots":
                     RobotService(self).manage_robots(block_list[zona][block])
+                elif block == "turntables":
+                    MesaService(self).manage_turntables(block_list[zona][block])
+                elif block == "conveyor":
+                    ConveyorService(self).manage_conveyor(block_list[zona][block])
                 else:
+                    raise Exception("Invalid block type: ", block)
+            
                     print(block, block_list[zona][block])
 
     def import_screens_IHM(self, hardware, project_path, project_name):
         self.create_connection(project_path, project_name)
-        IHMService(self, self.tia).create_IHM_structure(hardware)       
+        IHMService(self, self.tia).create_IHM_structure(hardware)   
             
-    def import_block(self, object, file_path):
+    def import_block(self, object, file_path: str):
         try:
             import_options = self.tia.ImportOptions.Override
-            xml_file_info = Utils().get_file_info(file_path)
+            if isinstance(file_path, str):
+                xml_file_info = Utils().get_file_info(file_path)
+                
+            if isinstance(file_path, FileInfo):
+                xml_file_info = file_path
             
             object_type = str(object.GetType())
             
@@ -553,7 +583,7 @@ class TiaService:
             return False
         
         
-    def export_block(self, device, block_name : str, block_path : str):
+    def export_block(self, block_name : str, block_path : str):
         global RPA_status
         try:
             RPA_status = 'Exporting block'
@@ -561,7 +591,7 @@ class TiaService:
             
             block_path = Utils().get_file_info(block_path + "\\" + block_name + ".xml")
             
-            plc_software = self.hwf.get_software(device)
+            plc_software = self.hwf.get_software(self.my_devices[0])
             myblock = plc_software.BlockGroup.Blocks.Find(block_name)
         
             attempts = 0
@@ -571,9 +601,11 @@ class TiaService:
                     break
                 attempts += 1
                 if attempts > 3:
-                    raise Exception("Error compiling data type")
+                    raise Exception("Error compiling, too many attempts.")
             
             myblock.Export(block_path, self.tia.ExportOptions.WithDefaults)
+            
+            return block_path
             
         except Exception as e:
             RPA_status = 'Error exporting block: ', e
@@ -631,7 +663,7 @@ class TiaService:
             # Verifica se 'Types' não está vazio antes de tentar acessar um índice
             try:
                 updateLibrary = folder.Types[0].UpdateLibrary(projectLib)
-                nameFolderEnum = Utils().get_attibutes(["Name"], folder)
+                nameFolderEnum = Utils().get_attributes(["Name"], folder)
                 nameFolder = nameFolderEnum[0]
                 print('update library:', nameFolder)
             except IndexError:

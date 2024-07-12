@@ -468,7 +468,7 @@ class Zonaframe:
 
 
     def get_blocks_to_import(self):
-        blocks = { "robots": [], "turntables": [], "Conveyor": [] }
+        blocks = { "robots": [], "turntables": [], "conveyor": [] }
         for i in self.lista_robos[1]:
             blocks["robots"].append(self.get_rb_blocks(i))
 
@@ -476,5 +476,5 @@ class Zonaframe:
             blocks["turntables"].append(self.get_mg_blocks(i))
             
         for i in self.lista_esteiras[1]:
-            blocks["Conveyor"].append(self.get_es_blocks(i))
+            blocks["conveyor"].append(self.get_es_blocks(i))
         return blocks

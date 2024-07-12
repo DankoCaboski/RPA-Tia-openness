@@ -16,7 +16,7 @@ class Utils:
         path = self.configurePath(path)
         return DirectoryInfo(path)
 
-    def get_file_info(self, path: str):
+    def get_file_info(self, path: str) -> FileInfo:
         path = self.configurePath(path)
         return FileInfo(path)
     
@@ -37,7 +37,7 @@ class Utils:
                 mylist.append(str(version[0]))
         return mylist
     
-    def get_attibutes(
+    def get_attributes(
         self,
         attribute_names: list[str],
         item
