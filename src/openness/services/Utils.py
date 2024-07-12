@@ -16,7 +16,7 @@ class Utils:
         path = self.configurePath(path)
         return DirectoryInfo(path)
 
-    def get_file_info(self, path: str):
+    def get_file_info(self, path: str) -> FileInfo:
         path = self.configurePath(path)
         return FileInfo(path)
     

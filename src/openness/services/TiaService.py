@@ -497,7 +497,7 @@ class TiaService:
                     raise Exception("Invalid block type: ", block)
             
             
-    def import_block(self, object, file_path):
+    def import_block(self, object, file_path: str):
         try:
             import_options = self.tia.ImportOptions.Override
             xml_file_info = Utils().get_file_info(file_path)
@@ -525,7 +525,7 @@ class TiaService:
             return False
         
         
-    def export_block(self, device, block_name : str, block_path : str):
+    def export_block(self, block_name : str, block_path : str):
         global RPA_status
         try:
             RPA_status = 'Exporting block'
@@ -533,7 +533,7 @@ class TiaService:
             
             block_path = Utils().get_file_info(block_path + "\\" + block_name + ".xml")
             
-            plc_software = self.hwf.get_software(device)
+            plc_software = self.hwf.get_software(self.my_devices[0])
             myblock = plc_software.BlockGroup.Blocks.Find(block_name)
         
             attempts = 0
@@ -543,9 +543,11 @@ class TiaService:
                     break
                 attempts += 1
                 if attempts > 3:
-                    raise Exception("Error compiling data type")
+                    raise Exception("Error compiling, too many attempts.")
             
             myblock.Export(block_path, self.tia.ExportOptions.WithDefaults)
+            
+            return block_path
             
         except Exception as e:
             RPA_status = 'Error exporting block: ', e

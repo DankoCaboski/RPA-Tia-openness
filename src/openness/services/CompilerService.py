@@ -8,7 +8,8 @@ class CompilerService:
         try:
             RPA_status = "Compiling..."
             print(RPA_status)
-            compiler_result = Utils().get_attributes(self.comp.ICompilable, to_compile).Compile()
+            print("Compiling item: ", to_compile)
+            compiler_result = Utils().get_service(self.comp.ICompilable, to_compile).Compile()
             
             enumerable_attributes = Utils().get_attributes(["State"], compiler_result)
             state = enumerable_attributes[0]

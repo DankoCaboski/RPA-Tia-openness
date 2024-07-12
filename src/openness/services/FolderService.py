@@ -1,3 +1,7 @@
+from pathlib import Path
+
+from openness.services.Utils import Utils
+
 class FolderService:
     def __init__(self, tia_service) -> None:
         self.tia_service = tia_service
@@ -138,6 +142,8 @@ class FolderService:
                 plc_gp = self.tia_service.recursive_group_search(None, "01.1_PLC")
                 if not plc_gp:
                     self.plc_gp = self.tia_service.create_group(None, "01.1_PLC", "01_Sistema")
+                    
+            self.move_ob_main()
                 
         except Exception as e:
             print("Error creating plc folder: ", e)
@@ -163,3 +169,25 @@ class FolderService:
                 
         except Exception as e:
             print("Error creating prodiag folder: ", e)
+            
+    def move_ob_main(self):
+        try:
+            print("Moving OB_MAIN")
+            cpu = self.tia_service.my_devices[0]
+            plc_software = self.tia_service.hwf.get_software(cpu)
+            
+            main = plc_software.BlockGroup.Blocks[0]
+            
+            main_path = Path.home() / 'Documents'
+            
+            block_path = self.tia_service.export_block("Main", str(main_path))
+            
+            if not block_path:
+                print("Error exporting OB_MAIN")
+                return
+            
+            main.Delete()
+            
+            self.tia_service.import_block(self.plc_gp,  block_path)
+        except Exception as e:
+            print("Error moving OB_MAIN: ", e)
