@@ -8,10 +8,15 @@ from openness.services.XmlService import XmlService
 from System.IO import DirectoryInfo, FileInfo # type: ignore
 
 from openness.services.RobotService import RobotService
+
 from openness.services.MesaService import MesaService
 from openness.services.ConveyorService import ConveyorService
 
 from openness.services.FolderService import FolderService
+
+from openness.services.IHMService import IHMService
+import pygetwindow as gw
+import pyautogui
 
 from System import Int32, String # type: ignore
 
@@ -384,9 +389,8 @@ class TiaService:
         type_group = plc_software.TypeGroup
         return type_group.Types
     
+    def recursive_group_search(self, groups, group_name: str):
     
-    def recursive_group_search(self, groups, group_name):
-        
         try:
             if groups is None:
                 device = self.my_devices[0]
@@ -403,12 +407,55 @@ class TiaService:
                     return found
         except Exception as e:
             print('Error searching group:', e)
-        
+            
     
+    def recursive_folder_search(self, groups, group_name):
+        try:
+            found = groups.Find(group_name)
+            if found:
+                return found
+            
+            for group in groups.GetEnumerator():
+                found = self.recursive_folder_search(group.Folders, group_name)
+                if found:
+                    return found
+        except Exception as e:
+            print('Error searching group:', e)
+
+
+    def create_folder(self, device, group_name, parent_group):
+        try:
+            if device == 'IHM':
+                device = self.my_devices[0]
+            ihm = self.hwf.get_Software_IHM(device).Software
+            groups = ihm.ScreenFolder.Folders
+            if not parent_group:
+                return groups.Create(group_name)
+            else:
+                return self.recursive_folder_search(groups, parent_group).Folders.Create(group_name)
+                
+        except Exception as e:
+            print('Error creating group:', e)
+
+    def create_folder_tag(self, device, group_name, parent_group):
+        try:
+            if device == 'IHM':
+                device = self.my_devices[0]
+            ihm = self.hwf.get_Software_IHM(device).Software
+            groups = ihm.TagFolder.Folders
+            if not parent_group:
+                return groups.Create(group_name)
+            else:
+                return self.recursive_folder_search(groups, parent_group).Folders.Create(group_name)
+                
+        except Exception as e:
+            print('Error creating group:', e)
+
+            
     def create_group(self, device, group_name: str, parent_group: str):
         try:
             if device is None:
-                device = self.my_devices[0]
+                device = self.my_devices[1]
             plc_software = self.hwf.get_software(device)
             groups = plc_software.BlockGroup.Groups
             
@@ -498,6 +545,11 @@ class TiaService:
                 else:
                     raise Exception("Invalid block type: ", block)
             
+                    print(block, block_list[zona][block])
+
+    def import_screens_IHM(self, hardware, project_path, project_name):
+        self.create_connection(project_path, project_name)
+        IHMService(self, self.tia).create_IHM_structure(hardware)   
             
     def import_block(self, object, file_path: str):
         try:
@@ -637,3 +689,46 @@ class TiaService:
             import_options = self.tia.ImportOptions.Override
             import_graph = self.myproject.Graphics.Import(arquivoFile, import_options)
         print("Import graphic done")
+    
+    def create_connection(self, project_path, project_name):
+        network = self.tia.HW.View.Network
+        self.myproject.ShowHwEditor(network)
+        # Encontrar a janela pelo título
+        direct_path = os.path.normpath(project_path)
+        windows_path = os.path.join(direct_path, project_name, project_name)
+        print('path:', windows_path)
+        windows = gw.getWindowsWithTitle(windows_path)[0]
+
+        if windows:
+            window = windows
+            # Ativar a janela e trazê-la para o foco
+            window.activate()
+            # Esperar um momento para garantir que a janela está ativa
+            pyautogui.sleep(1)
+            window.maximize()
+            pyautogui.sleep(1)
+            #Move o mouse para fechar aba lateral
+            pyautogui.click(window.left + 9, window.top + 150)
+            pyautogui.sleep(1)
+            #Clica em Connections
+            pyautogui.click(window.left + 150, window.top + 150)
+            #Move o mouse para cima da IHM
+            pyautogui.moveTo(window.left + 150, window.top + 230)
+            pyautogui.sleep(1)
+            #Arrasta o mouse para o PLC 1
+            pyautogui.dragTo(window.left + 370, window.top + 230, 1 , button='left')
+            pyautogui.sleep(1)
+            pyautogui.click()
+            pyautogui.sleep(1.5)
+            #Clica em Network
+            pyautogui.click(window.left + 90, window.top + 150)
+            pyautogui.sleep(1)
+            #Move o mouse para abrir aba lateral
+            pyautogui.click(window.left + 9, window.top + 150)
+            pyautogui.sleep(1)
+            print("Automação de usuaria concluída.")
+        else:
+            print("Janela não encontrada.")
+
+    def get_Software_IHM(self, deviceComposition):
+        return self.hwf.get_Software_IHM(deviceComposition)
