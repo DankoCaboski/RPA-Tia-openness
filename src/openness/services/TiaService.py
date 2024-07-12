@@ -29,6 +29,7 @@ class TiaService:
         self.tia_instance = None
         self.myproject = None
         self.my_devices = []
+        self.cpus = []
         self.my_subnet = None
         
     def save_project(self):
@@ -121,6 +122,7 @@ class TiaService:
                         Node = networkIterface.Nodes[0]
                         address = Node.SetAttribute("Address", String(Start_Adress))
                         self.my_devices.append(deviceCPU)
+                        self.cpus.append(deviceCPU)
                     elif deviceType == "REMOTAS":
                         remota_count += 1
                         print('Creating CPU: ', deviceName)
@@ -586,10 +588,13 @@ class TiaService:
     def export_block(self, block_name : str, block_path : str):
         global RPA_status
         try:
+            
             RPA_status = 'Exporting block'
             print(RPA_status)
             
             block_path = Utils().get_file_info(block_path + "\\" + block_name + ".xml")
+            if block_path.Exists:
+                block_path.Delete()
             
             plc_software = self.hwf.get_software(self.my_devices[0])
             myblock = plc_software.BlockGroup.Blocks.Find(block_name)
