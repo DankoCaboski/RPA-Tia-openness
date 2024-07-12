@@ -182,10 +182,6 @@ class FolderService:
             
             block_path = self.tia_service.export_block("Main", str(main_path))
             
-            if not block_path:
-                print("Error exporting OB_MAIN")
-                return
-            
             main.Delete()
             
             self.tia_service.import_block(self.plc_gp.Blocks,  block_path)
