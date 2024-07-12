@@ -43,6 +43,7 @@ class IHMService:
                 system_group_tag = self.tia_service.create_folder_tag(device, Sistemas_tag, None).TagTables
 
                 #Chamadas
+                self.import_graphicList(ihm)
                 self.import_template(ihm)
                 self.import_Screens(Axis_group, 'sistema')
                 self.import_Screens(prod_group, 'prod')
@@ -87,5 +88,18 @@ class IHMService:
             import_options = self.tia.ImportOptions.Override
             importTemplate = template.Import(arquivo_caminho_completo, import_options)
 
-    
+    def import_graphicList(self, device):
+        print("Import graphic start")
+        # Define o caminho do diretório onde estão os arquivos .xml
+        directory_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\IHM\GraphicList"
+        # Lista todos os arquivos que terminam com '.xml' no diretório especificado
+        arquivos_xml = [f for f in os.listdir(directory_path) if f.endswith('.xml')]
+        for arquivo in arquivos_xml:
+            # Constrói o caminho completo para cada arquivo .xml
+            full_path = os.path.join(directory_path, arquivo)
+            # Obtém as informações do arquivo através do caminho completo
+            arquivoFile = Utils().get_file_info(full_path)
+            import_options = self.tia.ImportOptions.Override
+            import_graph = device.GraphicLists.Import(arquivoFile, import_options)
+        print("Import graphic done")
     
