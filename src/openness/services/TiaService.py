@@ -24,6 +24,7 @@ class TiaService:
         self.tia_instance = None
         self.myproject = None
         self.my_devices = []
+        self.cpus = []
         self.my_subnet = None
         
     def save_project(self):
@@ -116,6 +117,7 @@ class TiaService:
                         Node = networkIterface.Nodes[0]
                         address = Node.SetAttribute("Address", String(Start_Adress))
                         self.my_devices.append(deviceCPU)
+                        self.cpus.append(deviceCPU)
                     elif deviceType == "REMOTAS":
                         remota_count += 1
                         print('Creating CPU: ', deviceName)
