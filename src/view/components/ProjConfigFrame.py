@@ -110,6 +110,15 @@ class ProjConfigFrame:
 
         
         def update_mlfb_combobox(*args):
+            
+            hw_mlfb.set("")
+            hw_firmware.set("")
+            hw_name.select_clear()
+            hw_name.delete(0, tk.END)
+            hw_name.insert(0, "")
+            special_entry.delete(0, tk.END)
+            special_entry.insert(0, "0")
+            
             selected_option = input["combobox"].get()
             
             if selected_option == "CONTROLLERS":
@@ -131,6 +140,14 @@ class ProjConfigFrame:
             hw_mlfb.configure(values=valueSource)
             
         def update_firmware_combobox(*args):
+            
+            hw_firmware.set("")
+            hw_name.select_clear()
+            hw_name.delete(0, tk.END)
+            hw_name.insert(0, "")
+            special_entry.delete(0, tk.END)
+            special_entry.insert(0, "0")
+            
             selected_mlfb = input["mlfb"].get()
 
             firmware_versions = self.firm_versions.get(selected_mlfb, [])
