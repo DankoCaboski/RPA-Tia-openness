@@ -148,20 +148,20 @@ class DbManagement:
             
         # Realiza a união das tabelas IHM_List e CPU_List com a tabela VersoesHardware para obter as versões correspondentes
         query = """
-        SELECT VersoesHardware.mlfb, VersoesHardware.versao
-        FROM IHM_List
-        JOIN VersoesHardware ON IHM_List.mlfb = VersoesHardware.mlfb
-        WHERE IHM_List.type = ?
-        UNION
-        SELECT VersoesHardware.mlfb, VersoesHardware.versao
-        FROM CPU_List
-        JOIN VersoesHardware ON CPU_List.mlfb = VersoesHardware.mlfb
-        WHERE CPU_List.type = ?
-        UNION
-        SELECT VersoesHardware.mlfb, VersoesHardware.versao
-        FROM IO_List
-        JOIN VersoesHardware ON IO_List.mlfb = VersoesHardware.mlfb
-        WHERE IO_List.type = ?
+            SELECT VersoesHardware.mlfb, VersoesHardware.versao
+            FROM IHM_List
+            JOIN VersoesHardware ON IHM_List.mlfb = VersoesHardware.mlfb
+            WHERE IHM_List.type = ?
+            UNION
+            SELECT VersoesHardware.mlfb, VersoesHardware.versao
+            FROM CPU_List
+            JOIN VersoesHardware ON CPU_List.mlfb = VersoesHardware.mlfb
+            WHERE CPU_List.type = ?
+            UNION
+            SELECT VersoesHardware.mlfb, VersoesHardware.versao
+            FROM IO_List
+            JOIN VersoesHardware ON IO_List.mlfb = VersoesHardware.mlfb
+            WHERE IO_List.type = ?;
         """
         # Passa o mesmo tipo de hardware para ambas as partes da união
         self.cursor.execute(query, (hw_type, hw_type, hw_type))
