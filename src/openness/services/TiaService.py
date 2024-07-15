@@ -237,12 +237,13 @@ class TiaService:
                                 print("Address Start: " , GETStartAddress )
                             self.my_devices.append(IONodeRemota)
 
-    def wire_profinet(self):
-        ProfinetInterfaces = self.GetAllProfinetInterfaces()
-        print("Nº de interfaces PROFINET: ", str(len(ProfinetInterfaces)))
+    def wire_profinet(self, subnet_name: str = "mySubnet"):
+        ProfinetInterfaces = self.GetAllProfinetInterfaces() 
+        
+        print("Mapeando interfaces PROFINET")
         
         if len(ProfinetInterfaces) > 1:
-            self.SetSubnetName("mySubnet")
+            self.SetSubnetName(subnet_name)
             for port in ProfinetInterfaces:
                 node = port.Nodes[0]
                 self.ConnectToSubnet(node)
@@ -253,6 +254,8 @@ class TiaService:
         else:
             RPA_status = "Número de interfaces PROFINET menor que 2"
             print(RPA_status)
+            
+        return ProfinetInterfaces
 
     def create_IO_System(self):
         redes = []

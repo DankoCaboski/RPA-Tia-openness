@@ -30,26 +30,31 @@ class OpennessController:
         try:
             if self.curent_tia_version is None:
                 self.openness_service.set_dll(tia_version)
-            self.openness_service.tia.create_project(proj_name, proj_path)
+                
             hardwware_count = len(hardwware)
             if hardwware_count > 0:
+                self.openness_service.tia.create_project(proj_name, proj_path)
                 self.openness_service.tia.add_hardware(hardwware)
                 if hardwware_count > 1:
                     self.openness_service.tia.wire_profinet()
                     
                 self.openness_service.tia.import_blocks(blocks_to_import)
                 
-                # redes = self.openness_service.tia.create_IO_System()
-                # self.openness_service.tia.connect_IO_System(hardwware, redes)
-                # self.openness_service.tia.addIORemota(hardwware)
-                # self.openness_service.tia.save_project()
-                # self.openness_service.tia.import_libraries()
-                # self.openness_service.tia.import_graphics()
-                #self.openness_service.tia.import_screens_IHM(hardwware, proj_path, proj_name)
-
-            self.openness_service.tia.save_project()
-            status = "Projeto criado com sucesso!"
-            return status
+                redes = self.openness_service.tia.create_IO_System()
+                self.openness_service.tia.connect_IO_System(hardwware, redes)
+                self.openness_service.tia.addIORemota(hardwware)
+                self.openness_service.tia.import_libraries()
+                self.openness_service.tia.import_graphics()
+                # self.openness_service.tia.import_screens_IHM(hardwware, proj_path, proj_name)
+                
+                self.openness_service.tia.save_project()
+                status = "Projeto criado com sucesso!"
+                return status
+            
+            else:
+                status = "Nenhum hardware selecionado!"
+                return status
+            
         except Exception as e:
             error = "Erro ao gerar projeto: " + str(e)
             print(error)
