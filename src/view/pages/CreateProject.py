@@ -81,6 +81,9 @@ class CreateProject:
     def call_create_proj(self):
         if self.proj_path == '' or self.proj_path is None:
             self.set_proj_path()
+            if self.proj_path == '' or self.proj_path is None:
+                self.status_label.configure(text="Status: Defina um local para salvar o projeto")
+                return
         if proj_name.get() == '' or proj_name.get() is None:
             self.status_label.configure(text="Status: Defina um nome para o projeto")
             return
