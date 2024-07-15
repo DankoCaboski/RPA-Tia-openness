@@ -46,7 +46,7 @@ class CreateProject:
         button_proj_path = CustomButton(self.frame, "Local do Arquivo", None, command=self.set_proj_path)
         button_proj_path = button_proj_path.get_button()
         # button_proj_path.grid(row=self.row_counter, column=0, columnspan=4, pady=25)
-        self.row_counter += 1
+        # self.row_counter += 1
         
         proj_name_label = customtkinter.CTkLabel(self.frame, text="Nome do projeto:")
         proj_name_label.grid(row=self.row_counter, column=1, sticky="e", padx=(0, 10), pady=(0, 10))
