@@ -45,7 +45,7 @@ class OpennessController:
                 # self.openness_service.tia.save_project()
                 # self.openness_service.tia.import_libraries()
                 # self.openness_service.tia.import_graphics()
-#               self.openness_service.tia.import_screens_IHM(hardwware, proj_path, proj_name)
+                #self.openness_service.tia.import_screens_IHM(hardwware, proj_path, proj_name)
 
             self.openness_service.tia.save_project()
             status = "Projeto criado com sucesso!"

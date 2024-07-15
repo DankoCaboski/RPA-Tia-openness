@@ -28,7 +28,11 @@ class TiaService:
         self.comp: CompilerService = CompilerService(comp)
         self.tia_instance = None
         self.myproject = None
+        
         self.my_devices = []
+        self.cpus = []
+        self.ihms = []
+        
         self.my_subnet = None
         
     def save_project(self):
@@ -107,6 +111,7 @@ class TiaService:
                 FirmVersion = device['firmware']
                 Start_Adress = device ['Address']
                 if self.myproject != None:
+                    
                     if deviceType == "CONTROLLERS":
                         if "F" in deviceMlfb:
                             print("é safety")
@@ -121,9 +126,11 @@ class TiaService:
                         Node = networkIterface.Nodes[0]
                         address = Node.SetAttribute("Address", String(Start_Adress))
                         self.my_devices.append(deviceCPU)
+                        self.cpus.append(deviceCPU)
+                        
                     elif deviceType == "REMOTAS":
                         remota_count += 1
-                        print('Creating CPU: ', deviceName)
+                        print('Creating REMOTAS: ', deviceName)
                         config_Plc = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
                         deviceREMOTA = self.myproject.UngroupedDevicesGroup.Devices.CreateWithItem(config_Plc, deviceName, deviceName)
                         count = self.myproject.UngroupedDevicesGroup.Devices.Count
@@ -133,6 +140,7 @@ class TiaService:
                         Node = networkIterface.Nodes[0]
                         address = Node.SetAttribute("Address", String(Start_Adress))
                         self.my_devices.append(deviceREMOTA)
+                        
                     elif deviceType == "IHM":
                         print("Creating IHM: ", deviceName)
                         config_Hmi = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
@@ -144,35 +152,43 @@ class TiaService:
                         Node = networkIterface.Nodes[0]
                         address = Node.SetAttribute("Address", String(Start_Adress))
                         self.my_devices.append(deviceIHM)
+                        self.ihms.append(deviceIHM)
 
                     elif deviceType == "DI" or deviceType == "DO":
                         Remota = self.myproject.UngroupedDevicesGroup.Devices.Count
+                        
                         if Remota  == 0: 
                             print('Creating IO Node: ', deviceName)
                             confing_IOnode = "OrderNumber:"+deviceMlfb+"/"+FirmVersion
                             Devices = self.myproject.Devices[plc_count]
                             typeName = Devices.GetAttribute("TypeName")
+                            
                             if typeName == "ET 200SP-Station":
                                 countFINAL = Devices.DeviceItems.Count
                                 count = countFINAL - 1 
+                                
                             elif typeName == "ET 200S station":
                                 countFINAL = Devices.DeviceItems.Count
                                 count = countFINAL + 2
                             else:
                                 count = Devices.DeviceItems.Count
+                                
                             DeviceItemAssociation = Devices.GetAttribute("Items")
                             if DeviceItemAssociation[0].CanPlugNew(confing_IOnode, deviceName, count):
                                 IONode = DeviceItemAssociation[0].PlugNew(confing_IOnode, deviceName, count)
+                                
                                 if typeName == "ET 200SP-Station":
                                     Start_Adress_int = int(Start_Adress)
                                     addressController = Devices.DeviceItems[countFINAL].DeviceItems[0].Addresses[0]
                                     StartAddress = addressController.SetAttribute("StartAddress", Int32(Start_Adress_int))
                                     GETStartAddress = addressController.GetAttribute("StartAddress")
+                                    
                                 elif typeName == "ET 200S station":
                                     addressController = Devices.DeviceItems[countFINAL].DeviceItems[0].Addresses[0]
                                     Start_Adress_int = int(Start_Adress)
                                     StartAddress = addressController.SetAttribute("StartAddress", Int32(Start_Adress_int))
                                     GETStartAddress = addressController.GetAttribute("StartAddress")
+                                    
                                 else:
                                     addressController = Devices.DeviceItems[count].DeviceItems[0].Addresses[0]
                                     Start_Adress_int = int(Start_Adress)
@@ -180,6 +196,7 @@ class TiaService:
                                     GETStartAddress = addressController.GetAttribute("StartAddress")
                                     print("Address Start: " , GETStartAddress )
                                 self.my_devices.append(IONode)
+                                
         except Exception as e:
             RPA_status = 'Unknown hardware type: ', deviceType
             print(RPA_status)
@@ -393,7 +410,7 @@ class TiaService:
     
         try:
             if groups is None:
-                device = self.my_devices[0]
+                device = self.cpus[0]
                 plc_software = self.hwf.get_software(device)
                 groups = plc_software.BlockGroup.Groups
                         
@@ -426,7 +443,7 @@ class TiaService:
     def create_folder(self, device, group_name, parent_group):
         try:
             if device == 'IHM':
-                device = self.my_devices[0]
+                device = self.cpus[0]
             ihm = self.hwf.get_Software_IHM(device).Software
             groups = ihm.ScreenFolder.Folders
             if not parent_group:
@@ -435,12 +452,12 @@ class TiaService:
                 return self.recursive_folder_search(groups, parent_group).Folders.Create(group_name)
                 
         except Exception as e:
-            print('Error creating group:', e)
+            print('Error create_folder:', e)
 
     def create_folder_tag(self, device, group_name, parent_group):
         try:
             if device == 'IHM':
-                device = self.my_devices[0]
+                device = self.ihms[0]
             ihm = self.hwf.get_Software_IHM(device).Software
             groups = ihm.TagFolder.Folders
             if not parent_group:
@@ -449,13 +466,14 @@ class TiaService:
                 return self.recursive_folder_search(groups, parent_group).Folders.Create(group_name)
                 
         except Exception as e:
-            print('Error creating group:', e)
+            print('Error create_folder_tag:', e)
 
             
     def create_group(self, device, group_name: str, parent_group: str):
         try:
             if device is None:
-                device = self.my_devices[0]
+                device = self.cpus[0]
+                
             plc_software = self.hwf.get_software(device)
             groups = plc_software.BlockGroup.Groups
             
@@ -531,21 +549,27 @@ class TiaService:
             return
         print('Importing blocks')
         
-        operational_service = FolderService(self)
-        operational_service.create_folder_structure()
-            
+        folder_service = FolderService(self)
+        folder_service.create_folder_structure()
+        
+        i = 1
         for zona in block_list.keys():
+            print(f"Zona {zona}")
+            zona_name = folder_service.create_zona_folder(i)
             for block in block_list[zona]:
                 if block == "robots":
-                    RobotService(self).manage_robots(block_list[zona][block])
+                    rbz_name = folder_service.create_robot_structure(zona_name, i)
+                    RobotService(self).manage_robots(block_list[zona][block], rbz_name)
                 elif block == "turntables":
+                    folder_service.create_turntable_structure(zona_name, i)
                     MesaService(self).manage_turntables(block_list[zona][block])
                 elif block == "conveyor":
+                    folder_service.create_conveyor_structure(zona_name, i)
                     ConveyorService(self).manage_conveyor(block_list[zona][block])
                 else:
                     raise Exception("Invalid block type: ", block)
-            
-                    print(block, block_list[zona][block])
+            i += 1   
+        i = 1
 
     def import_screens_IHM(self, hardware, project_path, project_name):
         self.create_connection(project_path, project_name)
@@ -586,12 +610,15 @@ class TiaService:
     def export_block(self, block_name : str, block_path : str):
         global RPA_status
         try:
+            
             RPA_status = 'Exporting block'
             print(RPA_status)
             
             block_path = Utils().get_file_info(block_path + "\\" + block_name + ".xml")
+            if block_path.Exists:
+                block_path.Delete()
             
-            plc_software = self.hwf.get_software(self.my_devices[0])
+            plc_software = self.hwf.get_software(self.cpus[0])
             myblock = plc_software.BlockGroup.Blocks.Find(block_name)
         
             attempts = 0

@@ -10,20 +10,20 @@ class RobotService:
         self.dependencies = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\dependence"
         
         
-    def manage_robots(self, robots_associations: list):
+    def manage_robots(self, robots_associations: list, rbz_name: str):
         try:
             print("\n", robots_associations)
             for i in enumerate(robots_associations):
                 print(f"Manage robots: i == {i}")
-                self.create_robot_structure(i[0])
+                self.create_robot_structure(i[0], rbz_name)
         except Exception as e:
             print("Error manage_robots: ", e)
 
 
-    def create_robot_structure(self, i):
+    def create_robot_structure(self, i: int, rbz_name: str):
         try:            
             group_name = f"03.4.{i+1}_RB{i+1}"
-            robot_group = self.tia_service.create_group(None, group_name, "03.4_Robos")
+            robot_group = self.tia_service.create_group(None, group_name, rbz_name)
             
             if not robot_group:
                 raise Exception("Error creating robot group")
