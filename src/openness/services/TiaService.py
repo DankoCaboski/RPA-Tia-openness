@@ -256,7 +256,7 @@ class TiaService:
 
     def create_IO_System(self):
         redes = []
-        Device = self.myproject.Devices[1]
+        Device = self.cpus[0]
         count = self.myproject.UngroupedDevicesGroup.Devices.Count
         if count >= 1:
             networkIterface = self.hwf.get_network_interface_CPU(Device)
