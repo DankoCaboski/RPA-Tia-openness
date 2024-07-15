@@ -547,32 +547,37 @@ class TiaService:
             
             
     def import_blocks(self, block_list: dict):
-        if not block_list:
-            print('No blocks to import')
-            return
-        print('Importing blocks')
-        
-        folder_service = FolderService(self)
-        folder_service.create_folder_structure()
-        
-        i = 1
-        for zona in block_list.keys():
-            print(f"Zona {zona}")
-            zona_name = folder_service.create_zona_folder(i)
-            for block in block_list[zona]:
-                if block == "robots":
-                    rbz_name = folder_service.create_robot_structure(zona_name, i)
-                    RobotService(self).manage_robots(block_list[zona][block], rbz_name)
-                elif block == "turntables":
-                    folder_service.create_turntable_structure(zona_name, i)
-                    MesaService(self).manage_turntables(block_list[zona][block])
-                elif block == "conveyor":
-                    folder_service.create_conveyor_structure(zona_name, i)
-                    ConveyorService(self).manage_conveyor(block_list[zona][block])
-                else:
-                    raise Exception("Invalid block type: ", block)
-            i += 1   
-        i = 1
+        try:
+            if not block_list:
+                print('No blocks to import')
+                return
+            print('Importing blocks')
+            
+            folder_service = FolderService(self)
+            folder_service.create_folder_structure()
+            
+            i = 1
+            
+            for zona in block_list.keys():
+                print(f"Zona {zona}")
+                zona_name = folder_service.create_zona_folder(i)
+                for block in block_list[zona]:
+                    if block == "robots":
+                        rbz_name = folder_service.create_robot_structure(zona_name, i)
+                        RobotService(self).manage_robots(block_list[zona][block], rbz_name)
+                    elif block == "turntables":
+                        folder_service.create_turntable_structure(zona_name, i)
+                        MesaService(self).manage_turntables(block_list[zona][block])
+                    elif block == "conveyor":
+                        folder_service.create_conveyor_structure(zona_name, i)
+                        ConveyorService(self).manage_conveyor(block_list[zona][block])
+                    else:
+                        raise Exception("Invalid block type: ", block)
+                i += 1   
+            i = 1
+            
+        except Exception as e:
+            print('Error importing blocks:', e)
 
     def import_screens_IHM(self, hardware, project_path, project_name):
         self.create_connection(project_path, project_name)

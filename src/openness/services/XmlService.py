@@ -1,3 +1,5 @@
+from openness.services.Utils import Utils
+
 import re
 
 class XmlService:
@@ -16,6 +18,7 @@ class XmlService:
         return udts
     
     def editar_tags_xml(self, arquivo, novo_nome, novo_numero):
+        
         with open(arquivo, 'r', encoding='utf-8') as file:
             conteudo = file.read()
 

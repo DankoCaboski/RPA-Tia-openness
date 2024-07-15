@@ -1,4 +1,6 @@
 import clr
+import random
+import string
 
 from System.IO import DirectoryInfo, FileInfo # type: ignore
 from System.Collections.Generic import List # type: ignore
@@ -65,3 +67,10 @@ class Utils:
             
     def getCompositionPosition(self, deviceComposition):
         return deviceComposition.DeviceItems
+    
+    def generate_entropy_string(self, length=5):
+        characters = string.ascii_letters + string.digits
+        return ''.join(random.choice(characters) for _ in range(length))
+    
+    def get_random_number(self, start = 50, end = 501):
+        return random.randint(start, end)
