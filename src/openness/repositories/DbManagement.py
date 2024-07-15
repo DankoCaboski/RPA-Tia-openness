@@ -62,6 +62,7 @@ class DbManagement:
         
         self.insert_cpu()
         self.insert_ihm()
+        self.insrt_io()
         self.insert_dll()
         self.insert_firmware()
             
@@ -90,17 +91,20 @@ class DbManagement:
     def insert_firmware(self):
         print("Gravando dados de Firmware")
         
-        insert_path = os.path.join(self.database_dir, 'sql', 'Inserts.sql')
+        arquivos = ["6AVX_Inserts.sql", "6ES7_Inserts.sql", "DIDO_Inserts.sql"]
         
-        if self.connection is None or self.cursor is None:
-            self.connection = sqlite3.connect(self.db_path)
-            self.cursor = self.connection.cursor()
-        
-        # Carrega o script SQL e executa
-        with open(insert_path, 'r') as arquivo_sql:
-            script = arquivo_sql.read()
-            self.cursor.executescript(script)
-        self.connection.commit()
+        for arquivo in arquivos:
+            insert_path = os.path.join(self.database_dir, 'sql', arquivo)
+            
+            if self.connection is None or self.cursor is None:
+                self.connection = sqlite3.connect(self.db_path)
+                self.cursor = self.connection.cursor()
+            
+            # Carrega o script SQL e executa
+            with open(insert_path, 'r') as arquivo_sql:
+                script = arquivo_sql.read()
+                self.cursor.executescript(script)
+            self.connection.commit()
             
     
     def insert_ihm(self):
@@ -111,6 +115,16 @@ class DbManagement:
             for linha in leitor_csv:
                 mlfb, type, descricao = linha
                 self.cursor.execute("INSERT INTO IHM_List (mlfb, type, description) VALUES (?, ?, ?)", (mlfb, type, descricao))
+        self.connection.commit()
+        
+    def insrt_io(self):
+        io_List_path = os.path.join(self.database_dir, "mlfb", "IO_List.csv")
+        print("Gravando dados na tabela IO_List")
+        with open(io_List_path, 'r') as arquivo:
+            leitor_csv = csv.reader(arquivo)
+            for linha in leitor_csv:
+                mlfb, type, descricao = linha
+                self.cursor.execute("INSERT INTO IO_List (mlfb, type, description) VALUES (?, ?, ?)", (mlfb, type, descricao))
         self.connection.commit()
 
     def validate_db(self):
