@@ -473,6 +473,7 @@ class TiaService:
         try:
             if device is None:
                 device = self.cpus[0]
+                
             plc_software = self.hwf.get_software(device)
             groups = plc_software.BlockGroup.Groups
             
