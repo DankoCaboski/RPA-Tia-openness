@@ -7,7 +7,7 @@ from openness.services.Utils import Utils
 class RobotService:
     def __init__(self, tia_service) -> None:
         self.tia_service = tia_service
-        self.dependencies = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\dependence"
+        self.dependencies = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\PLC data types"
         
         
     def manage_robots(self, robots_associations: list, rbz_name: str):
@@ -52,6 +52,7 @@ class RobotService:
             udts = UDTService().list_udt_from_bk(bk_path)
                 
             for udt in udts:
+                print(f"Importing UDT {udt}...")
                 udt_path = self.dependencies + '\\' + udt + '.xml'
                 device = self.tia_service.get_device_by_index(0)
                 self.tia_service.import_data_type(device, udt_path)
