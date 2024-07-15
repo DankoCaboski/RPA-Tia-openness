@@ -18,6 +18,8 @@ class FolderService:
         self.plc_gp = None
         self.celula_gp = None
         self.prodiag_gp = None
+        
+        self.raw_ob_list = [1, 121]
     
     def create_folder_structure(self):
         try:   
@@ -127,7 +129,7 @@ class FolderService:
                 if not plc_gp:
                     self.plc_gp = self.tia_service.create_group(None, "01.1_PLC", "01_Sistema")
                     
-            self.move_ob_main()
+            self.move_raw_obs()
                 
         except Exception as e:
             print("Error creating plc folder: ", e)
@@ -165,27 +167,25 @@ class FolderService:
             print("Error creating zona folder: ", e)  
                   
                   
-    def move_ob_main(self):
+    def move_raw_obs(self):
         try:
-            print("Moving OB_MAIN")
             cpu = self.tia_service.cpus[0]
             plc_software = self.tia_service.hwf.get_software(cpu)
-            
-            main = plc_software.BlockGroup.Blocks[0]
-            
-            rpa_tia = Path.home() / 'Documents' / 'RPA_TIA'
-            
-            main_path = rpa_tia / 'OB_MAIN'
-            
-            block_path = self.tia_service.export_block("Main", str(main_path))
-            
-            main.Delete()
-            
-            self.tia_service.import_block(self.plc_gp.Blocks,  block_path)
-            
-            block_path.Delete()
-            
-            Utils().get_directory_info(str(rpa_tia)).Delete()
+            for ob in self.raw_ob_list:
+                print(f"Moving OB {ob}")
+                
+                if ob == 1:
+                    plc_software.BlockGroup.Blocks[0].Delete()
+                    
+                    block_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\Raw_OBs\OB01.xml"
+                    
+                    self.tia_service.import_block(self.plc_gp.Blocks,  block_path)
+                
+                elif ob == 121:
+                    
+                    block_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\Raw_OBs\OB121.xml"
+                    
+                    self.tia_service.import_block(self.plc_gp.Blocks,  block_path) 
             
         except Exception as e:
-            print("Error moving OB_MAIN: ", e)
+            print("Error moving OB: ", e)

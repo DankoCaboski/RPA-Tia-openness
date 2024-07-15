@@ -30,6 +30,7 @@ class TiaService:
         self.myproject = None
         self.my_devices = []
         self.cpus = []
+        self.ihms = []
         self.my_subnet = None
         
     def save_project(self):
@@ -146,6 +147,7 @@ class TiaService:
                         Node = networkIterface.Nodes[0]
                         address = Node.SetAttribute("Address", String(Start_Adress))
                         self.my_devices.append(deviceIHM)
+                        self.ihms.append(deviceIHM)
 
                     elif deviceType == "DI" or deviceType == "DO":
                         Remota = self.myproject.UngroupedDevicesGroup.Devices.Count
@@ -437,7 +439,7 @@ class TiaService:
                 return self.recursive_folder_search(groups, parent_group).Folders.Create(group_name)
                 
         except Exception as e:
-            print('Error creating group:', e)
+            print('Error create_folder:', e)
 
     def create_folder_tag(self, device, group_name, parent_group):
         try:
@@ -451,13 +453,13 @@ class TiaService:
                 return self.recursive_folder_search(groups, parent_group).Folders.Create(group_name)
                 
         except Exception as e:
-            print('Error creating group:', e)
+            print('Error create_folder_tag:', e)
 
             
     def create_group(self, device, group_name: str, parent_group: str):
         try:
             if device is None:
-                device = self.my_devices[1]
+                device = self.cpus[0]
             plc_software = self.hwf.get_software(device)
             groups = plc_software.BlockGroup.Groups
             
