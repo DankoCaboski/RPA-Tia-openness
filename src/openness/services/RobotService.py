@@ -24,6 +24,7 @@ class RobotService:
         try:            
             group_name = f"03.4.{i+1}_RB{i+1}"
             robot_group = self.tia_service.create_group(None, group_name, rbz_name)
+            # self.import_robot_bk(robot_group, "ABB")
             
             if not robot_group:
                 raise Exception("Error creating robot group")

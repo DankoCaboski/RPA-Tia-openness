@@ -116,8 +116,6 @@ class ProjConfigFrame:
             hw_name.select_clear()
             hw_name.delete(0, tk.END)
             hw_name.insert(0, "")
-            special_entry.delete(0, tk.END)
-            special_entry.insert(0, "0")
             
             selected_option = input["combobox"].get()
             
@@ -145,8 +143,6 @@ class ProjConfigFrame:
             hw_name.select_clear()
             hw_name.delete(0, tk.END)
             hw_name.insert(0, "")
-            special_entry.delete(0, tk.END)
-            special_entry.insert(0, "0")
             
             selected_mlfb = input["mlfb"].get()
 
