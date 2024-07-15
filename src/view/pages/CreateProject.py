@@ -22,7 +22,7 @@ class CreateProject:
         
         self.hw_frame: ProjConfigFrame = ProjConfigFrame(self.frame)
         
-        self.hw_frame_index = 3  # Definindo o índice inicial da linha para self.hw_frame.frame
+        self.hw_frame_index = 2  # Definindo o índice inicial da linha para self.hw_frame.frame
         
         self.frame.grid_rowconfigure(self.hw_frame_index, weight=1)  # Configurando a linha
         
