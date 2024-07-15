@@ -21,7 +21,14 @@ class HwFeaturesService:
             print(RPA_status)
             print("Name: ", str(parent.GetAttribute("Name")))
             print("Type: ", parent.GetType())
-            
+
+    def get_Software_IHM(self, deviceComposition):
+        hmiItems = deviceComposition.DeviceItems
+        for option in hmiItems:
+            optionName = option.GetAttribute("Name")
+            if "HMI_RT" in optionName:
+                return Utils().get_service(self.hwf.SoftwareContainer, option)   
+                 
     def get_network_interface_CPU(self, deviceComposition):
         cpu = Utils().getCompositionPosition(deviceComposition)[1].DeviceItems
         for option in cpu:
