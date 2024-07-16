@@ -617,8 +617,6 @@ class TiaService:
                     raise Exception("Nenhum bloco importado")
 
                 print(f"Imported block: {imported[0]}")
-                if not self.is_file_in_directory(xml_file_info, standarts):
-                    self.comp.compilate_item(imported[0])
                 return True
         
         except Exception as e:
