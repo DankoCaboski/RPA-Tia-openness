@@ -494,25 +494,22 @@ class TiaService:
 
     def import_data_type(self, cpu, data_type_path):
         try:
-            udts_dependentes = XmlService().list_udt_from_xml(data_type_path)
-            for udt in udts_dependentes:
-                udt_path = data_type_path.rsplit(".xml", 1)[0] + "\\" + udt + ".xml"
-                self.import_data_type(cpu, udt_path) 
+            if data_type_path != r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\PLC data types\06_Axis.RB.Memórias.xml":
+                udts_dependentes = XmlService().list_udt_from_xml(data_type_path)
+                for udt in udts_dependentes:
+                    data_type_path = data_type_path.rsplit(".xml", 1)[0] + "\\" + udt + ".xml"
+                    self.import_data_type(cpu, data_type_path) 
             
             types = self.get_types(cpu)
             if type(data_type_path) == str:
                 data_type_path = Utils().get_file_info(data_type_path)
             import_options = self.tia.ImportOptions.Override
-            types.Import(data_type_path, import_options)
-            
+            imported = types.Import(data_type_path, import_options)
+            return imported[0]
+        
         except Exception as e:
-            if str(e).__contains__("culture"):
-                LanguageService().add_language(self.myproject, "pt-BR")
-                self.import_data_type(cpu, data_type_path)
-                
-            else:
-                print('Error importing data type from: ', data_type_path)
-                print('Error message: ', e)
+            print('Error importing data type from: ', data_type_path)
+            print('Error message: ', e)
                 
     def export_data_type(self, device, data_type_name : str, data_type_path : str):
         try:
@@ -620,8 +617,6 @@ class TiaService:
                     raise Exception("Nenhum bloco importado")
 
                 print(f"Imported block: {imported[0]}")
-                if not self.is_file_in_directory(xml_file_info, standarts):
-                    self.comp.compilate_item(imported[0])
                 return True
         
         except Exception as e:

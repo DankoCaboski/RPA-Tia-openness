@@ -172,7 +172,7 @@ class FolderService:
             cpu = self.tia_service.cpus[0]
             plc_software = self.tia_service.hwf.get_software(cpu)
             for ob in self.raw_ob_list:
-                print(f"Moving OB {ob}")
+                print(f"\nMoving OB {ob}")
                 
                 if ob == 1:
                     plc_software.BlockGroup.Blocks[0].Delete()
