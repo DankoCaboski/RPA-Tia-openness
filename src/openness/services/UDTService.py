@@ -36,4 +36,5 @@ class UDTService:
             matches = re.findall(pattern, conteudo)
             for match in matches:
                 udts.append(match)
+        print(f"UDTs: {udts}")
         return udts
