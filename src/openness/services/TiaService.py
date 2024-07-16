@@ -609,20 +609,12 @@ class TiaService:
                     print(f"Importing block to CPU: {object}")
                     plc_software = self.hwf.get_software(object)
                     
-                    if self.is_file_in_directory(xml_file_info, standarts):
-                        print("\n Importing block with SWImportOptions")
-                        imported = plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options, sw_import_options)
-                    else:                
-                        imported = plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options)
+                    imported = plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options, sw_import_options)
                     
                 elif object_type == "Siemens.Engineering.SW.Blocks.PlcBlockComposition":
                     print(f"Importing block to group: {object}")
                     
-                    if self.is_file_in_directory(xml_file_info, standarts):
-                        print("\n Importing block with SWImportOptions")
-                        imported = object.Import(xml_file_info, import_options, sw_import_options)                
-                    else:
-                        imported = object.Import(xml_file_info, import_options)
+                    imported = object.Import(xml_file_info, import_options, sw_import_options) 
                     
                 if imported is None:
                     raise Exception("Nenhum bloco importado")
