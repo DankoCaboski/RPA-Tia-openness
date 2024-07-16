@@ -585,7 +585,6 @@ class TiaService:
             
     def import_block(self, object, file_path: str):
         try:
-            import_options = self.tia.ImportOptions.Override
             if isinstance(file_path, str):
                 xml_file_info = Utils().get_file_info(file_path)
                 
@@ -598,22 +597,58 @@ class TiaService:
                 raise Exception("Invalid object type: ", object_type)
         
             else:
+                imported = None
+                standarts = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\Program blocks\02_Blocos Standard Axis"
+                import_options = self.tia.ImportOptions.Override
+                sw_import_options = self.tia.SW.SWImportOptions.IgnoreMissingReferencedObjects	
+                
+                print(f"Standart? {self.is_file_in_directory(xml_file_info, standarts)}")
+                
                 if object_type == "Siemens.Engineering.HW.DeviceImpl":
                     object = object.DeviceItems[1]
                     print(f"Importing block to CPU: {object}")
                     plc_software = self.hwf.get_software(object)
-                    plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options)
+                    
+                    if self.is_file_in_directory(xml_file_info, standarts):
+                        print("\n Importing block with SWImportOptions")
+                        imported = plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options, sw_import_options)
+                    else:                
+                        imported = plc_software.BlockGroup.Blocks.Import(xml_file_info, import_options)
                     
                 elif object_type == "Siemens.Engineering.SW.Blocks.PlcBlockComposition":
                     print(f"Importing block to group: {object}")
-                    object.Import(xml_file_info, import_options)
-                
-            return True
+                    
+                    if self.is_file_in_directory(xml_file_info, standarts):
+                        print("\n Importing block with SWImportOptions")
+                        imported = object.Import(xml_file_info, import_options, sw_import_options)                
+                    else:
+                        imported = object.Import(xml_file_info, import_options)
+                    
+                if imported is None:
+                    raise Exception("Nenhum bloco importado")
+
+                print(f"Imported block: {imported[0]}")
+                self.comp.compilate_item(imported[0])
+                return True
         
         except Exception as e:
             print('Error importing block:', e)
             return False
         
+        
+    def is_file_in_directory(self,file_path, target_directory_path: str):
+        try:
+            if isinstance(file_path, str):
+                file_path = Utils().get_file_info(file_path)
+                
+            parent_directory = file_path.Directory
+
+            return parent_directory.FullName.lower() == target_directory_path.lower()
+        
+        except Exception as e:
+            print('Error checking file directory:', e)
+            return False
+
         
     def export_block(self, block_name : str, block_path : str):
         global RPA_status

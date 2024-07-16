@@ -15,6 +15,8 @@ class FolderService:
         self.celula_gp = None
         self.prodiag_gp = None
         
+        self.fb_2005_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\Program blocks\02_Blocos Standard Axis\2005_FB Robô ABB.xml"
+        
         self.raw_ob_list = [1, 121]
     
     def create_folder_structure(self):
@@ -45,11 +47,13 @@ class FolderService:
         
     def create_std_structure(self):
         try:
-             if self.std_gp is None:
+            if self.std_gp is None:
                 std_gp = self.tia_service.recursive_group_search(None, "02_Blocos Standard Axis")
                 if not std_gp:
                     self.std_gp = self.tia_service.create_group(None, "02_Blocos Standard Axis", None)
                     
+            self.tia_service.import_block(self.std_gp.Blocks, self.fb_2005_path)
+            
         except Exception as e:
             print("Error creating operational structure: ", e)
             

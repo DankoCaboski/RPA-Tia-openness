@@ -8,6 +8,7 @@ class RobotService:
     def __init__(self, tia_service) -> None:
         self.tia_service = tia_service
         self.dependencies = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\PLC data types"
+        self.db_rb = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\Program blocks\03_Blocos Operacionais\3.4_Robos\3.4.1_RB01\34171_RB01.xml"
         
         
     def manage_robots(self, robots_associations: list, rbz_name: str):
@@ -65,6 +66,7 @@ class RobotService:
             random_number = Utils().get_random_number()
             XmlService().editar_tags_xml(temp_path, f"ABB{Utils().generate_entropy_string()}", random_number)
             
+            self.tia_service.import_block(robot_group.Blocks, self.db_rb)
             self.tia_service.import_block(robot_group.Blocks, temp_path)
                 
             Utils().get_file_info(temp_path).Delete()   
