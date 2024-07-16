@@ -12,7 +12,6 @@ class RobotService:
         
     def manage_robots(self, robots_associations: list, rbz_name: str):
         try:
-            print("\n", robots_associations)
             for i in enumerate(robots_associations):
                 print(f"Manage robots: i == {i}")
                 robot_group = self.create_robot_structure(i[0], rbz_name)
@@ -41,7 +40,7 @@ class RobotService:
             robot_robot_brand = robot_robot_brand.upper()
             
             generated_block_name = Utils().get_attributes(["Name"],robot_group)
-            print(f'Importing {robot_robot_brand} robot block to {generated_block_name[0]}...')
+            print(f'\nImporting {robot_robot_brand} robot block to {generated_block_name[0]}...')
             bk_path:str = ""
             if robot_robot_brand == 'ABB':
                 bk_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\Program blocks\03_Blocos Operacionais\3.4_Robos\3.4.1_RB01\34101_RB01.xml"
@@ -50,12 +49,13 @@ class RobotService:
                 bk_path = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\03_Blocos Operacionais\robots\bk_fanuc.xml"
                 
             udts = UDTService().list_udt_from_bk(bk_path)
-                
-            for udt in udts:
-                print(f"Importing UDT {udt}...")
-                udt_path = self.dependencies + '\\' + udt + '.xml'
-                device = self.tia_service.get_device_by_index(0)
-                self.tia_service.import_data_type(device, udt_path)
+            
+            if len(udts) >= 1:    
+                for udt in udts:
+                    print(f"Importing UDT {udt}...")
+                    udt_path = self.dependencies + '\\' + udt + '.xml'
+                    device = self.tia_service.get_device_by_index(0)
+                    self.tia_service.import_data_type(device, udt_path)
                 
             bk_file_info = Utils().get_file_info(bk_path)
             aux = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls"

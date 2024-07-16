@@ -40,11 +40,11 @@ class OpennessController:
                     
                 self.openness_service.tia.import_blocks(blocks_to_import)
                 
-                redes = self.openness_service.tia.create_IO_System()
-                self.openness_service.tia.connect_IO_System(hardwware, redes)
-                self.openness_service.tia.addIORemota(hardwware)
-                self.openness_service.tia.import_libraries()
-                self.openness_service.tia.import_graphics()
+                # redes = self.openness_service.tia.create_IO_System()
+                # self.openness_service.tia.connect_IO_System(hardwware, redes)
+                # self.openness_service.tia.addIORemota(hardwware)
+                # self.openness_service.tia.import_libraries()
+                # self.openness_service.tia.import_graphics()
                 # self.openness_service.tia.import_screens_IHM(hardwware, proj_path, proj_name)
                 
                 self.openness_service.tia.save_project()
