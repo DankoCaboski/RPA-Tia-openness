@@ -59,7 +59,7 @@ class RobotService:
         try:
             udts = UDTService().list_udt_from_bk(bk_path)
             if len(udts) >= 1:    
-                device = self.tia_service.get_device_by_index(0)
+                device = self.tia_service.get_device_by_index(1)
                 for udt in udts:
                     print("\nImportando dependencias da FC de robô...")
                     print(f"Importing UDT {udt}...")
@@ -88,7 +88,7 @@ class RobotService:
     def import_rb_db(self, robot_group):
         udts = UDTService().list_udt_from_db(self.db_rb)
         if len(udts) >= 1:    
-            device = self.tia_service.get_device_by_index(0)
+            device = self.tia_service.get_device_by_index(1)
             for udt_d in udts:
                 udt_path: str = None
                 print(f"\nImportando dependencias da DB de robô...")
