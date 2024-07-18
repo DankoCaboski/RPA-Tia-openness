@@ -563,11 +563,11 @@ class TiaService:
                         rbz_name = folder_service.create_robot_structure(zona_name, i)
                         RobotService(self).manage_robots(block_list[zona][block], rbz_name)
                     elif block == "turntables":
-                        folder_service.create_turntable_structure(zona_name, i)
-                        MesaService(self).manage_turntables(block_list[zona][block])
+                        turn_name = folder_service.create_turntable_structure(zona_name, i)
+                        MesaService(self).manage_turntables(block_list[zona][block], turn_name)
                     elif block == "conveyor":
-                        folder_service.create_conveyor_structure(zona_name, i)
-                        ConveyorService(self).manage_conveyor(block_list[zona][block])
+                        conve_name =  folder_service.create_conveyor_structure(zona_name, i)
+                        ConveyorService(self).manage_conveyor(block_list[zona][block], conve_name)
                     else:
                         raise Exception("Invalid block type: ", block)
                 i += 1   

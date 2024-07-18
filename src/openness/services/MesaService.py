@@ -1,4 +1,5 @@
 import os
+import re
 from openness.services.Utils import Utils
 from openness.services.UDTService import UDTService
 from openness.services.XmlService import XmlService
@@ -8,17 +9,17 @@ class MesaService:
         self.dependencies = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\PLC data types"
         
         
-    def manage_turntables(self, turntables_associations: list):
+    def manage_turntables(self, turntables_associations: list, turn_name: str):
         try:
             print("\n", turntables_associations)
             print("Manage turntables: ")
             for Index, turntable in enumerate(turntables_associations):
                 driver = turntable['driver']
                 self.turntable_group = self.create_turntables_structure(Index)
-                opera_grupo = self.tia_service.recursive_group_search(None, '02_Blocos Standard Axis')
+                std_group = self.tia_service.recursive_group_search(None, '02_Blocos Standard Axis')
                 prodiag = self.tia_service.recursive_group_search(None, '01.3_Prodiag')
                 if Index <= 1:
-                    self.import_mg_std(opera_grupo, driver, prodiag)
+                    self.import_mg_std(std_group, driver, prodiag)
                 # Process each side (ladoA, ladoB, ladoC, ladoD)
                 for side, products in turntable.items():
                     if 'lado' in side:  # Filter out non-side keys like 'driver'
@@ -61,7 +62,7 @@ class MesaService:
             print("Error creating mesa structure: ", e)
 
     #Import do bloco padrão da mesa no standard 
-    def import_mg_std(self, opera_grupo, turntable_turntable_brand, prodiag):
+    def import_mg_std(self, std_group, turntable_turntable_brand, prodiag):
         try:         
             #IMPORT SEPARADO DE UDT 
             device = self.tia_service.get_device_by_index(1)
@@ -93,12 +94,12 @@ class MesaService:
                     device = self.tia_service.get_device_by_index(1)
                     self.tia_service.import_data_type(device, udt_path)
 
-            self.tia_service.import_block(opera_grupo.Blocks, file_paths[0])
-            self.tia_service.import_block(opera_grupo.Blocks, file_paths[1])
-            self.tia_service.import_block(opera_grupo.Blocks, file_paths[2])
-            self.tia_service.import_block(opera_grupo.Blocks, file_paths[3])
-            self.tia_service.import_block(opera_grupo.Blocks, file_paths[4])
-            self.tia_service.import_block(opera_grupo.Blocks, file_paths[5])
+            self.tia_service.import_block(std_group.Blocks, file_paths[0])
+            self.tia_service.import_block(std_group.Blocks, file_paths[1])
+            self.tia_service.import_block(std_group.Blocks, file_paths[2])
+            self.tia_service.import_block(std_group.Blocks, file_paths[3])
+            self.tia_service.import_block(std_group.Blocks, file_paths[4])
+            self.tia_service.import_block(std_group.Blocks, file_paths[5])
             # self.tia_service.import_block(prodiag.Blocks, PP_path)
             
                 
@@ -171,9 +172,35 @@ class MesaService:
                                     temp_path = f"{aux}\\{Utils().generate_entropy_string()}.xml"
                                     print('arquivo novo', temp_path)
                                     bk_file_info.CopyTo(temp_path)
-                                    
-                                    random_number = Utils().get_random_number()
-                                    XmlService().edit_tags_xml(temp_path, index)
+
+                                    with open(temp_path, 'r', encoding='utf-8') as file:
+                                        conteudo = file.read()
+
+                                    # Encontrar o valor atual dentro da tag <Name> e <Number>
+                                    nome_atual = re.search(r'(?<=<Name>)[^<]+(?=</Name>)', conteudo)
+                                    numero_atual = re.search(r'(?<=<Number>)[^<]+(?=</Number>)', conteudo)
+
+                                    # Inicializar novo_nome e novo_numero
+                                    novo_nome = ""
+                                    novo_numero = ""
+
+                                    if nome_atual:
+                                        nome_atual = nome_atual.group()
+                                        # Substituir o último número antes de _MG com o novo índice
+                                        nome_part = re.search(r'(\d+)(?=_MG)', nome_atual)
+                                        if nome_part:
+                                            novo_nome = nome_atual[:nome_part.start()] + str(int(nome_part.group())) + f"_MG0{index+1}"
+                                        else:
+                                            novo_nome = nome_atual + f"_MG0{index+1}"
+                                    else:
+                                        novo_nome = f"Name_MG0{index+1}"
+
+                                    if numero_atual:
+                                        numero_atual = int(numero_atual.group())
+                                        novo_numero = numero_atual + (index - 1 )
+                                    else:
+                                        novo_numero = "1"
+                                    XmlService().editar_tags_xml(temp_path, novo_nome, novo_numero )
                                     
                                     self.tia_service.import_block(turntable_mesa.Blocks, temp_path)
                                         
