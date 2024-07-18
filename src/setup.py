@@ -3,11 +3,12 @@ import os
 from cx_Freeze import setup, Executable
 
 build_exe_options = {
-    "packages": ["pywinauto", "CustomTkinter", "darkdetect", "tkinter", "sqlite3"],
+    "packages": ["pyautogui","pygetwindow", "CustomTkinter", "darkdetect", "tkinter", "sqlite3"],
     "include_files": [
         
         os.path.join("src", "view", "assets", "favico.ico"),
         os.path.join("src", "view", "assets", "homeIcoDark.png"),
+        os.path.join("src", "view", "assets", "axix-solution-logo.png"),
         
         # os.path.join("src", "view", "components", "CustomButton.py"),
         # os.path.join("src", "view", "components", "CustomCheckbox.py"),
