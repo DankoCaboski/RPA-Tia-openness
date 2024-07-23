@@ -99,7 +99,7 @@ class TiaService:
     
     def get_device_by_name(self, device_name):
         return next((d for d in self.myproject.Devices if d.Name == device_name), None)
-
+    #Função padrão para adicionar hardware
     def add_hardware(self,  hardwware: list):
         try:
             plc_count = 0
@@ -202,7 +202,7 @@ class TiaService:
             print(RPA_status)
             RPA_status = 'Error creating hardware: ', e
             print(RPA_status)
-
+    #Função para adicionar separado os IOs das remotas, já que é necessario existir uma rede IO para elas
     def addIORemota(self, hardware):
         deviceName = ''
         deviceMlfb = ''
@@ -256,7 +256,7 @@ class TiaService:
             print(RPA_status)
             
         return ProfinetInterfaces
-
+    #Cria a rede para as remotas no PLC01
     def create_IO_System(self):
         redes = []
         Device = self.cpus[0]
@@ -270,7 +270,7 @@ class TiaService:
             print(RPA_status)
             redes.append(rede)
             return redes
-
+    #Conectar a remota ao PLC 01
     def connect_IO_System(self, hardware, redes):
         count = self.myproject.UngroupedDevicesGroup.Devices.Count
         if count >= 1:
@@ -286,21 +286,21 @@ class TiaService:
                                 connect = Io_System.ConnectToIoSystem(rede)  # Usando a rede atual do loop externo
                                 RPA_status = "Rede IO Conectada"
                                 print(RPA_status)
-            
+    #Cria a rede profinet       
     def SetSubnetName(self, subnet_name):
         RPA_status = 'Setting subnet name'
         print(RPA_status)
         if subnet_name == '':
             subnet_name = 'mySubnet'
         self.my_subnet = self.myproject.Subnets.Create("System:Subnet.Ethernet", subnet_name)
-
+    #Conecta as redes profinet
     def ConnectToSubnet(self, node):
         try:
             node.ConnectToSubnet(self.my_subnet)
         except Exception as e:
             RPA_status = 'Error connecting to subnet: ', e
             print(RPA_status)
-            
+    #Faz a verificação e pega a referencia de todas as redes profinet dos devices    
     def GetAllProfinetInterfaces(self):
         try:
             network_ports = []
@@ -491,7 +491,7 @@ class TiaService:
                 
         except Exception as e:
             print('Error creating group:', e)
-
+    #Import das udts
     def import_data_type(self, cpu, data_type_path):
         try:
             if data_type_path != r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\PLC data types\06_Axis.RB.Memórias.xml":

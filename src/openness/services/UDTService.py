@@ -14,7 +14,7 @@ class UDTService:
         udts = []
         with open(bk_path, 'r', encoding='utf-8') as file:
             conteudo = file.read()
-            # Expressão regular para capturar o valor do atributo Type dentro da tag Parameter
+            # Expressão regular para capturar o valor do atributo Type dentro da tag Parameter, utilizada para dbs
             pattern = r'<Parameter[^>]+Type="&quot;([^&]+)&quot;"[^>]*>'
             matches = re.findall(pattern, conteudo)
             for match in matches:
@@ -26,6 +26,7 @@ class UDTService:
         udts = []
         with open(bk_path, 'r', encoding='utf-8') as file:
             conteudo = file.read()
+            # Expressão regular para capturar o valor do atributo Type dentro da tag Datatype, utilizada para blocos
             pattern = r'<Member[^>]+Datatype="&quot;([^&]+)&quot;"[^>]*>'
 
             matches = re.findall(pattern, conteudo)

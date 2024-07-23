@@ -1,3 +1,6 @@
+# Essa classe está focada em fazer o import dos blocos da mesa,
+# toda criação de pasta e subpastas da mesa são feitas aqui
+
 import os
 import re
 from openness.services.Utils import Utils

@@ -1,3 +1,5 @@
+#Classe para manpulação dos xmls
+
 from openness.services.Utils import Utils
 
 import re

@@ -1,3 +1,6 @@
+# Essa classe está focada em fazer o import dos blocos do robo,
+# toda criação de pasta e subpastas do robo são feitas aqui
+
 from openness.services.XmlService import XmlService
 from openness.services.UDTService import UDTService
 

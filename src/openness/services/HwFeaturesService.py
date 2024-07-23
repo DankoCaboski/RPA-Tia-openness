@@ -1,3 +1,5 @@
+#Classe para manipulação das bibliotecas do TIA Openness 
+
 from openness.services.Utils import Utils
 
 class HwFeaturesService:

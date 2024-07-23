@@ -1,3 +1,6 @@
+# Essa classe está focada em fazer todas manipulações da IHM, tanto como template,telas e graphic list
+# toda criação de pasta e subpastas da IHM são feitas aqui
+
 import os
 from openness.services.Utils import Utils
 dependencies = r"\\AXIS-SERVER\Users\Axis Server\Documents\xmls\dependence"

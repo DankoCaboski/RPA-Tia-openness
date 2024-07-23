@@ -1,3 +1,5 @@
+# Essa classe está focada em fazer toda criação de pasta e subpastas da raiz do projeto
+
 class FolderService:
     def __init__(self, tia_service) -> None:
         self.tia_service = tia_service

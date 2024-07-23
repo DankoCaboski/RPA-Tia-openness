@@ -1,3 +1,6 @@
+# Essa classe está focada em fazer o import dos blocos das esteiras,
+# toda criação de pasta e subpastas das esterias são feitas aqui
+
 import os
 import re
 from openness.services.XmlService import XmlService
